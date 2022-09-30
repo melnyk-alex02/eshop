@@ -1,13 +1,11 @@
 package com.alex.eshop.eshop.Service;
 
-import com.alex.eshop.eshop.Entity.ItemEntity;
+import com.alex.eshop.eshop.Entity.Item;
 
 import java.util.List;
 
 public interface ItemService {
-    List<ItemEntity> allItemService();
+    List<String> getItemWithCategoryInfo(long id);
 
-    ItemEntity getItem(int id);
-
-
+    List<Item> lastFiveItems();
 }

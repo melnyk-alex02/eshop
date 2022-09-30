@@ -1,6 +1,6 @@
 package com.alex.eshop.eshop.Service;
 
-import com.alex.eshop.eshop.Entity.CategoryEntity;
+import com.alex.eshop.eshop.Entity.Category;
 import com.alex.eshop.eshop.Repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,20 +16,19 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
     @Override
-    public List<CategoryEntity> getAllCategories() {
+    public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
-    public CategoryEntity getCategory(int id){
-        CategoryEntity categoryEntity = null;
-        Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findById(id);
+    public Category getCategory(long id){
+        Category category = null;
+        Optional<Category> categoryEntityOptional = categoryRepository.findById((int) id);
         if(categoryEntityOptional.isPresent()){
-            categoryEntity = categoryEntityOptional.get();
+            category = categoryEntityOptional.get();
         }
-        return categoryEntity;
+        return category;
     }
 
 
-    @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository){
         this.categoryRepository = categoryRepository;
     }
