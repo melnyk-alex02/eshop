@@ -1,6 +1,7 @@
 package com.alex.eshop.eshop.Service;
 
 import com.alex.eshop.eshop.DTO.CategoryDTO;
+import com.alex.eshop.eshop.Exception.DataNotFound;
 import com.alex.eshop.eshop.Mapper.CategoryMapper;
 import com.alex.eshop.eshop.Repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public CategoryDTO getCategory(Long id) {
-        return CategoryMapper.INSTANCE.toDto(categoryRepository.getById(id));
+        return CategoryMapper.INSTANCE.toDto(categoryRepository.findById(id).orElseThrow(()->new DataNotFound("There is no category with id " + id)));
     }
 }
