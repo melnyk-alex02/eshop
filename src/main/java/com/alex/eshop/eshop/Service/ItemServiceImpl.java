@@ -22,21 +22,23 @@ public class ItemServiceImpl implements ItemService {
     @PersistenceContext private EntityManager entityManager;
 
     private final ItemRepository itemRepository;
-
+    public ItemServiceImpl(ItemRepository itemRepository){
+        this.itemRepository = itemRepository;
+    }
     @Override
-    public List<String> getItemWithCategoryInfo(long id) {
+    public List<String> getItemWithCategoryInfo(Long id) {
         Item item = null;
-        Optional<Item> categoryEntityOptional = itemRepository.findById(id);
-        if(categoryEntityOptional.isPresent()){
-            item = categoryEntityOptional.get();
+        Optional<Item> itemOptional = itemRepository.findById(id);
+        if(itemOptional.isPresent()){
+            item = itemOptional.get();
         }
         Category category = item.getCategory();
-
+        String itemName = item.getName();
         long categoryId = category.getId();
         String categoryName = category.getName();
 
         ArrayList<String> result = new ArrayList<>();
-        result.add(categoryName);
+        result.add(itemName);
         result.add(category.toString());
 
         return result;
@@ -47,7 +49,5 @@ public class ItemServiceImpl implements ItemService {
         return lastFiveItems;
     }
 
-    public ItemServiceImpl(ItemRepository itemRepository){
-        this.itemRepository = itemRepository;
-    }
+
 }

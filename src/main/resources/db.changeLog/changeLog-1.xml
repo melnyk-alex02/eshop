@@ -20,5 +20,4 @@
                                                                                   ('categ_name3', 'categ_desc3')
         </sql>
     </changeSet>
-
 </databaseChangeLog>

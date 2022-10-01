@@ -19,7 +19,7 @@ public class ItemController {
         return itemService.lastFiveItems();
     }
     @GetMapping("items/{id}")
-    public List<String> getItem(@PathVariable long id){
+    public List<String> getItem(@PathVariable Long id){
         return itemService.getItemWithCategoryInfo(id);
     }
    @Autowired

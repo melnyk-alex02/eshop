@@ -5,20 +5,21 @@ import javax.persistence.*;
 @Entity
 @Table(name = "category")
 public class Category {
+    public Category() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
-    @Column(name = "name")
+    private Long id;
+
+
     private String name;
-    @Column(name = "description")
+
     private String description;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -38,11 +39,6 @@ public class Category {
         this.description = description;
     }
 
-    public Category(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
     @Override
     public String toString() {
         return "Category{" +
@@ -51,6 +47,4 @@ public class Category {
                 ", description='" + description + '\'' +
                 '}';
     }
-
-    public Category() {
-}    }
+}

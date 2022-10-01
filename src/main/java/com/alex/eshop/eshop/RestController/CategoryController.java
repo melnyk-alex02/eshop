@@ -3,6 +3,7 @@ package com.alex.eshop.eshop.RestController;
 import com.alex.eshop.eshop.Entity.Category;
 import com.alex.eshop.eshop.Service.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,7 @@ public class CategoryController {
        return categoryService.getAllCategories();
     }
     @GetMapping("/categories/{id}")
-    public Category getCategory(int id){
+    public Category getCategory(@PathVariable Long id){
         return categoryService.getCategory(id);
     }
     public CategoryController (CategoryService categoryService){
