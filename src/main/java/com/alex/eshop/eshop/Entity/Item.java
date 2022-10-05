@@ -4,20 +4,15 @@ import javax.persistence.*;
 
 @Entity
 public class Item {
-    public Item() {
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Category category;
-    @Column(name = "description")
     private String description;
     private String imageSrc;
-    public Long getCategory_id(){
-        return category.getId();
-    }
+
     public Long getId() {
         return id;
     }
@@ -50,12 +45,12 @@ public class Item {
         this.description = description;
     }
 
-    public String getImage_src() {
+    public String getImageSrc() {
         return imageSrc;
     }
 
-    public void setImage_src(String image_src) {
-        this.imageSrc = image_src;
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
     }
 
 }

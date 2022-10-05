@@ -5,14 +5,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "category")
 public class Category {
-    public Category() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     private String name;
-
     private String description;
 
     public Long getId() {
@@ -37,14 +33,5 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
     }
 }

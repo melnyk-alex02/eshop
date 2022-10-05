@@ -1,6 +1,7 @@
 package com.alex.eshop.eshop.RestController;
 
 import com.alex.eshop.eshop.Entity.Category;
+import com.alex.eshop.eshop.ExceptionHandling.NoSuchCategoryException;
 import com.alex.eshop.eshop.Service.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,15 +14,16 @@ import java.util.List;
 @RequestMapping("/api")
 public class CategoryController {
     private final  CategoryService categoryService;
+    public CategoryController (CategoryService categoryService){
+        this.categoryService = categoryService;
+    }
     @GetMapping("/categories")
     public List<Category> allCategoryList(){
        return categoryService.getAllCategories();
     }
     @GetMapping("/categories/{id}")
-    public Category getCategory(@PathVariable Long id){
-        return categoryService.getCategory(id);
-    }
-    public CategoryController (CategoryService categoryService){
-        this.categoryService = categoryService;
+    public Category getCategory(@PathVariable Long id, Category category){
+        category = categoryService.getCategory(id);
+        return category;
     }
 }

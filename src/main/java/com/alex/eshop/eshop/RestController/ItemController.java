@@ -1,6 +1,7 @@
 package com.alex.eshop.eshop.RestController;
 
 import com.alex.eshop.eshop.Entity.Item;
+import com.alex.eshop.eshop.ExceptionHandling.NoSuchItemException;
 import com.alex.eshop.eshop.Service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,16 +15,16 @@ import java.util.List;
 @RequestMapping("/api")
 public class ItemController {
     private final ItemService itemService;
-    @GetMapping("/items/last")
-    public List<Item> lastFiveItems(){
-        return itemService.lastFiveItems();
-    }
-    @GetMapping("items/{id}")
-    public List<String> getItem(@PathVariable Long id){
-        return itemService.getItemWithCategoryInfo(id);
-    }
-   @Autowired
     public ItemController(ItemService itemService){
         this.itemService = itemService;
+    }
+    @GetMapping("/items/last")
+    public List<Item> lastFiveItems(){
+        return itemService.getLastFiveItems();
+    }
+    @GetMapping("items/{id}")
+    public Item getItem(@PathVariable Long id, Item item){
+        item = itemService.getItemWithCategoryInfo(id);
+        return item;
     }
 }

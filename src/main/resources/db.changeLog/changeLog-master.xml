@@ -33,4 +33,6 @@
             <column name="image_src" type="varchar(500)"/>
         </createTable>
     </changeSet>
+    <include file="db.changeLog/changeLog-1.xml" relativeToChangelogFile="false"/>
+    <include file="db.changeLog/changeLog-2.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

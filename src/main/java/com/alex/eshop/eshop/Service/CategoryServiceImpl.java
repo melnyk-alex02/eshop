@@ -1,6 +1,7 @@
 package com.alex.eshop.eshop.Service;
 
 import com.alex.eshop.eshop.Entity.Category;
+import com.alex.eshop.eshop.ExceptionHandling.NoSuchCategoryException;
 import com.alex.eshop.eshop.Repository.CategoryRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Component
 @Transactional
 public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
@@ -23,13 +23,13 @@ public class CategoryServiceImpl implements CategoryService{
         return categoryRepository.findAll();
     }
     public Category getCategory(Long id){
-        Category category = null;
+        Category category;
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isPresent()) {
             category = categoryOptional.get();
         }
         else{
-            throw new NullPointerException();
+            throw new NoSuchCategoryException("There is no category with id " + id);
         }
 
         return category;
