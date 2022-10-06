@@ -3,7 +3,6 @@ package com.alex.eshop.eshop.Service;
 import com.alex.eshop.eshop.Entity.Category;
 import com.alex.eshop.eshop.ExceptionHandling.NoSuchCategoryException;
 import com.alex.eshop.eshop.Repository.CategoryRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

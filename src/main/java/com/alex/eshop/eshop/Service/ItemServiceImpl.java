@@ -4,11 +4,7 @@ import com.alex.eshop.eshop.Entity.Item;
 import com.alex.eshop.eshop.ExceptionHandling.NoSuchItemException;
 import com.alex.eshop.eshop.Repository.ItemRepository;
 
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.*;
 

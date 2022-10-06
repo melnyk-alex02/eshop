@@ -1,7 +1,6 @@
 package com.alex.eshop.eshop.RestController;
 
 import com.alex.eshop.eshop.Entity.Category;
-import com.alex.eshop.eshop.ExceptionHandling.NoSuchCategoryException;
 import com.alex.eshop.eshop.Service.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
