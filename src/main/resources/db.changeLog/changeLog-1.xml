@@ -8,16 +8,27 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
 		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
 		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
-    <preConditions>
-        <runningAs  username="bestuser"/>
-    </preConditions>
-    <changeSet  author="bestuser"  id="3">
-        <sql dbms="!h2, mysql"
-             endDelimiter="\nGO"
-             splitStatements="true"
-             stripComments="true">insert into category (name, description) values ('categ_name1', 'categ_desc1'),
-                                                                                  ('categ_name2', 'categ_desc2'),
-                                                                                  ('categ_name3', 'categ_desc3')
-        </sql>
+
+    <changeSet  author="bestuser"  id="1">
+        <createTable tableName="category">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name = "name" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name = "description" type="varchar(1000)"/>
+        </createTable>
+        <createTable tableName="item">
+            <column name = "id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name = "name" type="varchar(255)"/>
+            <column name = "category_id" type="bigint">
+                <constraints foreignKeyName="category_id" references="category(id)"/>
+            </column>
+            <column name="description" type="varchar(2000)"/>
+            <column name="image_src" type="varchar(500)"/>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

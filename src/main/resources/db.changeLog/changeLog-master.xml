@@ -8,31 +8,8 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
 		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
 		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
-    <preConditions>
-        <runningAs  username="bestuser"/>
-    </preConditions>
-    <changeSet id ="1" author="bestuser">
-        <createTable tableName="category">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" />
-            </column>
-            <column name = "name" type="varchar(255)">
-                <constraints unique="true"/>
-            </column>
-            <column name = "description" type="varchar(1000)"/>
-        </createTable>
-        <createTable tableName="item">
-            <column name = "id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name = "name" type="varchar(255)"/>
-            <column name = "category_id" type="bigint">
-                <constraints foreignKeyName="category_id" references="category(id)"/>
-            </column>
-            <column name="description" type="varchar(2000)"/>
-            <column name="image_src" type="varchar(500)"/>
-        </createTable>
-    </changeSet>
-    <include file="db.changeLog/changeLog-1.xml" relativeToChangelogFile="false"/>
+
+    <include file="db.changeLog/changeLog-1.xml" relativeToChangelogFile="true"/>
     <include file="db.changeLog/changeLog-2.xml" relativeToChangelogFile="false"/>
+    <include file="db.changeLog/changeLog-3.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
