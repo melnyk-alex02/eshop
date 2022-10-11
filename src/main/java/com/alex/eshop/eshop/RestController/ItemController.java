@@ -13,16 +13,23 @@ import java.util.List;
 @RequestMapping("/api")
 public class ItemController {
     private final ItemService itemService;
-    public ItemController(ItemService itemService){
+
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
+
     @GetMapping("/items/last")
-    public List<Item> lastFiveItems(){
+    public List<Item> lastFiveItems() {
         return itemService.getLastFiveItems();
     }
+
     @GetMapping("items/{id}")
-    public Item getItem(@PathVariable Long id, Item item){
-        item = itemService.getItemWithCategoryInfo(id);
-        return item;
+    public Item getItem(@PathVariable Long id) {
+        return itemService.getItemWithCategoryInfo(id);
+    }
+
+    @GetMapping("items/categoryId/{categoryId}")
+    public List<Item> getItemWithCategory(@PathVariable Long categoryId) {
+        return itemService.getItemsInCategory(categoryId);
     }
 }

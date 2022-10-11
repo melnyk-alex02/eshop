@@ -1,9 +1,7 @@
 package com.alex.eshop.eshop.Repository;
 
 import com.alex.eshop.eshop.Entity.Item;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +12,6 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("select i from Item i")
     List<Item> getLastFiveItems(Pageable pageable);
+
+    List<Item> getItemsByCategory_Id(Long categoryId);
 }

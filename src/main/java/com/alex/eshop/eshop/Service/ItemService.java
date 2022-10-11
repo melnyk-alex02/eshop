@@ -8,4 +8,6 @@ public interface ItemService {
     Item getItemWithCategoryInfo(Long id);
 
     List<Item> getLastFiveItems();
+
+    List<Item> getItemsInCategory(Long id);
 }

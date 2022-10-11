@@ -10,17 +10,20 @@ import java.util.List;
 
 @Service
 @Transactional
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
-    public CategoryServiceImpl(CategoryRepository categoryRepository){
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
+
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
-    public Category getCategory(Long id){
-        return categoryRepository.findById(id).orElseThrow(() ->new DataNotFound("There is no category with id " + id));
+
+    public Category getCategory(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new DataNotFound("There is no category with id " + id));
 
     }
 }

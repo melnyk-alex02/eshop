@@ -28,4 +28,9 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getLastFiveItems() {
         return itemRepository.findAll(PageRequest.of(0,5, Sort.Direction.DESC, "id")).getContent();
     }
+
+    @Override
+    public List<Item> getItemsInCategory(Long categoryId) {
+        return itemRepository.getItemsByCategory_Id(categoryId);
+    }
 }
