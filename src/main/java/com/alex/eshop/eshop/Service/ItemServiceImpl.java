@@ -34,4 +34,9 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDTO> getItemsInCategory(Long categoryId) {
         return ItemMapper.INSTANCE.toDto(itemRepository.findByCategoryId(categoryId));
     }
+
+    @Override
+    public List<Item> getItemsInCategory(Long categoryId) {
+        return itemRepository.getItemsByCategory_Id(categoryId);
+    }
 }
