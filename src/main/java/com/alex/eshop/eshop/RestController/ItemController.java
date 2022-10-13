@@ -2,10 +2,7 @@ package com.alex.eshop.eshop.RestController;
 
 import com.alex.eshop.eshop.Entity.Item;
 import com.alex.eshop.eshop.Service.ItemService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,8 +25,8 @@ public class ItemController {
         return itemService.getItemWithCategoryInfo(id);
     }
 
-    @GetMapping("items/categoryId/{categoryId}")
-    public List<Item> getItemWithCategory(@PathVariable Long categoryId) {
-        return itemService.getItemsInCategory(categoryId);
+    @GetMapping("/items")
+    public List<Item> getItemWithCategory(@RequestParam(name = "categoryId") String categoryId) {
+        return itemService.getItemsInCategory(Long.parseLong(categoryId));
     }
 }
