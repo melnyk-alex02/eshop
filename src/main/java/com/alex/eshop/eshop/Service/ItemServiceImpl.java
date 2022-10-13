@@ -1,5 +1,6 @@
 package com.alex.eshop.eshop.Service;
 
+import com.alex.eshop.eshop.Entity.Category;
 import com.alex.eshop.eshop.Entity.Item;
 import com.alex.eshop.eshop.Exception.DataNotFound;
 import com.alex.eshop.eshop.Repository.ItemRepository;
@@ -21,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItemWithCategoryInfo(Long id) {
-        return itemRepository.findById(id).orElseThrow(() -> new DataNotFound("There are no item with id " + id));
+        return itemRepository.findById(id).orElseThrow(()->new DataNotFound("There is no item with id " + id));
     }
 
     @Override
@@ -31,6 +32,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItemsInCategory(Long categoryId) {
-        return itemRepository.getItemsByCategory_Id(categoryId);
+        return itemRepository.findByCategoryId(categoryId);
     }
 }

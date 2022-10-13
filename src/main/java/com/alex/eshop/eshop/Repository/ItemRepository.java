@@ -10,8 +10,5 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    @Query("select i from Item i")
-    List<Item> getLastFiveItems(Pageable pageable);
-
-    List<Item> getItemsByCategory_Id(Long categoryId);
+    List<Item> findByCategoryId(Long categoryId);
 }
