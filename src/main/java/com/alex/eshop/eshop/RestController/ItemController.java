@@ -26,7 +26,7 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public List<Item> getItemWithCategory(@RequestParam(name = "categoryId") String categoryId) {
-        return itemService.getItemsInCategory(Long.parseLong(categoryId));
+    public List<Item> getItemWithCategory(@RequestParam Long categoryId) {
+        return itemService.getItemsInCategory(categoryId);
     }
 }
