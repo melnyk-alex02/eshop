@@ -1,6 +1,6 @@
 package com.alex.eshop.eshop.RestController;
 
-import com.alex.eshop.eshop.Entity.Item;
+import com.alex.eshop.eshop.DTO.ItemDTO;
 import com.alex.eshop.eshop.Service.ItemService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,17 +16,17 @@ public class ItemController {
     }
 
     @GetMapping("/items/last")
-    public List<Item> lastFiveItems() {
+    public List<ItemDTO> lastFiveItems() {
         return itemService.getLastFiveItems();
     }
 
     @GetMapping("items/{id}")
-    public Item getItem(@PathVariable Long id) {
+    public ItemDTO getItem(@PathVariable Long id) {
         return itemService.getItemWithCategoryInfo(id);
     }
 
     @GetMapping("/items")
-    public List<Item> getItemWithCategory(@RequestParam Long categoryId) {
+    public List<ItemDTO> getItemWithCategory(@RequestParam Long categoryId) {
         return itemService.getItemsInCategory(categoryId);
     }
 }
