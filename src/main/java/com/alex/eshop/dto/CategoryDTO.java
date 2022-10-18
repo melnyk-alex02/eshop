@@ -1,13 +1,9 @@
-package com.alex.eshop.eshop.dto;
+package com.alex.eshop.dto;
 
-import com.alex.eshop.eshop.entity.Category;
-
-public class ItemDTO {
+public class CategoryDTO {
     private Long id;
     private String name;
-    private Category category;
     private String description;
-    private String imageSrc;
 
     public Long getId() {
         return id;
@@ -25,27 +21,11 @@ public class ItemDTO {
         this.name = name;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getImageSrc() {
-        return imageSrc;
-    }
-
-    public void setImageSrc(String imageSrc) {
-        this.imageSrc = imageSrc;
     }
 }

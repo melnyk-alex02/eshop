@@ -1,9 +1,9 @@
-package com.alex.eshop.eshop.service;
+package com.alex.eshop.service;
 
-import com.alex.eshop.eshop.dto.CategoryDTO;
-import com.alex.eshop.eshop.exception.DataNotFound;
-import com.alex.eshop.eshop.mapper.CategoryMapper;
-import com.alex.eshop.eshop.repository.CategoryRepository;
+import com.alex.eshop.dto.CategoryDTO;
+import com.alex.eshop.exception.DataNotFound;
+import com.alex.eshop.mapper.CategoryMapper;
+import com.alex.eshop.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -11,16 +11,16 @@ import java.util.List;
 
 @Service
 @Transactional
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryService {
     private final CategoryRepository categoryRepository;
+
     private final CategoryMapper categoryMapper;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
-        this.categoryRepository = categoryRepository;
+    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryMapper = categoryMapper;
+        this.categoryRepository = categoryRepository;
     }
 
-    @Override
     public List<CategoryDTO> getAllCategories() {
         return categoryMapper.toDto(categoryRepository.findAll());
     }
