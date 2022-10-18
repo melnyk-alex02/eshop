@@ -1,8 +1,8 @@
 package com.alex.eshop.eshop.Service;
 
-import com.alex.eshop.eshop.Entity.Category;
-import com.alex.eshop.eshop.Entity.Item;
+import com.alex.eshop.eshop.DTO.ItemDTO;
 import com.alex.eshop.eshop.Exception.DataNotFound;
+import com.alex.eshop.eshop.Mapper.ItemMapper;
 import com.alex.eshop.eshop.Repository.ItemRepository;
 
 import org.springframework.data.domain.PageRequest;
@@ -21,17 +21,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItemWithCategoryInfo(Long id) {
-        return itemRepository.findById(id).orElseThrow(()->new DataNotFound("There is no item with id " + id));
+    public ItemDTO getItemWithCategoryInfo(Long id) {
+        return ItemMapper.INSTANCE.toDto(itemRepository.findById(id).orElseThrow(()->new DataNotFound("There is no item with id " + id)));
     }
 
     @Override
-    public List<Item> getLastFiveItems() {
-        return itemRepository.findAll(PageRequest.of(0,5, Sort.Direction.DESC, "id")).getContent();
+    public List<ItemDTO> getLastFiveItems() {
+        return ItemMapper.INSTANCE.toDto(itemRepository.findAll(PageRequest.of(0,5, Sort.Direction.DESC, "id")).getContent());
     }
 
     @Override
-    public List<Item> getItemsInCategory(Long categoryId) {
-        return itemRepository.findByCategoryId(categoryId);
+    public List<ItemDTO> getItemsInCategory(Long categoryId) {
+        return ItemMapper.INSTANCE.toDto(itemRepository.findByCategoryId(categoryId));
     }
 }
