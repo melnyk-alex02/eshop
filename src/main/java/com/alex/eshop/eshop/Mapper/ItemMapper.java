@@ -9,11 +9,13 @@ import java.util.List;
 
 @Mapper
 public interface ItemMapper {
+    ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
+
     ItemDTO toDto(Item item);
+
     List<ItemDTO> toDto(List<Item> item);
 
     Item toEntity(ItemDTO itemDto);
-    List<Item> toEntity(List<ItemDTO> itemDto);
 
-    ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
+    List<Item> toEntity(List<ItemDTO> itemDto);
 }
