@@ -1,7 +1,7 @@
-package com.alex.eshop.eshop.Service;
+package com.alex.eshop.eshop.service;
 
 
-import com.alex.eshop.eshop.DTO.CategoryDTO;
+import com.alex.eshop.eshop.dto.CategoryDTO;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.alex.eshop.eshop.Service;
+package com.alex.eshop.eshop.service;
 
-import com.alex.eshop.eshop.DTO.ItemDTO;
+import com.alex.eshop.eshop.dto.ItemDTO;
 
 import java.util.List;
 

@@ -1,15 +1,14 @@
-package com.alex.eshop.eshop.Mapper;
+package com.alex.eshop.eshop.mapper;
 
-import com.alex.eshop.eshop.DTO.CategoryDTO;
-import com.alex.eshop.eshop.Entity.Category;
+import com.alex.eshop.eshop.dto.CategoryDTO;
+import com.alex.eshop.eshop.entity.Category;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring",  injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface CategoryMapper {
-    CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
     CategoryDTO toDto(Category category);
 

@@ -1,15 +1,14 @@
-package com.alex.eshop.eshop.Mapper;
+package com.alex.eshop.eshop.mapper;
 
-import com.alex.eshop.eshop.DTO.ItemDTO;
-import com.alex.eshop.eshop.Entity.Item;
+import com.alex.eshop.eshop.dto.ItemDTO;
+import com.alex.eshop.eshop.entity.Item;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ItemMapper {
-    ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
     ItemDTO toDto(Item item);
 

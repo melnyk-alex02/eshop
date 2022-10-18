@@ -1,7 +1,7 @@
-package com.alex.eshop.eshop.RestController;
+package com.alex.eshop.eshop.restcontroller;
 
-import com.alex.eshop.eshop.DTO.CategoryDTO;
-import com.alex.eshop.eshop.Service.CategoryService;
+import com.alex.eshop.eshop.dto.CategoryDTO;
+import com.alex.eshop.eshop.service.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,6 +1,6 @@
-package com.alex.eshop.eshop.Repository;
+package com.alex.eshop.eshop.repository;
 
-import com.alex.eshop.eshop.Entity.Category;
+import com.alex.eshop.eshop.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package com.alex.eshop.eshop.RestController;
+package com.alex.eshop.eshop.restcontroller;
 
-import com.alex.eshop.eshop.DTO.ItemDTO;
-import com.alex.eshop.eshop.Service.ItemService;
+import com.alex.eshop.eshop.dto.ItemDTO;
+import com.alex.eshop.eshop.service.ItemService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

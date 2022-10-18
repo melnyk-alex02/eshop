@@ -1,13 +1,13 @@
-package com.alex.eshop.eshop.DTO;
+package com.alex.eshop.eshop.dto;
 
-import com.alex.eshop.eshop.Entity.Category;
+import com.alex.eshop.eshop.entity.Category;
 
 public class ItemDTO {
-    Long id;
-    String name;
-    Category category;
-    String description;
-    String imageSrc;
+    private Long id;
+    private String name;
+    private Category category;
+    private String description;
+    private String imageSrc;
 
     public Long getId() {
         return id;
