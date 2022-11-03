@@ -88,7 +88,6 @@
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
                         <arg>-Amapstruct.defaultComponentModel=spring</arg>
-                        <!--                            <arg>-AmapStruct.defaultInjectionStrategy=constructor</arg>-->
                     </compilerArgs>
                 </configuration>
             </plugin>
