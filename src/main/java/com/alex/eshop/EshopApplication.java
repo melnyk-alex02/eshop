@@ -1,4 +1,4 @@
-package com.alex.eshop.eshop;
+package com.alex.eshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

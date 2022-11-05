@@ -1,7 +1,7 @@
-package com.alex.eshop.eshop.RestController;
+package com.alex.eshop.restcontroller;
 
-import com.alex.eshop.eshop.Entity.Category;
-import com.alex.eshop.eshop.Service.CategoryService;
+import com.alex.eshop.dto.CategoryDTO;
+import com.alex.eshop.service.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +19,12 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public List<Category> allCategoryList() {
+    public List<CategoryDTO> allCategoryList() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/categories/{id}")
-    public Category getCategory(@PathVariable Long id) {
+    public CategoryDTO getCategory(@PathVariable Long id) {
         return categoryService.getCategory(id);
     }
 }

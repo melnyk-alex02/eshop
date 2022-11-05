@@ -1,11 +1,9 @@
-package com.alex.eshop.eshop.Repository;
+package com.alex.eshop.repository;
 
-import com.alex.eshop.eshop.Entity.Item;
+import com.alex.eshop.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @Repository

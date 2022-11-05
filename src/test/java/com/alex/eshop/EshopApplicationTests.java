@@ -1,4 +1,4 @@
-package com.alex.eshop.eshop;
+package com.alex.eshop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
