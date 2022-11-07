@@ -4,6 +4,7 @@ import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.entity.Item;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface ItemMapper {
     Item toEntity(ItemDTO itemDto);
 
     List<Item> toEntity(List<ItemDTO> itemDto);
+
+    List<ItemDTO> toDto(Page<Item> itemPage);
 }

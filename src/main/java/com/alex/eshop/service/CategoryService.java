@@ -4,6 +4,7 @@ import com.alex.eshop.dto.CategoryDTO;
 import com.alex.eshop.exception.DataNotFound;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,11 +22,11 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryDTO> getAllCategories() {
-        return categoryMapper.toDto(categoryRepository.findAll());
+    public List<CategoryDTO> getAllCategories(Pageable pageable) {
+        return categoryMapper.toDto(categoryRepository.findAll(pageable));
     }
 
     public CategoryDTO getCategory(Long id) {
-        return categoryMapper.toDto(categoryRepository.findById(id).orElseThrow(()->new DataNotFound("There is no category with id " + id)));
+        return categoryMapper.toDto(categoryRepository.findById(id).orElseThrow(() -> new DataNotFound("There is no category with id " + id)));
     }
 }

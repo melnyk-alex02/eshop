@@ -2,6 +2,7 @@ package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.service.ItemService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,16 @@ public class ItemController {
     }
 
     @GetMapping("items/{id}")
-    public ItemDTO getItem(@PathVariable Long id) {
+    public ItemDTO getItem(@PathVariable Long id){
         return itemService.getItemWithCategoryInfo(id);
     }
 
     @GetMapping("/items")
-    public List<ItemDTO> getItemWithCategory(@RequestParam Long categoryId) {
-        return itemService.getItemsInCategory(categoryId);
+    public List<ItemDTO> getItemWithCategory(@RequestParam Long categoryId,
+                                             @RequestParam("page") int page,
+                                             @RequestParam("size") int size,
+                                             @RequestParam("sort") List<String> sort,
+                                             Pageable pageable) {
+        return itemService.getItemsInCategory(categoryId, pageable);
     }
 }

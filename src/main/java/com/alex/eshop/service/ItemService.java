@@ -4,12 +4,13 @@ import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.exception.DataNotFound;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
-
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.List;
 
 @Service
 @Transactional
@@ -31,7 +32,7 @@ public class ItemService {
         return itemMapper.toDto(itemRepository.findAll(PageRequest.of(0,5, Sort.Direction.DESC, "id")).getContent());
     }
 
-    public List<ItemDTO> getItemsInCategory(Long categoryId) {
-        return itemMapper.toDto(itemRepository.findByCategoryId(categoryId));
+    public List<ItemDTO> getItemsInCategory(Long categoryId, Pageable pageable) {
+        return itemMapper.toDto(itemRepository.findByCategoryId(categoryId, pageable));
     }
 }
