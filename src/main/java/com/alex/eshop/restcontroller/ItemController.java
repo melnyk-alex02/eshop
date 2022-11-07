@@ -28,9 +28,9 @@ public class ItemController {
 
     @GetMapping("/items")
     public List<ItemDTO> getItemWithCategory(@RequestParam Long categoryId,
-                                             @RequestParam("page") int page,
-                                             @RequestParam("size") int size,
-                                             @RequestParam("sort") List<String> sort,
+                                             @RequestParam(value = "page", defaultValue = "0") int page,
+                                             @RequestParam(value = "size", defaultValue = "10") int size,
+                                             @RequestParam(value = "sort", defaultValue = "id,asc") List<String> sort,
                                              Pageable pageable) {
         return itemService.getItemsInCategory(categoryId, pageable);
     }
