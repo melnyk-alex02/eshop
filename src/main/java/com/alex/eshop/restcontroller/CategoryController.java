@@ -3,6 +3,7 @@ package com.alex.eshop.restcontroller;
 import com.alex.eshop.dto.CategoryCreateDTO;
 import com.alex.eshop.dto.CategoryDTO;
 import com.alex.eshop.dto.CategoryUpdateDTO;
+import com.alex.eshop.entity.Category;
 import com.alex.eshop.service.CategoryService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,4 @@ public class CategoryController {
     public void deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
     }
-}
-
 }

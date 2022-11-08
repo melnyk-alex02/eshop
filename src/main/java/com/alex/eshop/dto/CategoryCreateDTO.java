@@ -2,6 +2,7 @@ package com.alex.eshop.dto;
 
 public class CategoryCreateDTO {
     String name;
+
     String description;
 
     public String getName() {

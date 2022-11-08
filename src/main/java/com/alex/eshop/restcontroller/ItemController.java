@@ -3,7 +3,6 @@ package com.alex.eshop.restcontroller;
 import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.dto.ItemUpdateDTO;
-import com.alex.eshop.entity.Category;
 import com.alex.eshop.entity.Item;
 import com.alex.eshop.service.ItemService;
 import org.springframework.data.domain.Pageable;

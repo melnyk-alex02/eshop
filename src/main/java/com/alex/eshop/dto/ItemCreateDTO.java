@@ -1,7 +1,5 @@
 package com.alex.eshop.dto;
 
-import com.alex.eshop.entity.Category;
-
 public class ItemCreateDTO {
     String name;
     String description;
