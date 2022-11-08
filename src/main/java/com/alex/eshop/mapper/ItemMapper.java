@@ -11,11 +11,9 @@ import java.util.List;
 @Mapper
 public interface ItemMapper {
     @Mapping(source = "category.id", target = "categoryId")
-    @Mapping(source = "category.name", target = "categoryName")
     ItemDTO toDto(Item item);
 
     @Mapping(source = "category.id", target = "categoryId")
-    @Mapping(source = "category.name", target = "categoryName")
     List<ItemDTO> toDto(List<Item> item);
 
     Item toEntity(ItemDTO itemDto);

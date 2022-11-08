@@ -1,18 +1,19 @@
 package com.alex.eshop.dto;
 
-public class ItemDTO {
-    private Long id;
-    private String name;
-    private Long categoryId;
-    private String description;
-    private String imageSrc;
+import com.alex.eshop.entity.Category;
 
-    public Long getId() {
-        return id;
+public class ItemCreateDTO {
+    String name;
+    String description;
+    String imageSrc;
+    Long categoryId;
+
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getName() {
@@ -21,14 +22,6 @@ public class ItemDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getDescription() {

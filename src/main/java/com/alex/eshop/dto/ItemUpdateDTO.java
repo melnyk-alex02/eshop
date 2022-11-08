@@ -1,19 +1,21 @@
-package com.alex.eshop.entity;
+package com.alex.eshop.dto;
 
-import javax.persistence.*;
+public class ItemUpdateDTO {
+    Long id;
+    String name;
+    String description;
+    String imageSrc;
+    Long categoryId;
 
-@Entity
-public class Item {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="category_id")
-    private Category category;
+    public String getCategoryName() {
+        return categoryName;
+    }
 
-    private String description;
-    private String imageSrc;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    String categoryName;
 
     public Long getId() {
         return id;
@@ -29,14 +31,6 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public String getDescription() {
@@ -55,4 +49,11 @@ public class Item {
         this.imageSrc = imageSrc;
     }
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 }
