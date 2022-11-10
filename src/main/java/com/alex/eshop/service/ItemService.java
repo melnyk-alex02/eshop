@@ -30,6 +30,7 @@ public class ItemService {
     private final ItemUpdateMapper itemUpdateMapper;
 
     public ItemService(ItemRepository itemRepository, ItemMapper itemMapper,
+                        ItemCreateMapper itemCreateMapper, ItemUpdateMapper itemUpdateMapper) {
                        ItemCreateMapper itemCreateMapper, ItemUpdateMapper itemUpdateMapper) {
         this.itemRepository = itemRepository;
         this.itemMapper = itemMapper;
@@ -49,13 +50,7 @@ public class ItemService {
         return itemMapper.toDto(itemRepository.findByCategoryId(categoryId, pageable));
     }
     public Item createItem(ItemCreateDTO itemCreateDTO){
-        Item item = new Item();
-        item.setName(itemCreateDTO.getName());
-        item.setDescription(itemCreateDTO.getDescription());
-        item.setImageSrc(itemCreateDTO.getImageSrc());
-        item.setCategory(categoryRepository.findById(itemCreateDTO.getCategoryId())
-                .orElseThrow(() -> new DataNotFound(("There is no category with id" + itemCreateDTO.getCategoryId()))));
-        return itemRepository.save(item);
+        return itemRepository.save(itemCreateMapper.toEntity(itemCreateDTO));
     }
 
     public void updateItem(ItemUpdateDTO itemUpdateDTO){

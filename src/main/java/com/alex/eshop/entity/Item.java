@@ -8,8 +8,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="category_id")
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Category category;
 
     private String description;
