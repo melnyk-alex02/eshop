@@ -17,10 +17,7 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public List<CategoryDTO> allCategoryList(@RequestParam(value = "page", defaultValue = "0") int page,
-                                             @RequestParam(value = "size", defaultValue = "10") int size,
-                                             @RequestParam(value = "sort", defaultValue = "id,asc") List<String> sort,
-                                             Pageable pageable) {
+    public List<CategoryDTO> allCategoryList(Pageable pageable) {
         return categoryService.getAllCategories(pageable);
     }
 
