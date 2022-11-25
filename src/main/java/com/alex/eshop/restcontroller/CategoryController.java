@@ -1,9 +1,6 @@
 package com.alex.eshop.restcontroller;
 
-import com.alex.eshop.dto.CategoryCreateDTO;
 import com.alex.eshop.dto.CategoryDTO;
-import com.alex.eshop.dto.CategoryUpdateDTO;
-import com.alex.eshop.entity.Category;
 import com.alex.eshop.service.CategoryService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -29,11 +26,11 @@ public class CategoryController {
         return categoryService.getCategory(id);
     }
     @PostMapping("/categories")
-    public Category createCategory(@RequestBody CategoryCreateDTO categoryCreateDTO){
-        return categoryService.createCategory(categoryCreateDTO);
+    public void createCategory(@RequestBody CategoryDTO categoryCreateDTO){
+        categoryService.createCategory(categoryCreateDTO);
     }
     @PutMapping("/categories")
-    public void updateCategory(@RequestBody CategoryUpdateDTO categoryUpdateDTO){
+    public void updateCategory(@RequestBody CategoryDTO categoryUpdateDTO){
         categoryService.updateCategory(categoryUpdateDTO);
     }
     @DeleteMapping("/categories/{id}")

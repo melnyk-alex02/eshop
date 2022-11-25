@@ -1,13 +1,10 @@
 package com.alex.eshop.service;
 
-import com.alex.eshop.dto.CategoryCreateDTO;
 import com.alex.eshop.dto.CategoryDTO;
 import com.alex.eshop.dto.CategoryUpdateDTO;
 import com.alex.eshop.entity.Category;
 import com.alex.eshop.exception.DataNotFound;
-import com.alex.eshop.mapper.CategoryCreateMapper;
 import com.alex.eshop.mapper.CategoryMapper;
-import com.alex.eshop.mapper.CategoryUpdateMapper;
 import com.alex.eshop.repository.CategoryRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,19 +32,15 @@ public class CategoryService {
         return categoryMapper.toDto(categoryRepository.findById(id)
                 .orElseThrow(()->new DataNotFound("There is no category with id " + id)));
     }
-    public Category createCategory(CategoryCreateDTO categoryCreateDTO){
-       return categoryRepository.save(categoryCreateMapper.toEntity(categoryCreateDTO));
+    public void createCategory(CategoryDTO categoryCreateDTO){
+       categoryRepository.save(categoryMapper.toEntity(categoryCreateDTO));
     }
-    public void updateCategory(CategoryUpdateDTO categoryUpdateDTO){
-        CategoryUpdateDTO categoryUpdate = categoryUpdateMapper
-                .toDto(categoryRepository.findById(categoryUpdateDTO.getId())
-                .orElseThrow(()-> new DataNotFound("There is no category with id " + categoryUpdateDTO.getId())));
-        categoryUpdate.setName(categoryUpdateDTO.getName());
-        categoryUpdate.setDescription(categoryUpdateDTO.getDescription());
-        categoryRepository.save(categoryUpdateMapper.toEntity(categoryUpdate));
-    }
+    public void updateCategory(CategoryDTO categoryUpdateDTO){
+        categoryRepository.existsById(categoryUpdateDTO.getId());
+        categoryRepository.save(categoryMapper.toEntity(categoryUpdateDTO));
+       }
     public void deleteCategory(Long id){
-        categoryRepository.delete(categoryRepository.findById(id)
-                .orElseThrow(() -> new DataNotFound("There is no category with id" + id)));
+        categoryRepository.existsById(id);
+        categoryRepository.deleteById(id);
     }
 }

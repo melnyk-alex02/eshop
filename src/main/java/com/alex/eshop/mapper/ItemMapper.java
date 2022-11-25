@@ -15,7 +15,7 @@ public interface ItemMapper {
 
     @Mapping(source = "category.id", target = "categoryId")
     List<ItemDTO> toDto(List<Item> item);
-
+    @Mapping(source = "categoryId", target = "category.id")
     Item toEntity(ItemDTO itemDto);
 
     List<Item> toEntity(List<ItemDTO> itemDto);
