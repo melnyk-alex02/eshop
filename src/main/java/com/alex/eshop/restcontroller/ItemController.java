@@ -1,6 +1,8 @@
 package com.alex.eshop.restcontroller;
 
+import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
+import com.alex.eshop.dto.ItemUpdateDTO;
 import com.alex.eshop.service.ItemService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +35,12 @@ public class ItemController {
     }
 
     @PostMapping("/items")
-    public void createItem(@RequestBody ItemDTO itemCreateDTO){
-         itemService.createItem(itemCreateDTO);
+    public ItemDTO createItem(@RequestBody ItemCreateDTO itemCreateDTO){
+         return itemService.createItem(itemCreateDTO);
     }
     @PutMapping("/items")
-    public void updateItem(@RequestBody ItemDTO itemUpdateDTO){
-        itemService.updateItem(itemUpdateDTO);
+    public ItemDTO updateItem(@RequestBody ItemUpdateDTO itemUpdateDTO){
+        return itemService.updateItem(itemUpdateDTO);
     }
     @DeleteMapping("/items/{id}")
     public void deleteItem(@PathVariable Long id){

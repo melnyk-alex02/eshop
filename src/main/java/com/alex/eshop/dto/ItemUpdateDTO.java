@@ -1,11 +1,11 @@
 package com.alex.eshop.dto;
 
 public class ItemUpdateDTO {
-    Long id;
-    String name;
-    String description;
-    String imageSrc;
-    Long categoryId;
+    private Long id;
+    private String name;
+    private String description;
+    private String imageSrc;
+    private Long categoryId;
 
     public Long getId() {
         return id;

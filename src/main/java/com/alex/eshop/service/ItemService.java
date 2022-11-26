@@ -1,6 +1,8 @@
 package com.alex.eshop.service;
 
+import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
+import com.alex.eshop.dto.ItemUpdateDTO;
 import com.alex.eshop.exception.DataNotFound;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
@@ -35,16 +37,22 @@ public class ItemService {
     public List<ItemDTO> getItemsInCategory(Long categoryId, Pageable pageable) {
         return itemMapper.toDto(itemRepository.findByCategoryId(categoryId, pageable));
     }
-    public void createItem(ItemDTO itemCreateDTO){
-        itemRepository.save(itemMapper.toEntity(itemCreateDTO));
+    public ItemDTO createItem(ItemCreateDTO itemCreateDTO){
+        return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemCreateDTO)));
     }
 
-    public void updateItem(ItemDTO itemUpdateDTO){
-        itemRepository.existsById(itemUpdateDTO.getId());
-        itemRepository.save(itemMapper.toEntity(itemUpdateDTO));
+    public ItemDTO updateItem(ItemUpdateDTO itemUpdateDTO){
+        if(!itemRepository.existsById(itemUpdateDTO.getId())) {
+            throw new DataNotFound("There is no item with id " + itemUpdateDTO.getId());
+        }
+        return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));
     }
     public void deleteItem(Long id){
-        itemRepository.delete(itemRepository
-                .findById(id).orElseThrow(() -> new DataNotFound("There is no item with id" + id)));
+        if(itemRepository.existsById(id)){
+            itemRepository.deleteById(id);
+        }
+        else{
+            throw new DataNotFound("There is no item with id " + id);
+        }
     }
 }

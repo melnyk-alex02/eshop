@@ -1,10 +1,10 @@
 package com.alex.eshop.dto;
 
 public class ItemCreateDTO {
-    String name;
-    String description;
-    String imageSrc;
-    Long categoryId;
+    private String name;
+    private String description;
+    private String imageSrc;
+    private Long categoryId;
 
     public Long getCategoryId() {
         return categoryId;

@@ -1,9 +1,9 @@
 package com.alex.eshop.dto;
 
 public class CategoryCreateDTO {
-    String name;
+    private String name;
 
-    String description;
+    private String description;
 
     public String getName() {
         return name;
