@@ -2,10 +2,8 @@ package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.dto.CategoryDTO;
 import com.alex.eshop.service.CategoryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +17,8 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public List<CategoryDTO> allCategoryList() {
-        return categoryService.getAllCategories();
+    public List<CategoryDTO> allCategoryList(Pageable pageable) {
+        return categoryService.getAllCategories(pageable);
     }
 
     @GetMapping("/categories/{id}")
