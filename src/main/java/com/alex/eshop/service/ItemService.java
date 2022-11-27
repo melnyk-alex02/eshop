@@ -38,6 +38,9 @@ public class ItemService {
         return itemMapper.toDto(itemRepository.findByCategoryId(categoryId, pageable));
     }
     public ItemDTO createItem(ItemCreateDTO itemCreateDTO){
+        if(!itemRepository.existsByCategoryId(itemCreateDTO.getCategoryId())){
+            throw new DataNotFound("There is no category with id " + itemCreateDTO.getCategoryId());
+        }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemCreateDTO)));
     }
 
