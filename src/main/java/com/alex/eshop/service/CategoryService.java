@@ -42,11 +42,12 @@ public class CategoryService {
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryUpdateDTO)));
        }
     public void deleteCategory(Long id){
+        Long numOfItemsInCategory = categoryRepository.countItemsByCategory(id);
         if(!categoryRepository.existsById(id)){
             throw new DataNotFound("There is no category with id " + id);
         }
-        if(!(categoryRepository.countCategoryByItems(id) == 0)) {
-            throw new DataNotFound("There are " + categoryRepository.countCategoryByItems(id) + " items in category" );
+        if(numOfItemsInCategory > 0){
+            throw new DataNotFound("There are " + numOfItemsInCategory + " items in category" );
         }
         categoryRepository.deleteById(id);
     }

@@ -48,6 +48,9 @@ public class ItemService {
         if(!itemRepository.existsById(itemUpdateDTO.getId())) {
             throw new DataNotFound("There is no item with id " + itemUpdateDTO.getId());
         }
+        if(!itemRepository.existsByCategoryId(itemUpdateDTO.getCategoryId())){
+            throw new DataNotFound("There is no category with id" + itemUpdateDTO.getCategoryId());
+        }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));
     }
     public void deleteItem(Long id){

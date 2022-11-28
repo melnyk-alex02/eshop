@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("select count(i.category.id) from Item i where i.category.id =:id")
-    Long countCategoryByItems(Long id);
+    Long countItemsByCategory(Long id);
 }
