@@ -1,6 +1,8 @@
 package com.alex.eshop.restcontroller;
 
+import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
+import com.alex.eshop.dto.ItemUpdateDTO;
 import com.alex.eshop.service.ItemService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +32,18 @@ public class ItemController {
     public List<ItemDTO> getItemWithCategory(@RequestParam ("categoryId") Long categoryId,
                                              Pageable pageable) {
         return itemService.getItemsInCategory(categoryId, pageable);
+    }
+
+    @PostMapping("/items")
+    public ItemDTO createItem(@RequestBody ItemCreateDTO itemCreateDTO){
+         return itemService.createItem(itemCreateDTO);
+    }
+    @PutMapping("/items")
+    public ItemDTO updateItem(@RequestBody ItemUpdateDTO itemUpdateDTO){
+        return itemService.updateItem(itemUpdateDTO);
+    }
+    @DeleteMapping("/items/{id}")
+    public void deleteItem(@PathVariable Long id){
+        itemService.deleteItem(id);
     }
 }

@@ -1,6 +1,8 @@
 package com.alex.eshop.service;
 
+import com.alex.eshop.dto.CategoryCreateDTO;
 import com.alex.eshop.dto.CategoryDTO;
+import com.alex.eshop.dto.CategoryUpdateDTO;
 import com.alex.eshop.exception.DataNotFound;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
@@ -27,6 +29,26 @@ public class CategoryService {
     }
 
     public CategoryDTO getCategory(Long id) {
-        return categoryMapper.toDto(categoryRepository.findById(id).orElseThrow(() -> new DataNotFound("There is no category with id " + id)));
+        return categoryMapper.toDto(categoryRepository.findById(id)
+                .orElseThrow(()->new DataNotFound("There is no category with id " + id)));
+    }
+    public CategoryDTO createCategory(CategoryCreateDTO categoryCreateDTO){
+       return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryCreateDTO)));
+    }
+    public CategoryDTO updateCategory(CategoryUpdateDTO categoryUpdateDTO){
+        if(!categoryRepository.existsById(categoryUpdateDTO.getId())){
+            throw new DataNotFound("There is no category with id " + categoryUpdateDTO.getId());
+        }
+        return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryUpdateDTO)));
+       }
+    public void deleteCategory(Long id){
+        Long numOfItemsInCategory = categoryRepository.countItemsByCategory(id);
+        if(!categoryRepository.existsById(id)){
+            throw new DataNotFound("There is no category with id " + id);
+        }
+        if(numOfItemsInCategory > 0){
+            throw new DataNotFound("There are " + numOfItemsInCategory + " items in category" );
+        }
+        categoryRepository.deleteById(id);
     }
 }

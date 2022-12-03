@@ -1,25 +1,17 @@
-package com.alex.eshop.entity;
+package com.alex.eshop.dto;
 
-import javax.persistence.*;
-
-@Entity
-public class Item {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ItemCreateDTO {
     private String name;
-    @ManyToOne
-    private Category category;
-
     private String description;
     private String imageSrc;
+    private Long categoryId;
 
-    public Long getId() {
-        return id;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getName() {
@@ -28,14 +20,6 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public String getDescription() {
@@ -53,5 +37,4 @@ public class Item {
     public void setImageSrc(String imageSrc) {
         this.imageSrc = imageSrc;
     }
-
 }
