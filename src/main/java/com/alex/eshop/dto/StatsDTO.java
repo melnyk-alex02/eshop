@@ -9,4 +9,12 @@ public class StatsDTO {
         this.itemsCount = itemsCount;
     }
     public StatsDTO(){}
+
+    public String getCategory() {
+        return category;
+    }
+
+    public long getItemsCount() {
+        return itemsCount;
+    }
 }
