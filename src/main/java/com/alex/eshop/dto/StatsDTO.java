@@ -1,8 +1,8 @@
 package com.alex.eshop.dto;
 
 public class StatsDTO {
-     String category;
-     long itemsCount;
+     private String category;
+     private long itemsCount;
 
     public StatsDTO(String category, long itemsCount){
         this.category = category;
