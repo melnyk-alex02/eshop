@@ -1,7 +1,7 @@
 package com.alex.eshop.service;
 
 import com.alex.eshop.dto.StatsDTO;
-import com.alex.eshop.repository.ItemRepository;
+import com.alex.eshop.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -10,13 +10,13 @@ import java.util.List;
 @Service
 @Transactional
 public class StatsService {
-    private final ItemRepository itemRepository;
+    private final CategoryRepository categoryRepository;
 
-    public StatsService(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+    public StatsService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     public List<StatsDTO> getStats() {
-        return itemRepository.getStats();
+        return categoryRepository.getStats();
     }
 }
