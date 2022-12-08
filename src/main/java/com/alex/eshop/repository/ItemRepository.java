@@ -12,8 +12,11 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-   Page<Item> findByCategoryId(Long categoryId, Pageable pageable);
-   boolean existsByCategoryId(Long categoryId);
-   @Query("select new com.alex.eshop.dto.StatsDTO(i.category.name, count(i)) from Item i group by i.category.id")
-   List<StatsDTO> getStats();
+    Page<Item> findByCategoryId(Long categoryId, Pageable pageable);
+
+    boolean existsByCategoryId(Long categoryId);
+
+    @Query("select new com.alex.eshop.dto.StatsDTO(c.name, count(i.id)) from Category c left join Item i " +
+            "on c.id = i.category.id group by c.id")
+    List<StatsDTO> getStats();
 }

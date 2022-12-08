@@ -12,11 +12,13 @@ import java.util.List;
 @RequestMapping("/api")
 public class StatsController {
     private final StatsService statsService;
-    public StatsController(StatsService statsService){
+
+    public StatsController(StatsService statsService) {
         this.statsService = statsService;
     }
+
     @GetMapping("/stats")
-    public List<StatsDTO> getStats(){
+    public List<StatsDTO> getStats() {
         return statsService.getStats();
     }
 }
