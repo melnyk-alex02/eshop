@@ -2,6 +2,7 @@ package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.dto.StatsDTO;
 import com.alex.eshop.service.StatsService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,7 @@ public class StatsController {
     public StatsController(StatsService statsService) {
         this.statsService = statsService;
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/stats")
     public List<StatsDTO> getStats() {
         return statsService.getStats();
