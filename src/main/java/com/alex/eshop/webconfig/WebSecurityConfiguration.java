@@ -25,7 +25,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .antMatchers("/api/anonymous/**").permitAll()
                         .anyRequest().authenticated())
@@ -60,7 +60,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 }
                 JSONArray roles = (JSONArray) realmAccess.get("roles");
 
-                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(Collectors.toList());
+                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream().map(role -> new SimpleGrantedAuthority("" + role)).collect(Collectors.toList());
                 grantedAuthorities.addAll(keycloakAuthorities);
 
                 return grantedAuthorities;
