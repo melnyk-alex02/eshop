@@ -4,7 +4,7 @@ import com.alex.eshop.dto.StatsDTO;
 import com.alex.eshop.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Service
