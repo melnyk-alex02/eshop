@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,15 +22,17 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .authorizeHttpRequests(autorizeRequests -> autorizeRequests
                         .requestMatchers("/api/users/register").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(resourceServerConfigurer -> resourceServerConfigurer
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 );
+        return http.build();
     }
 
     @Bean
@@ -52,13 +55,13 @@ public class WebSecurityConfig {
                     return grantedAuthorities;
                 }
                 JSONObject realmAccess = jwt.getClaim("realm_access");
+                if (realmAccess.get("roles") == null) {
+                    return grantedAuthorities;
+                }
+                JSONArray roles = (JSONArray) realmAccess.get("roles");
 
-                    if (realmAccess.get("roles") == null) {
-                        return grantedAuthorities;
-                    }
-                    JSONArray roles = (JSONArray) realmAccess.get("roles");
-
-                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream().map(role -> new SimpleGrantedAuthority("" + role)).collect(Collectors.toList());
+                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("" + role)).collect(Collectors.toList());
                 grantedAuthorities.addAll(keycloakAuthorities);
 
                 return grantedAuthorities;

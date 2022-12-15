@@ -18,6 +18,8 @@
         <liquibase.version>4.17.1</liquibase.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <keycloak.version>20.0.1</keycloak.version>
+        <nimbusds.version>9.23</nimbusds.version>
+        <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
     </properties>
     <dependencies>
         <dependency>
@@ -36,12 +38,12 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-            <version>9.23</version>
+            <version>${nimbusds.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>8.0.0.Final</version>
+            <version>${hibernate.validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -97,11 +99,6 @@
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-authz-client</artifactId>
             <version>${keycloak.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-properties-migrator</artifactId>
-            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
