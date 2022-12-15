@@ -6,33 +6,35 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+@EnableMethodSecurity
+@EnableWebSecurity
+public class WebSecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers("/api/users/register").permitAll()
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/api/users/register").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(resourceServerConfigurer -> resourceServerConfigurer
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 );
+        return http.build();
     }
 
     @Bean
@@ -60,7 +62,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 }
                 JSONArray roles = (JSONArray) realmAccess.get("roles");
 
-                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream().map(role -> new SimpleGrantedAuthority("" + role)).collect(Collectors.toList());
+                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("" + role)).collect(Collectors.toList());
                 grantedAuthorities.addAll(keycloakAuthorities);
 
                 return grantedAuthorities;
