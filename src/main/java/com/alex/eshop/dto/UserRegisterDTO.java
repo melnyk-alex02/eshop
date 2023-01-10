@@ -1,7 +1,7 @@
 package com.alex.eshop.dto;
 
 public class UserRegisterDTO {
-    private String userName;
+    private String username;
     private String email;
     private String password;
     private String confirmPassword;
@@ -9,11 +9,11 @@ public class UserRegisterDTO {
     private String lastName;
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

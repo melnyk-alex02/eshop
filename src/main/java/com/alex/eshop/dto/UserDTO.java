@@ -1,14 +1,14 @@
 package com.alex.eshop.dto;
 
-import java.util.Date;
 import java.util.List;
 
 public class UserDTO {
     private String userUuid;
     private String email;
+    private String username;
     private String firstName;
     private String lastName;
-    private Date registerDate;
+    private Long registerDate;
     private List roles;
 
     public String getUserUuid() {
@@ -27,6 +27,14 @@ public class UserDTO {
         this.email = email;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -43,11 +51,11 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    public Date getRegisterDate() {
+    public Long getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Date registerDate) {
+    public void setRegisterDate(Long registerDate) {
         this.registerDate = registerDate;
     }
 

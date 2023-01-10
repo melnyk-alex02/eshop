@@ -6,8 +6,6 @@ import com.alex.eshop.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.core.Response;
-
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -23,9 +21,8 @@ public class UserController {
         return userService.getUser(Uuid);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/users")
-    public Response createUser(@RequestBody UserRegisterDTO userRegisterDTO){
+    @PostMapping("/users/register")
+    public UserDTO createUser(@RequestBody UserRegisterDTO userRegisterDTO){
         return userService.createUser(userRegisterDTO);
     }
 }
