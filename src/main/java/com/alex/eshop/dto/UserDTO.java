@@ -1,15 +1,16 @@
 package com.alex.eshop.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserDTO {
     private String userUuid;
     private String email;
-    private String username;
+    private String userName;
     private String firstName;
     private String lastName;
-    private Long registerDate;
-    private List roles;
+    private LocalDateTime registerDate;
+    private List<String> roles;
 
     public String getUserUuid() {
         return userUuid;
@@ -28,11 +29,11 @@ public class UserDTO {
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String userName) {
+        this.userName = userName;
     }
 
     public String getFirstName() {
@@ -51,19 +52,19 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    public Long getRegisterDate() {
+    public LocalDateTime getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Long registerDate) {
+    public void setRegisterDate(LocalDateTime registerDate) {
         this.registerDate = registerDate;
     }
 
-    public List getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 }
