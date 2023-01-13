@@ -23,6 +23,7 @@ public class UserService {
 
     public String getAccessToken() {
         AccessTokenResponse accessTokenResponse = keycloakService.getToken();
+
         return accessTokenResponse.getToken();
     }
 
