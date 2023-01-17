@@ -3,7 +3,7 @@ package com.alex.eshop.service;
 import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.dto.ItemUpdateDTO;
-import com.alex.eshop.exception.DataNotFound;
+import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class ItemService {
     }
 
     public ItemDTO getItemWithCategoryInfo(Long id) {
-        return itemMapper.toDto(itemRepository.findById(id).orElseThrow(()->new DataNotFound("There is no item with id " + id)));
+        return itemMapper.toDto(itemRepository.findById(id).orElseThrow(()->new DataNotFoundException("There is no item with id " + id)));
     }
 
     public List<ItemDTO> getLastFiveItems() {
@@ -39,23 +39,23 @@ public class ItemService {
     }
     public ItemDTO createItem(ItemCreateDTO itemCreateDTO){
         if(!itemRepository.existsByCategoryId(itemCreateDTO.getCategoryId())){
-            throw new DataNotFound("There is no category with id " + itemCreateDTO.getCategoryId());
+            throw new DataNotFoundException("There is no category with id " + itemCreateDTO.getCategoryId());
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemCreateDTO)));
     }
 
     public ItemDTO updateItem(ItemUpdateDTO itemUpdateDTO){
         if(!itemRepository.existsById(itemUpdateDTO.getId())) {
-            throw new DataNotFound("There is no item with id " + itemUpdateDTO.getId());
+            throw new DataNotFoundException("There is no item with id " + itemUpdateDTO.getId());
         }
         if(!itemRepository.existsByCategoryId(itemUpdateDTO.getCategoryId())){
-            throw new DataNotFound("There is no category with id" + itemUpdateDTO.getCategoryId());
+            throw new DataNotFoundException("There is no category with id" + itemUpdateDTO.getCategoryId());
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));
     }
     public void deleteItem(Long id){
         if(!itemRepository.existsById(id)){
-            throw new DataNotFound("There is no item with id " + id);
+            throw new DataNotFoundException("There is no item with id " + id);
         }
         itemRepository.deleteById(id);
     }

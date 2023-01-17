@@ -1,12 +1,11 @@
 package com.alex.eshop.restcontroller;
 
+import com.alex.eshop.constants.Role;
+import com.alex.eshop.dto.UserDTO;
+import com.alex.eshop.dto.UserRegisterDTO;
 import com.alex.eshop.service.UserService;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -17,9 +16,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("users/{Uuid}")
-    public UserRepresentation getUser(@PathVariable String Uuid) {
-        return userService.getUserRepresentation(Uuid);
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")// TODO: add roles
+    @GetMapping("/users/{Uuid}")
+    public UserDTO getUser(@PathVariable String Uuid) {
+        return userService.getUserByUuid(Uuid);
+    }
+
+    @PostMapping("/users/register")
+    public UserDTO createUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+        return userService.createUser(userRegisterDTO);
     }
 }

@@ -1,8 +1,9 @@
 package com.alex.eshop.service;
 
-import com.alex.eshop.keycloak.KeycloakClientFactory;
+import com.alex.eshop.dto.UserDTO;
+import com.alex.eshop.dto.UserRegisterDTO;
 import com.alex.eshop.keycloak.KeycloakService;
-import com.alex.eshop.webconfig.ApplicationProperties;
+import com.alex.eshop.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -13,28 +14,26 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final KeycloakService keycloakService;
-    private final KeycloakClientFactory keycloakClientFactory;
-    private final ApplicationProperties applicationProperties;
+    private final UserMapper userMapper;
 
-    public UserService(KeycloakService keycloakService, KeycloakClientFactory keycloakClientFactory, ApplicationProperties applicationProperties) {
+    public UserService(KeycloakService keycloakService, UserMapper userMapper) {
         this.keycloakService = keycloakService;
-        this.keycloakClientFactory = keycloakClientFactory;
-        this.applicationProperties = applicationProperties;
+        this.userMapper = userMapper;
     }
 
     public String getAccessToken() {
         AccessTokenResponse accessTokenResponse = keycloakService.getToken();
+
         return accessTokenResponse.getToken();
     }
 
-    public UserRepresentation getUserRepresentation(String userUuid) {
-        UserRepresentation userRepresentation = keycloakClientFactory.getInstance()
-                .realm(applicationProperties.getKeycloak().getRealm())
-                .users()
-                .get(userUuid)
-                .toRepresentation();
+    public UserDTO getUserByUuid(String userUuid) {
+        UserRepresentation userRepresentation = keycloakService.getUserByUserUuid(userUuid);
 
-        return userRepresentation;
+        return userMapper.toDto(userRepresentation);
     }
 
+    public UserDTO createUser(UserRegisterDTO userRegisterDTO) {
+        return userMapper.toDto(keycloakService.createUser(userRegisterDTO));
+    }
 }
