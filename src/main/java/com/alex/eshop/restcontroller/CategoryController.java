@@ -1,5 +1,6 @@
 package com.alex.eshop.restcontroller;
 
+import com.alex.eshop.constants.Role;
 import com.alex.eshop.dto.CategoryCreateDTO;
 import com.alex.eshop.dto.CategoryDTO;
 import com.alex.eshop.dto.CategoryUpdateDTO;
@@ -19,30 +20,30 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories")
     public List<CategoryDTO> allCategoryList(Pageable pageable) {
         return categoryService.getAllCategories(pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories/{id}")
     public CategoryDTO getCategory(@PathVariable Long id) {
         return categoryService.getCategory(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @PostMapping("/categories")
     public CategoryDTO createCategory(@RequestBody CategoryCreateDTO categoryCreateDTO) {
         return categoryService.createCategory(categoryCreateDTO);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @PutMapping("/categories")
     public CategoryDTO updateCategory(@RequestBody CategoryUpdateDTO categoryUpdateDTO) {
         return categoryService.updateCategory(categoryUpdateDTO);
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @DeleteMapping("/categories/{id}")
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);

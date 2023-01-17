@@ -11,7 +11,6 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.AccessTokenResponse;
-import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,27 +47,39 @@ public class KeycloakService {
         return authzClient.obtainAccessToken();
     }
 
-    public RealmResource realmResource() {
+    private RealmResource realmResource() {
         return keycloakClientFactory.getInstance()
                 .realm(applicationProperties.getKeycloak().getRealm());
     }
 
-    public UsersResource usersResource() {
+    private UsersResource usersResource() {
         return keycloakClientFactory.getInstance()
                 .realm(applicationProperties.getKeycloak().getRealm())
                 .users();
     }
 
-    public List<String> getUserRole(String userUuid) {
-        List<String> userRoles = new ArrayList<>();
-        userRoles.add(usersResource().get(userUuid).roles().realmLevel().listAll().toString());
+    public List<String> getUserRoles(String userUuid) {
+        return usersResource()
+                .get(userUuid)
+                .roles()
+                .realmLevel()
+                .listAll()
+                .stream()
+                .map(RoleRepresentation::getName)
+                .toList();
+    }
 
-        return userRoles;
+    private void addRolesToUser(List<RoleRepresentation> realmRoles, String userUuid) {
+        usersResource().get(userUuid).roles().realmLevel().add(realmRoles);
+    }
+
+    private RoleRepresentation getRole(String role) {
+        return realmResource().roles().get(role).toRepresentation();
     }
 
     public UserRepresentation getUserByUserUuid(String userUuid) {
         UserRepresentation userRepresentation = usersResource().get(userUuid).toRepresentation();
-        userRepresentation.setRealmRoles(getUserRole(userUuid));
+        userRepresentation.setRealmRoles(getUserRoles(userUuid));
         return userRepresentation;
     }
 
@@ -78,19 +88,13 @@ public class KeycloakService {
             throw new InvalidDataException("Password and Confirm Password does not match");
         }
 
-        List<RoleRepresentation> realmRoles = new ArrayList<>();
-
-        realmRoles.add(realmResource().roles().get(Role.USER).toRepresentation());
-
-        CredentialRepresentation credentialRepresentation = createPasswordCredentials(userRegisterDTO.getPassword());
-
         UserRepresentation userRepresentation = new UserRepresentation();
 
         userRepresentation.setUsername(userRegisterDTO.getUsername());
         userRepresentation.setEmail(userRegisterDTO.getEmail());
         userRepresentation.setFirstName(userRegisterDTO.getFirstName());
         userRepresentation.setLastName(userRegisterDTO.getLastName());
-        userRepresentation.setCredentials(Collections.singletonList(credentialRepresentation));
+        userRepresentation.setCredentials(List.of(createPasswordCredentials(userRegisterDTO.getPassword())));
         userRepresentation.setEnabled(true);
 
         if (!ObjectUtils.isEmpty(userRegisterDTO.getEmail())) {
@@ -108,15 +112,14 @@ public class KeycloakService {
                     throw new ResponseStatusException(httpStatus, "Problems occurred while creating user " + userRegisterDTO);
         }
 
-        String userUuid = usersResource().search(userRegisterDTO.getUsername(), true).get(0).getId();
-        userRepresentation.setId(userUuid);
+//        String path = response.getLocation().getPath();
+//        String userUuid = path.substring(path.lastIndexOf('/') + 1);
 
-        userRepresentation.setCreatedTimestamp(usersResource().search(userRegisterDTO.getUsername(), true).
-                get(0).getCreatedTimestamp());
-
-        usersResource().get(userUuid).roles().realmLevel().add(realmRoles);
-
-        userRepresentation.setRealmRoles(getUserRole(userUuid));
+        UserRepresentation users = usersResource().search(userRegisterDTO.getUsername(), true).get(0);
+        userRepresentation.setId(users.getId());
+        userRepresentation.setCreatedTimestamp(users.getCreatedTimestamp());
+        addRolesToUser(List.of(getRole(Role.USER)), users.getId());
+        userRepresentation.setRealmRoles(getUserRoles(users.getId()));
 
         return userRepresentation;
     }

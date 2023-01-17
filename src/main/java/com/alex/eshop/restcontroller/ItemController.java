@@ -1,5 +1,6 @@
 package com.alex.eshop.restcontroller;
 
+import com.alex.eshop.constants.Role;
 import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.dto.ItemUpdateDTO;
@@ -19,38 +20,38 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items/last")
     public List<ItemDTO> lastFiveItems() {
         return itemService.getLastFiveItems();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("items/{id}")
     public ItemDTO getItem(@PathVariable Long id) {
         return itemService.getItemWithCategoryInfo(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items")
     public List<ItemDTO> getItemWithCategory(@RequestParam("categoryId") Long categoryId,
                                              Pageable pageable) {
         return itemService.getItemsInCategory(categoryId, pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @PostMapping("/items")
     public ItemDTO createItem(@RequestBody ItemCreateDTO itemCreateDTO) {
         return itemService.createItem(itemCreateDTO);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @PutMapping("/items")
     public ItemDTO updateItem(@RequestBody ItemUpdateDTO itemUpdateDTO) {
         return itemService.updateItem(itemUpdateDTO);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @DeleteMapping("/items/{id}")
     public void deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
