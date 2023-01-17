@@ -27,8 +27,8 @@ public class UserService {
         return accessTokenResponse.getToken();
     }
 
-    public UserDTO getUser(String userUuid) {
-        UserRepresentation userRepresentation = keycloakService.getUserRepresentation(userUuid);
+    public UserDTO getUserByUuid(String userUuid) {
+        UserRepresentation userRepresentation = keycloakService.getUserByUserUuid(userUuid);
 
         return userMapper.toDto(userRepresentation);
     }

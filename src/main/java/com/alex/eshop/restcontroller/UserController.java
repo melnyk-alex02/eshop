@@ -18,7 +18,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/users/{Uuid}")
     public UserDTO getUser(@PathVariable String Uuid) {
-        return userService.getUser(Uuid);
+        return userService.getUserByUuid(Uuid);
     }
 
     @PostMapping("/users/register")

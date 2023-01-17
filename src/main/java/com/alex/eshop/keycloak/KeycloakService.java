@@ -14,8 +14,14 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +31,7 @@ import static com.alex.eshop.keycloak.CredentialsUtils.createPasswordCredentials
 
 @Component
 public class KeycloakService {
+    private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
     private final ApplicationProperties applicationProperties;
     private final KeycloakClientFactory keycloakClientFactory;
 
@@ -53,53 +60,63 @@ public class KeycloakService {
                 .users();
     }
 
-    public List<RoleRepresentation> getRoleRepresentation() {
-        List<RoleRepresentation> realmRoles = new ArrayList<>();
+    public List<String> getUserRole(String userUuid) {
+        List<String> userRoles = new ArrayList<>();
+        userRoles.add(usersResource().get(userUuid).roles().realmLevel().listAll().toString());
 
-        realmRoles.add(realmResource().roles().get(Role.USER).toRepresentation());
-
-        return realmRoles;
+        return userRoles;
     }
 
-    public List<String> getUserRole() {
-        return getRoleRepresentation().get(0).getName().lines().toList();
-    }
-
-    public UserRepresentation getUserRepresentation(String userUuid) {
-        return usersResource()
-                .get(userUuid)
-                .toRepresentation();
+    public UserRepresentation getUserByUserUuid(String userUuid) {
+        UserRepresentation userRepresentation = usersResource().get(userUuid).toRepresentation();
+        userRepresentation.setRealmRoles(getUserRole(userUuid));
+        return userRepresentation;
     }
 
     public UserRepresentation createUser(UserRegisterDTO userRegisterDTO) {
         if (!Objects.equals(userRegisterDTO.getPassword(), userRegisterDTO.getConfirmPassword())) {
-            throw new InvalidDataException("Invalid password");
+            throw new InvalidDataException("Password and Confirm Password does not match");
         }
+
+        List<RoleRepresentation> realmRoles = new ArrayList<>();
+
+        realmRoles.add(realmResource().roles().get(Role.USER).toRepresentation());
 
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(userRegisterDTO.getPassword());
 
         UserRepresentation userRepresentation = new UserRepresentation();
 
-        userRepresentation.setUsername(userRegisterDTO.getUserName());
+        userRepresentation.setUsername(userRegisterDTO.getUsername());
         userRepresentation.setEmail(userRegisterDTO.getEmail());
         userRepresentation.setFirstName(userRegisterDTO.getFirstName());
         userRepresentation.setLastName(userRegisterDTO.getLastName());
         userRepresentation.setCredentials(Collections.singletonList(credentialRepresentation));
         userRepresentation.setEnabled(true);
 
-        if (usersResource().create(userRepresentation).getStatus() != 201) {
-            throw new ConflictException("Problems occurred while creating user");
+        if (!ObjectUtils.isEmpty(userRegisterDTO.getEmail())) {
+            userRepresentation.setEmailVerified(true);
         }
 
-        String userUuid = usersResource().search(userRegisterDTO.getUserName(), true).get(0).getId();
+        Response response = usersResource().create(userRepresentation);
+        HttpStatus httpStatus = HttpStatus.valueOf(response.getStatus());
+
+        switch (httpStatus) {
+            case CREATED -> logger.info("User {} successfully created", userRegisterDTO);
+            case CONFLICT -> throw new ConflictException("User " + userRegisterDTO + " already exists");
+            case BAD_REQUEST -> throw new InvalidDataException("Cannot create user " + userRegisterDTO);
+            default ->
+                    throw new ResponseStatusException(httpStatus, "Problems occurred while creating user " + userRegisterDTO);
+        }
+
+        String userUuid = usersResource().search(userRegisterDTO.getUsername(), true).get(0).getId();
         userRepresentation.setId(userUuid);
 
-        userRepresentation.setCreatedTimestamp(usersResource().search(userRegisterDTO.getUserName(), true).
+        userRepresentation.setCreatedTimestamp(usersResource().search(userRegisterDTO.getUsername(), true).
                 get(0).getCreatedTimestamp());
 
-        usersResource().get(userUuid).roles().realmLevel().add(getRoleRepresentation());
+        usersResource().get(userUuid).roles().realmLevel().add(realmRoles);
 
-        userRepresentation.setRealmRoles(getUserRole());
+        userRepresentation.setRealmRoles(getUserRole(userUuid));
 
         return userRepresentation;
     }
