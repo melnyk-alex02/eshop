@@ -1,26 +1,39 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CategoryListComponent } from './category-list/category-list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {CategoryBackendService} from "./services/category-backend.service";
-import {HttpClientModule} from "@angular/common/http";
-import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {MatTableModule} from "@angular/material/table";
-import {MatSelectModule} from "@angular/material/select";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatButtonModule} from "@angular/material/button";
-import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
-import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
-import {initializeKeycloak} from "./init/keycloak-init.factory";
-
+import { CategoryBackendService } from "./services/category-backend.service";
+import { HttpClientModule } from "@angular/common/http";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatSelectModule } from "@angular/material/select";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatButtonModule } from "@angular/material/button";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
+import { initializeKeycloak } from "./init/keycloak-init.factory";
+import { CategoryEditComponent } from './category-edit/category-edit.component';
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatInputModule } from "@angular/material/input";
+import { FirstPageComponent } from './first-page/first-page.component';
+import { CategoryViewComponent } from './category-view/category-view.component';
+import { MatCommonModule } from "@angular/material/core";
+import { MatDialogModule } from "@angular/material/dialog";
+import { DialogWindowComponent } from "./dialog-window/dialog-window.component";
+import { CategoryCreateComponent } from './category-create/category-create.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CategoryListComponent
+    CategoryListComponent,
+    CategoryEditComponent,
+    FirstPageComponent,
+    CategoryViewComponent,
+    DialogWindowComponent,
+    CategoryCreateComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,18 +43,23 @@ import {initializeKeycloak} from "./init/keycloak-init.factory";
     MatSelectModule,
     MatTableModule,
     MatSnackBarModule,
+    MatInputModule,
+    MatDialogModule,
+    MatCommonModule,
     HttpClientModule,
     NgbModule,
     KeycloakAngularModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
-  providers: [   {
+  providers: [{
     provide: APP_INITIALIZER,
     useFactory: initializeKeycloak,
     multi: true,
     deps: [KeycloakService],
   },
-  CategoryBackendService],
+    CategoryBackendService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
