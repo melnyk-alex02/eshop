@@ -1,110 +1,117 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Category, CategoryBackendService} from "../services/category-backend.service";
+import {Item, ItemBackendService} from "../services/item-backend.service";
 import {MatTable} from "@angular/material/table";
 import {KeycloakService} from "keycloak-angular";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
-
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DialogWindowComponent} from "../dialog-window/dialog-window.component";
+import {Subject} from "rxjs";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 
 @Component({
-  selector: 'app-category-list',
-  templateUrl: './category-list.component.html',
-  styleUrls: ['./category-list.component.css']
+  selector: 'app-item-list',
+  templateUrl: './item-list.component.html',
+  styleUrls: ['./item-list.component.css']
 })
-export class CategoryListComponent implements OnInit {
 
-  categories: Category[] = [];
+export class ItemListComponent implements OnInit {
 
-  category: Category;
+  items: Item[] = [];
 
-  totalElements: number;
-
+  role: boolean;
+  totalElements = 0;
   pageSize: number = 5;
   currentPage: number = 0;
 
-  displayedColumns: string[] = ['id', 'name', 'description', 'actions']
+  private unsubscribe: Subject<void> = new Subject();
 
-  public role: boolean;
+  displayedColumns: string[] = ['id', "name", "description", "categoryId", "imageSrc", "actions"]
 
   @ViewChild(MatTable) table: any;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private categoryService: CategoryBackendService,
+  constructor(private itemService: ItemBackendService,
               private keycloak: KeycloakService,
               public readonly router: Router,
+              private route: ActivatedRoute,
               public dialog: MatDialog,
               private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
-    this.getAllCategories(this.currentPage, this.pageSize);
+    this.getAllItems(this.currentPage, this.pageSize);
   }
 
-  getAllCategories(page?: number, size?: number) {
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
+  getAllItems(page?: number, size?: number) {
     this.role = this.keycloak.isUserInRole('ROLE_USER');
 
-    this.categoryService.getAllCategories(page, size).subscribe((data) => {
-      //@ts-ignore
-      this.categories = data['content'];
+    this.itemService.getAllItems(page, size).subscribe(data => {
+      // @ts-ignore
+      this.items = data['content']
 
       this.paginator.pageIndex = this.currentPage;
-
       //@ts-ignore
       this.totalElements = data['totalElements']
+      console.log(this.totalElements)
 
       this.table.renderRows();
     })
   }
 
-  getCategoryById(id: number) {
+  getItemById(id: number) {
     this.role = this.keycloak.isUserInRole('ROLE_ADMIN');
 
     console.log(id);
   }
 
-  createCategory() {
+  createItem() {
     this.role = this.keycloak.isUserInRole('ROLE_ADMIN');
   }
 
-  updateCategory(id: number) {
+  updateItem(id: number) {
     this.role = this.keycloak.isUserInRole('ROLE_ADMIN');
 
     console.log(id);
   }
 
-  deleteCategory(id: number) {
+  deleteItem(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
     dialogRef.afterClosed().subscribe((res) => {
       switch (res.event) {
         case "confirm-option":
-          this.categoryService.deleteCategory(id).subscribe(() => {
-              this.getAllCategories(this.currentPage, this.pageSize);
+          this.itemService.deleteItem(id).subscribe(() => {
+              this.getAllItems(this.currentPage, this.pageSize);
             },
             (error) => {
+              console.log(error);
+
               this.snackBar.open(`${error.message}`, 'OK', {
-                duration: 3000
-              });
-            });
-          this.snackBar.open("Category was successfully deleted!", 'OK', {
-            duration:5000
+                duration: 5000
+              })
+            })
+          this.snackBar.open('Item was deleted successfully!', 'OK', {
+            duration: 5000
           })
           break;
 
         case "cancel-option":
           break;
       }
-    });
+
+    })
   }
 
   pageChanged(event: PageEvent) {
-    console.log({event})
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.getAllCategories(this.currentPage, this.pageSize)
+    this.getAllItems(this.currentPage, this.pageSize)
   }
 }

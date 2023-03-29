@@ -5,6 +5,7 @@ import com.alex.eshop.dto.CategoryCreateDTO;
 import com.alex.eshop.dto.CategoryDTO;
 import com.alex.eshop.dto.CategoryUpdateDTO;
 import com.alex.eshop.service.CategoryService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories")
-    public List<CategoryDTO> allCategoryList(Pageable pageable) {
+    public Page<CategoryDTO> allCategoryList(Pageable pageable) {
         return categoryService.getAllCategories(pageable);
     }
 

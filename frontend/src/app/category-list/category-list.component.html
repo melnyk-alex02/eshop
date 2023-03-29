@@ -36,6 +36,17 @@
   </div>
   </ng-container>
 </div>
+<div class="paginator">
+  <mat-paginator
+    class="paginator"
+    [length]="totalElements"
+    [pageIndex]="currentPage"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="pageChanged($event)"
+    aria-label="Select page">>
+  </mat-paginator>
+</div>
 <div>
   <button class="button-1" (click)="createCategory()" routerLink="/admin/categories/create" routerLinkActive="active">Create category</button>
 </div>

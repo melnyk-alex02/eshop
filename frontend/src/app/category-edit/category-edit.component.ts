@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Category, CategoryBackendService } from "../services/category-backend.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../dialog-window/dialog-window.component";
+import {Subject, switchMap, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-category-edit',
@@ -11,9 +12,11 @@ import { DialogWindowComponent } from "../dialog-window/dialog-window.component"
   styleUrls: ['./category-edit.component.css']
 })
 export class CategoryEditComponent implements OnInit {
+  category: Category;
 
-  private id: number = this.route.snapshot.params['id'];
-  category: Category = new Category();
+  private unsubscribe: Subject<void> = new Subject();
+
+  loading: boolean;
 
   // @ts-ignore
   form: FormGroup = new FormGroup<Category>({});
@@ -26,14 +29,28 @@ export class CategoryEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loading = true;
+    this.route.paramMap.pipe(
+      takeUntil(this.unsubscribe),
+        switchMap((params: ParamMap) =>{
+        const  id = params.get('id');
+
+        this.category.id = Number(id);
+
+        return this.categoryService.getCategoryById(Number(id));
+      })
+    )
+      .subscribe((data) =>{
+        this.category = data;
+      })
+      .add(()=>{
+        this.loading = true;
+      })
+
     this.form = this.formBuilder.group({
-      id: [this.id],
+      id: [this.category.id],
       name: [null, [Validators.required, Validators.minLength(5)]],
       description: [null, [Validators.required, Validators.minLength(10)]]
-    })
-
-    this.categoryService.getCategoryById(this.id).subscribe(data => {
-      this.category = data;
     })
   }
 
@@ -44,9 +61,8 @@ export class CategoryEditComponent implements OnInit {
         case "confirm-option":
           this.categoryService.updateCategory(this.form.getRawValue()).subscribe(() => {
             JSON.stringify(this.form.value);
+            this.router.navigate(['admin/categories'])
           });
-
-          this.router.navigateByUrl('/admin/categories').then(r => window.location.reload());
 
           break;
 

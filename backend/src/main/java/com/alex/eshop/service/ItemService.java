@@ -3,9 +3,11 @@ package com.alex.eshop.service;
 import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.dto.ItemUpdateDTO;
+import com.alex.eshop.entity.Item;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,6 +28,10 @@ public class ItemService {
         this.itemMapper = itemMapper;
     }
 
+    public Page<ItemDTO> getAllItems(Pageable pageable){
+        return itemRepository.findAll(pageable).map(itemMapper::toDto);
+    }
+
     public ItemDTO getItemWithCategoryInfo(Long id) {
         return itemMapper.toDto(itemRepository.findById(id).orElseThrow(()->new DataNotFoundException("There is no item with id " + id)));
     }
@@ -34,8 +40,8 @@ public class ItemService {
         return itemMapper.toDto(itemRepository.findAll(PageRequest.of(0,5, Sort.Direction.DESC, "id")).getContent());
     }
 
-    public List<ItemDTO> getItemsInCategory(Long categoryId, Pageable pageable) {
-        return itemMapper.toDto(itemRepository.findByCategoryId(categoryId, pageable));
+    public Page<ItemDTO>getItemsInCategory(Long categoryId, Pageable pageable) {
+        return itemRepository.findByCategoryId(categoryId, pageable).map(itemMapper::toDto);
     }
     public ItemDTO createItem(ItemCreateDTO itemCreateDTO){
         if(!itemRepository.existsByCategoryId(itemCreateDTO.getCategoryId())){

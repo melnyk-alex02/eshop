@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../dialog-window/dialog-window.component";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-category-create',
@@ -12,10 +13,12 @@ import { DialogWindowComponent } from "../dialog-window/dialog-window.component"
 })
 export class CategoryCreateComponent implements OnInit {
 
-  category: Category = new Category();
+  category: Category;
 
   // @ts-ignore
   form: FormGroup = new FormGroup<Category>({});
+
+  private unsubscribe: Subject<void> = new Subject();
 
   constructor(private categoryService: CategoryBackendService,
               private route: ActivatedRoute,
@@ -32,6 +35,11 @@ export class CategoryCreateComponent implements OnInit {
     })
   }
 
+  ngOnDestroy(){
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
     dialogRef.afterClosed().subscribe((res) => {
@@ -39,9 +47,8 @@ export class CategoryCreateComponent implements OnInit {
         case "confirm-option":
           this.categoryService.createCategory(this.form.getRawValue()).subscribe(() => {
             JSON.stringify(this.form.value);
+            this.router.navigate(['admin/categories']);
           });
-
-          this.router.navigateByUrl('/admin/categories').then(r => window.location.reload());
 
           break;
 

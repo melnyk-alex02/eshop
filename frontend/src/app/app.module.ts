@@ -24,6 +24,12 @@ import { MatCommonModule } from "@angular/material/core";
 import { MatDialogModule } from "@angular/material/dialog";
 import { DialogWindowComponent } from "./dialog-window/dialog-window.component";
 import { CategoryCreateComponent } from './category-create/category-create.component';
+import {ItemEditComponent} from "./item-edit/item-edit.component";
+import {ItemCreateComponent} from "./item-create/item-create.component";
+import {ItemListComponent} from "./item-list/item-list.component";
+import {ItemViewComponent} from "./item-view/item-view.component";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -34,6 +40,11 @@ import { CategoryCreateComponent } from './category-create/category-create.compo
     CategoryViewComponent,
     DialogWindowComponent,
     CategoryCreateComponent,
+    ItemEditComponent,
+    ItemCreateComponent,
+    ItemListComponent,
+    ItemViewComponent
+
   ],
   imports: [
     BrowserModule,
@@ -50,7 +61,9 @@ import { CategoryCreateComponent } from './category-create/category-create.compo
     NgbModule,
     KeycloakAngularModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatPaginatorModule
   ],
   providers: [{
     provide: APP_INITIALIZER,

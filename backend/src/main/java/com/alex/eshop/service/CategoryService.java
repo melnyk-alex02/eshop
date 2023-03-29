@@ -6,6 +6,7 @@ import com.alex.eshop.dto.CategoryUpdateDTO;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +25,8 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryDTO> getAllCategories(Pageable pageable) {
-        return categoryMapper.toDto(categoryRepository.findAll(pageable));
+    public Page<CategoryDTO> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
     public CategoryDTO getCategory(Long id) {

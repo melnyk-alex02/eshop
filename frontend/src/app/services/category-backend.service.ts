@@ -1,25 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import { catchError, Observable, throwError } from "rxjs";
 import { SERVER_API_URL } from "../app.constants";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class Category {
+//@ts-ignore
+@Injectable()
+export interface Category {
   id: number;
   name: string;
   description: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn:'root'
+})
 export class CategoryBackendService {
 
-  constructor(private http: HttpClient) {
+
+
+constructor(private http: HttpClient) {
   }
 
-  public getAllCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${SERVER_API_URL}/categories`);
+  public getAllCategories(page?:number, size?:number): Observable<Category[]> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('size', String(size))
+
+    return this.http.get<Category[]>(`${SERVER_API_URL}/categories`, {params});
   }
 
   public getCategoryById(id: number): Observable<Category> {
