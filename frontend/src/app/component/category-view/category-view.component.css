@@ -1,0 +1,13 @@
+.spinner {
+  margin-top: 250px;
+  display: grid;
+  place-items: center;
+}
+
+.body {
+  margin-top: 80px;
+}
+
+button {
+  margin: 10px;
+}

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CategoryListComponent } from './category-list/category-list.component';
+import { CategoryListComponent } from './component/category-list/category-list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryBackendService } from "./services/category-backend.service";
 import { HttpClientModule } from "@angular/common/http";
@@ -14,22 +14,26 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatButtonModule } from "@angular/material/button";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
-import { initializeKeycloak } from "./init/keycloak-init.factory";
-import { CategoryEditComponent } from './category-edit/category-edit.component';
+import { initializeKeycloak } from "../utils/init/keycloak-init.factory";
+import { CategoryEditComponent } from './component/category-edit/category-edit.component';
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
-import { FirstPageComponent } from './first-page/first-page.component';
-import { CategoryViewComponent } from './category-view/category-view.component';
+import { FirstPageComponent } from './pages/first-page/first-page.component';
+import { CategoryViewComponent } from './component/category-view/category-view.component';
 import { MatCommonModule } from "@angular/material/core";
 import { MatDialogModule } from "@angular/material/dialog";
-import { DialogWindowComponent } from "./dialog-window/dialog-window.component";
-import { CategoryCreateComponent } from './category-create/category-create.component';
-import {ItemEditComponent} from "./item-edit/item-edit.component";
-import {ItemCreateComponent} from "./item-create/item-create.component";
-import {ItemListComponent} from "./item-list/item-list.component";
-import {ItemViewComponent} from "./item-view/item-view.component";
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {MatPaginatorModule} from "@angular/material/paginator";
+import { DialogWindowComponent } from "./component/dialog-window/dialog-window.component";
+import { CategoryCreateComponent } from './component/category-create/category-create.component';
+import { ItemEditComponent } from "./component/item-edit/item-edit.component";
+import { ItemCreateComponent } from "./component/item-create/item-create.component";
+import { ItemListComponent } from "./component/item-list/item-list.component";
+import { ItemViewComponent } from "./component/item-view/item-view.component";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { AdminPageComponent } from "./pages/admin-page/admin-page.component";
+import { AccessDeniedPageComponent } from "./pages/access-denied-page/access-denied-page.component";
+import { UserRouteAccessService } from "./services/user-route-access.service";
 
 @NgModule({
   declarations: [
@@ -43,7 +47,9 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     ItemEditComponent,
     ItemCreateComponent,
     ItemListComponent,
-    ItemViewComponent
+    ItemViewComponent,
+    AdminPageComponent,
+    AccessDeniedPageComponent
 
   ],
   imports: [
@@ -63,11 +69,13 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     AppRoutingModule,
     ReactiveFormsModule,
     MatToolbarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatProgressSpinnerModule
   ],
   providers: [{
     provide: APP_INITIALIZER,
     useFactory: initializeKeycloak,
+    useClass: UserRouteAccessService,
     multi: true,
     deps: [KeycloakService],
   },

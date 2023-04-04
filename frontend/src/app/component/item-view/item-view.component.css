@@ -1,0 +1,10 @@
+.spinner {
+  margin-top: 250px;
+  display: grid;
+  place-items: center;
+}
+
+.header{
+  text-align: center;
+  margin-top: 80px;
+}
