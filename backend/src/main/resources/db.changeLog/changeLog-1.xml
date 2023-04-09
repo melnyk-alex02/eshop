@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="bestuser" id="1">
+        <createTable tableName="category">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="description" type="varchar(1000)"/>
+        </createTable>
+        <createTable tableName="item">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="category_id" type="bigint">
+                <constraints foreignKeyName="category_id" references="category(id)"/>
+            </column>
+            <column name="description" type="varchar(2000)"/>
+            <column name="image_src" type="varchar(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="bestuser" id="2">
+        <sql>insert into category (name, description)
+             values ('category_name1', 'category_desc1'),
+                    ('category_name2', 'category_desc2'),
+                    ('category_name3', 'category_desc3'),
+                    ('category_name4', 'category_desc4'),
+                    ('category_name5', 'category_desc5'),
+                    ('category_name6', 'category_desc6')
+
+        </sql>
+    </changeSet>
+    <changeSet author="bestuser" id="3">
+        <sql>insert into item (name, category_id, description, image_src)
+             values ('item_name1', (select id from category where name = 'category_name1'), 'item_desc1', 'image_src1'),
+                    ('item_name2', (select id from category where name = 'category_name2'), 'item_desc2', 'image_src2'),
+                    ('item_name3', (select id from category where name = 'category_name3'), 'item_desc3', 'image_src3'),
+                    ('item_name4', (select id from category where name = 'category_name4'), 'item_desc4', 'image_src4'),
+                    ('item_name5', (select id from category where name = 'category_name5'), 'item_desc5', 'image_src5'),
+                    ('item_name6', (select id from category where name = 'category_name6'), 'item_desc6', 'image_src6'),
+                    ('item_name7', (select id from category where name = 'category_name1'), 'item_desc7', 'image_src7'),
+                    ('item_name8', (select id from category where name = 'category_name2'), 'item_desc8', 'image_src8'),
+                    ('item_name9', (select id from category where name = 'category_name3'), 'item_desc9', 'image_src9'),
+                    ('item_name10', (select id from category where name = 'category_name4'), 'item_desc10', 'image_src10'),
+                    ('item_name11', (select id from category where name = 'category_name5'), 'item_desc11', 'image_src11'),
+                    ('item_name12', (select id from category where name = 'category_name6'), 'item_desc12', 'image_src12'),
+                    ('item_name13', (select id from category where name = 'category_name1'), 'item_desc13', 'image_src13'),
+                    ('item_name14', (select id from category where name = 'category_name2'), 'item_desc14', 'image_src14'),
+                    ('item_name15', (select id from category where name = 'category_name3'), 'item_desc15', 'image_src15'),
+                    ('item_name16', (select id from category where name = 'category_name4'), 'item_desc16', 'image_src16'),
+                    ('item_name17', (select id from category where name = 'category_name5'), 'item_desc17', 'image_src17'),
+                    ('item_name18', (select id from category where name = 'category_name6'), 'item_desc18', 'image_src18'),
+                    ('item_name19', (select id from category where name = 'category_name1'), 'item_desc19', 'image_src19'),
+                    ('item_name20', (select id from category where name = 'category_name2'), 'item_desc20', 'image_src20'),
+                    ('item_name21', (select id from category where name = 'category_name3'), 'item_desc21', 'image_src21'),
+                    ('item_name22', (select id from category where name = 'category_name4'), 'item_desc22', 'image_src22'),
+                    ('item_name23', (select id from category where name = 'category_name5'), 'item_desc23', 'image_src23'),
+                    ('item_name24', (select id from category where name = 'category_name6'), 'item_desc24', 'image_src24'),
+                    ('item_name25', (select id from category where name = 'category_name1'), 'item_desc25', 'image_src25'),
+                    ('item_name26', (select id from category where name = 'category_name2'), 'item_desc26', 'image_src26'),
+                    ('item_name27', (select id from category where name = 'category_name3'), 'item_desc27', 'image_src27'),
+                    ('item_name28', (select id from category where name = 'category_name4'), 'item_desc28', 'image_src28'),
+                    ('item_name29', (select id from category where name = 'category_name5'), 'item_desc29', 'image_src29'),
+                    ('item_name30', (select id from category where name = 'category_name6'), 'item_desc30', 'image_src30')
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,8 @@
+{
+  "/eshop/api": {
+    "target": "http://localhost:7979",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

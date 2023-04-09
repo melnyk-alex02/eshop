@@ -1,0 +1,20 @@
+<ng-container *ngIf="!category">
+  <div class="spinner">
+    <mat-progress-spinner
+      class="example-margin"
+      color="primary"
+      mode="indeterminate"
+    >
+    </mat-progress-spinner>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="category">
+
+  <div class="body">
+    <h1>Name: {{category.name}}</h1>
+    <h4>ID: {{category.id}}</h4>
+    <h4>Description: {{category.description}}</h4>
+    <br>
+  </div>
+</ng-container>

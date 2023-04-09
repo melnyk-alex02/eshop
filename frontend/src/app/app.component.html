@@ -1,0 +1,9 @@
+<ng-container *ngIf="isAdmin">
+  <mat-toolbar color="primary">
+    <button mat-button routerLink="admin">ESHOP</button>
+    <span class="example-spacer"></span>
+    <button mat-button routerLink="admin/items">Items</button>
+    <button mat-button routerLink="admin/categories">Categories</button>
+  </mat-toolbar>
+</ng-container>
+<router-outlet></router-outlet>
