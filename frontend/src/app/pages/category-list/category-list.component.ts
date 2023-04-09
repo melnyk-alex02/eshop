@@ -6,7 +6,7 @@ import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {DialogWindowComponent} from "../dialog-window/dialog-window.component";
+import {DialogWindowComponent} from "../../component/dialog-window/dialog-window.component";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import { Category } from "../../models/category";
 

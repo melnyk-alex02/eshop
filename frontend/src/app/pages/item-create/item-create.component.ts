@@ -4,7 +4,7 @@ import { ItemBackendService } from "../../services/item-backend.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { DialogWindowComponent } from "../dialog-window/dialog-window.component";
+import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Item } from "../../models/item";

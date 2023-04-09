@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class AuthGuard extends KeycloakAuthGuard {
 
   constructor(
     protected override readonly router: Router,
-    protected readonly keycloak: KeycloakService
+    protected readonly keycloak: KeycloakService,
+    private snackBar: MatSnackBar
   ) {
     super(router, keycloak);
   }
@@ -26,6 +28,20 @@ export class AuthGuard extends KeycloakAuthGuard {
       });
     }
 
-    return this.authenticated;
+    let roles = route.data['roles'];
+
+    if(!roles || roles.length === 0){
+      return this.authenticated
+    }
+
+    for(let role of roles){
+      if(this.keycloak.isUserInRole(role)){
+        return this.authenticated;
+      }
+    }
+    this.snackBar.open("Access denied", '' , {
+      duration: 5000,
+    })
+    return false;
   }
 }

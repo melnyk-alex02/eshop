@@ -4,7 +4,7 @@ import { Subject, switchMap, takeUntil } from "rxjs";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { DialogWindowComponent } from "../dialog-window/dialog-window.component";
+import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { Item } from "../../models/item";

@@ -5,7 +5,7 @@ import { KeycloakService } from "keycloak-angular";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { DialogWindowComponent } from "../dialog-window/dialog-window.component";
+import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { Subject } from "rxjs";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Item } from "../../models/item";

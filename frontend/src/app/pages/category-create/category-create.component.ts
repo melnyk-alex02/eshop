@@ -3,7 +3,7 @@ import { CategoryBackendService } from "../../services/category-backend.service"
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
-import { DialogWindowComponent } from "../dialog-window/dialog-window.component";
+import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { Subject } from "rxjs";
 import { Category } from "../../models/category";
 
