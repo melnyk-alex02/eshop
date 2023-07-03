@@ -8,6 +8,7 @@ import { DialogWindowComponent } from "../../component/dialog-window/dialog-wind
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { Item } from "../../models/item";
+import { Category } from "../../models/category";
 
 @Component({
   selector: 'app-item-edit',
@@ -19,10 +20,9 @@ export class ItemEditComponent implements OnInit {
   item: Item;
   private unsubscribe: Subject<void> = new Subject();
 
-  collection: any[];
+  categories: Category[];
 
-  //@ts-ignore
-  form: FormGroup = new FormGroup<Item>({});
+  form: FormGroup = new FormGroup<any>({});
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
@@ -46,10 +46,10 @@ export class ItemEditComponent implements OnInit {
 
         this.form = this.formBuilder.group({
           id: [this.item.id],
-          name: [this.item.name, [Validators.required, Validators.minLength(5)]],
+          name: [this.item.name, [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
           description: [this.item.description, [Validators.required, Validators.minLength(10)]],
-          categoryId: [this.item.categoryId, this.getCollection()],
-          imageSrc: [this.item.imageSrc, [Validators.required, Validators.minLength(10)]]
+          categoryId: [this.item.categoryId, this.getCategories()],
+          imageSrc: [this.item.imageSrc]
         })
       })
   }
@@ -82,9 +82,9 @@ export class ItemEditComponent implements OnInit {
     });
   }
 
-  getCollection() {
-    return this.categoryService.getAllCategories().subscribe((res) => {
-      this.collection = res.content;
+  getCategories() {
+    return this.categoryService.getAllCategories(0, 0, '', '').subscribe((res) => {
+      this.categories = res.content;
     })
   }
 }

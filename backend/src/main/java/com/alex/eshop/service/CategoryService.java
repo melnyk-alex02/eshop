@@ -6,12 +6,10 @@ import com.alex.eshop.dto.CategoryUpdateDTO;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import jakarta.transaction.Transactional;
-import java.util.List;
 
 @Service
 @Transactional
@@ -31,24 +29,27 @@ public class CategoryService {
 
     public CategoryDTO getCategory(Long id) {
         return categoryMapper.toDto(categoryRepository.findById(id)
-                .orElseThrow(()->new DataNotFoundException("There is no category with id " + id)));
+                .orElseThrow(() -> new DataNotFoundException("There is no category with id " + id)));
     }
-    public CategoryDTO createCategory(CategoryCreateDTO categoryCreateDTO){
-       return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryCreateDTO)));
+
+    public CategoryDTO createCategory(CategoryCreateDTO categoryCreateDTO) {
+        return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryCreateDTO)));
     }
-    public CategoryDTO updateCategory(CategoryUpdateDTO categoryUpdateDTO){
-        if(!categoryRepository.existsById(categoryUpdateDTO.getId())){
+
+    public CategoryDTO updateCategory(CategoryUpdateDTO categoryUpdateDTO) {
+        if (!categoryRepository.existsById(categoryUpdateDTO.getId())) {
             throw new DataNotFoundException("There is no category with id " + categoryUpdateDTO.getId());
         }
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryUpdateDTO)));
-       }
-    public void deleteCategory(Long id){
+    }
+
+    public void deleteCategory(Long id) {
         Long numOfItemsInCategory = categoryRepository.countItemsByCategory(id);
-        if(!categoryRepository.existsById(id)){
+        if (!categoryRepository.existsById(id)) {
             throw new DataNotFoundException("There is no category with id " + id);
         }
-        if(numOfItemsInCategory > 0){
-            throw new DataNotFoundException("There are " + numOfItemsInCategory + " items in category" );
+        if (numOfItemsInCategory > 0) {
+            throw new DataNotFoundException("There are " + numOfItemsInCategory + " items in category");
         }
         categoryRepository.deleteById(id);
     }

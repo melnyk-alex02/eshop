@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CategoryListComponent } from './pages/category-list/category-list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryBackendService } from "./services/category-backend.service";
 import { HttpClientModule } from "@angular/common/http";
@@ -14,7 +13,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatButtonModule } from "@angular/material/button";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
-import { initializeKeycloak } from "../utils/init/keycloak-init.factory";
+import { initializeKeycloak } from "./utils/init/keycloak-init.factory";
 import { CategoryEditComponent } from './pages/category-edit/category-edit.component';
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
@@ -33,6 +32,9 @@ import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { AdminPageComponent } from "./pages/admin-page/admin-page.component";
 import { AccessDeniedPageComponent } from "./pages/access-denied-page/access-denied-page.component";
+import { CategoryListComponent } from "./pages/category-list/category-list.component";
+import { MatSortModule } from "@angular/material/sort";
+import { StorageModule } from "./store/storage.module";
 
 @NgModule({
   declarations: [
@@ -48,8 +50,7 @@ import { AccessDeniedPageComponent } from "./pages/access-denied-page/access-den
     ItemListComponent,
     ItemViewComponent,
     AdminPageComponent,
-    AccessDeniedPageComponent
-
+    AccessDeniedPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,6 +63,7 @@ import { AccessDeniedPageComponent } from "./pages/access-denied-page/access-den
     MatInputModule,
     MatDialogModule,
     MatCommonModule,
+    MatSortModule,
     HttpClientModule,
     NgbModule,
     KeycloakAngularModule,
@@ -69,7 +71,8 @@ import { AccessDeniedPageComponent } from "./pages/access-denied-page/access-den
     ReactiveFormsModule,
     MatToolbarModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    StorageModule
   ],
   providers: [{
     provide: APP_INITIALIZER,

@@ -23,53 +23,41 @@
             <column name="category_id" type="bigint">
                 <constraints foreignKeyName="category_id" references="category(id)"/>
             </column>
-            <column name="description" type="varchar(2000)"/>
+            <column name="description" type="text"/>
             <column name="image_src" type="varchar(500)"/>
         </createTable>
     </changeSet>
     <changeSet author="bestuser" id="2">
         <sql>insert into category (name, description)
-             values ('category_name1', 'category_desc1'),
-                    ('category_name2', 'category_desc2'),
-                    ('category_name3', 'category_desc3'),
-                    ('category_name4', 'category_desc4'),
-                    ('category_name5', 'category_desc5'),
-                    ('category_name6', 'category_desc6')
+             values ('Computers and Laptops', 'This category includes a wide range of desktop computers, laptops, and all-in-one PCs from popular brands such as Dell, HP, Lenovo, and Asus.'),
+                    ('Components and Peripherals', 'This category consists of computer components such as motherboards, CPUs, graphics cards, RAM, and storage drives. It also includes peripherals like keyboards, mice, webcams, and printers.'),
+                    ('Networking', 'This category includes routers, switches, modems, and other networking devices from leading brands such as Cisco, TP-Link, and Netgear.'),
+                    ('Software', 'This category includes a range of software products such as operating systems, office suites, antivirus programs, and other productivity software.'),
+                    ('Gaming', 'This category is dedicated to gaming equipment such as gaming laptops, desktops, monitors, keyboards, mice, and headsets from popular brands such as Razer, Alienware, and Logitech.'),
+                    ('Smart Home', 'This category includes smart home devices such as smart locks, thermostats, security cameras, and lighting solutions from brands such as Nest, Philips Hue, and Ring.');
 
         </sql>
     </changeSet>
     <changeSet author="bestuser" id="3">
-        <sql>insert into item (name, category_id, description, image_src)
-             values ('item_name1', (select id from category where name = 'category_name1'), 'item_desc1', 'image_src1'),
-                    ('item_name2', (select id from category where name = 'category_name2'), 'item_desc2', 'image_src2'),
-                    ('item_name3', (select id from category where name = 'category_name3'), 'item_desc3', 'image_src3'),
-                    ('item_name4', (select id from category where name = 'category_name4'), 'item_desc4', 'image_src4'),
-                    ('item_name5', (select id from category where name = 'category_name5'), 'item_desc5', 'image_src5'),
-                    ('item_name6', (select id from category where name = 'category_name6'), 'item_desc6', 'image_src6'),
-                    ('item_name7', (select id from category where name = 'category_name1'), 'item_desc7', 'image_src7'),
-                    ('item_name8', (select id from category where name = 'category_name2'), 'item_desc8', 'image_src8'),
-                    ('item_name9', (select id from category where name = 'category_name3'), 'item_desc9', 'image_src9'),
-                    ('item_name10', (select id from category where name = 'category_name4'), 'item_desc10', 'image_src10'),
-                    ('item_name11', (select id from category where name = 'category_name5'), 'item_desc11', 'image_src11'),
-                    ('item_name12', (select id from category where name = 'category_name6'), 'item_desc12', 'image_src12'),
-                    ('item_name13', (select id from category where name = 'category_name1'), 'item_desc13', 'image_src13'),
-                    ('item_name14', (select id from category where name = 'category_name2'), 'item_desc14', 'image_src14'),
-                    ('item_name15', (select id from category where name = 'category_name3'), 'item_desc15', 'image_src15'),
-                    ('item_name16', (select id from category where name = 'category_name4'), 'item_desc16', 'image_src16'),
-                    ('item_name17', (select id from category where name = 'category_name5'), 'item_desc17', 'image_src17'),
-                    ('item_name18', (select id from category where name = 'category_name6'), 'item_desc18', 'image_src18'),
-                    ('item_name19', (select id from category where name = 'category_name1'), 'item_desc19', 'image_src19'),
-                    ('item_name20', (select id from category where name = 'category_name2'), 'item_desc20', 'image_src20'),
-                    ('item_name21', (select id from category where name = 'category_name3'), 'item_desc21', 'image_src21'),
-                    ('item_name22', (select id from category where name = 'category_name4'), 'item_desc22', 'image_src22'),
-                    ('item_name23', (select id from category where name = 'category_name5'), 'item_desc23', 'image_src23'),
-                    ('item_name24', (select id from category where name = 'category_name6'), 'item_desc24', 'image_src24'),
-                    ('item_name25', (select id from category where name = 'category_name1'), 'item_desc25', 'image_src25'),
-                    ('item_name26', (select id from category where name = 'category_name2'), 'item_desc26', 'image_src26'),
-                    ('item_name27', (select id from category where name = 'category_name3'), 'item_desc27', 'image_src27'),
-                    ('item_name28', (select id from category where name = 'category_name4'), 'item_desc28', 'image_src28'),
-                    ('item_name29', (select id from category where name = 'category_name5'), 'item_desc29', 'image_src29'),
-                    ('item_name30', (select id from category where name = 'category_name6'), 'item_desc30', 'image_src30')
+        <sql>insert into item (name, description, category_id , image_src)
+             values ('Dell XPS 13 Laptop', 'This ultra-portable laptop features a 13.3-inch display, 11th Gen Intel Core processors, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), ''),
+                    ('HP Pavilion Desktop', 'This powerful desktop PC features a 10th Gen Intel Core i7 processor, NVIDIA GeForce GTX graphics, and a 512GB SSD.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), ''),
+                    ('Asus Chromebook Flip', 'This 2-in-1 Chromebook features a 14-inch touchscreen, Intel Core i3 processor, and up to 8GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), ''),
+                    ('Corsair Vengeance RGB Pro RAM', 'This high-performance DDR4 RAM module features stunning RGB lighting and speeds of up to 3200MHz.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), ''),
+                    ('Logitech MX Master 3 Mouse', 'This advanced wireless mouse features a precision sensor, customizable buttons, and a comfortable ergonomic design.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), ''),
+                    ('Samsung 970 EVO Plus SSD', 'This NVMe SSD delivers lightning-fast read and write speeds, making it ideal for gaming and heavy workloads.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), ''),
+                    ('Cisco Catalyst 2960-X Switch', 'This enterprise-class switch features 24 Gigabit Ethernet ports and advanced security features such as MACsec encryption.', (SELECT id FROM category WHERE name = 'Networking'), ''),
+                    ('TP-Link Archer AX6000 Router', 'This high-speed Wi-Fi 6 router delivers blazing-fast wireless speeds of up to 6000Mbps, making it perfect for large homes or offices.', (SELECT id FROM category WHERE name = 'Networking'), ''),
+                    ('Netgear Orbi Pro Mesh System', 'This mesh Wi-Fi system provides fast and reliable wireless coverage for large areas, with easy setup and management via the Orbi app.', (SELECT id FROM category WHERE name = 'Networking'), ''),
+                    ('Microsoft Office 365', 'This popular productivity suite includes essential applications such as Word, Excel, PowerPoint, and Outlook, as well as cloud storage and other features.', (SELECT id FROM category WHERE name = 'Software'), ''),
+                    ('Norton 360 Deluxe', 'This all-in-one security suite includes antivirus protection, firewall, password manager, and other security features to keep your devices safe.', (SELECT id FROM category WHERE name = 'Software'), ''),
+                    ('Adobe Creative Cloud', 'This suite of creative software includes industry-standard applications such as Photoshop, Illustrator, InDesign, and Premiere Pro, as well as cloud storage and collaboration tools.', (SELECT id FROM category WHERE name = 'Software'), ''),
+                    ('Razer Blade 15 Gaming Laptop', 'This powerful gaming laptop features a 15.6-inch 144Hz display, NVIDIA GeForce RTX graphics, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Gaming'), ''),
+                    ('Alienware Aurora R12 Desktop', 'This high-performance gaming desktop features a 11th Gen Intel Core i9 processor, NVIDIA GeForce RTX graphics, and customizable RGB lighting.', (SELECT id FROM category WHERE name = 'Gaming'), ''),
+                    ('Logitech G Pro X Gaming Headset', 'This premium gaming headset features advanced audio drivers, customizable EQ, and comfortable memory foam ear pads.', (SELECT id FROM category where name ='Gaming'), ''),
+                    ('Nest Hello Video Doorbell', 'This smart doorbell features HD video, two-way audio, and facial recognition to keep your home secure.', (SELECT id FROM category where name ='Smart Home'), ''),
+                    ('Philips Hue Starter Kit', 'This smart lighting kit includes three color-changing bulbs and a hub, allowing you to control your lights with voice commands or a smartphone app.', (SELECT id FROM category where name ='Smart Home'), ''),
+                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), '')
         </sql>
     </changeSet>
 </databaseChangeLog>

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
 import { catchError, Observable, throwError } from "rxjs";
 import { SERVER_API_URL } from "../constants/app.constants";
-import { Page } from "../models/page";
 import { Item } from "../models/item";
+import { Page } from "../models/page";
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +15,6 @@ export class ItemBackendService {
 
   public getItemById(id: number): Observable<Item> {
     return this.http.get<Item>(`${SERVER_API_URL}/items/` + id.valueOf());
-  }
-
-  public getItemsByCategoryId(id: number): Observable<Item[]> {
-
-    let queryParams = new HttpParams();
-    queryParams = queryParams.append("categoryId", id.valueOf())
-
-    return this.http.get<Item[]>(`${SERVER_API_URL}/items`, {params: queryParams}).pipe(
-      catchError(this.handleError)
-    );
   }
 
   public updateItem(data: Item) {
@@ -45,13 +35,17 @@ export class ItemBackendService {
     );
   }
 
-  public getAllItems(page?: number, size?: number): Observable<Page<Item>> {
+  public getAllItems(pageIndex: number,
+                     pageSize: number,
+                     sortField: string,
+                     sortDirection: 'asc' | 'desc' | string): Observable<Page<Item>> {
+
     let params = new HttpParams()
-      .set('page', String(page))
-      .set('size', String(size))
-    return this.http.get<Page<Item>>(`${SERVER_API_URL}/items`, {params}).pipe(
-      catchError(this.handleError)
-    );
+      .set('page', pageIndex)
+      .set('size', pageSize)
+      .set('sort', sortField + ',' + sortDirection);
+
+    return this.http.get<Page<Item>>(`${SERVER_API_URL}/items`, {params});
   }
 
   private handleError(error: HttpErrorResponse) {

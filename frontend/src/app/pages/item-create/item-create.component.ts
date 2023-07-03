@@ -8,6 +8,7 @@ import { DialogWindowComponent } from "../../component/dialog-window/dialog-wind
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Item } from "../../models/item";
+import { Category } from "../../models/category";
 
 @Component({
   selector: 'app-item-create',
@@ -22,7 +23,7 @@ export class ItemCreateComponent implements OnInit {
   form: FormGroup;
 
   selected: string;
-  collection: any[];
+  categories: Category[];
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
@@ -37,8 +38,8 @@ export class ItemCreateComponent implements OnInit {
     this.form = this.formBuilder.group({
       name: [null, [Validators.required, Validators.minLength(5)]],
       description: [null, [Validators.required, Validators.minLength(10)]],
-      categoryId: [null, this.getCollection()],
-      imageSrc: [null, [Validators.required, Validators.minLength(10)]],
+      categoryId: [null, this.getCategories()],
+      imageSrc: [null],
     })
   }
 
@@ -69,9 +70,9 @@ export class ItemCreateComponent implements OnInit {
     })
   }
 
-  getCollection() {
-    return this.categoryService.getAllCategories().subscribe((res) => {
-      this.collection = res.content;
+  getCategories() {
+    return this.categoryService.getAllCategories(0, 0, '', '').subscribe((res) => {
+      this.categories = res.content;
     })
   }
 }

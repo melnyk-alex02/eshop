@@ -3,5 +3,6 @@ export interface Item {
   name: string;
   description: string;
   categoryId: number;
+  categoryName: string;
   imageSrc: string;
 }
