@@ -19,7 +19,6 @@
       <mat-form-field appereance="fill">
         <mat-label>Name</mat-label>
         <input matInput maxlength="255"
-               inputmode="tel"
                placeholder="Type new name"
                formControlName="name" #nameInput>
         <mat-hint>Min character 5: {{ nameInput.value.length }}/5</mat-hint>

@@ -4,11 +4,10 @@ import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { KeycloakService } from "keycloak-angular";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Category } from "../../models/category";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
 import { MatSort, Sort } from "@angular/material/sort";
@@ -17,6 +16,7 @@ import {
   changingCategorySorting,
   loadingCategories
 } from "../../store/actions/category.actions";
+import { SnackBarService } from "../../services/snack-bar.service";
 
 
 @Component({
@@ -46,10 +46,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
 
   constructor(private categoryService: CategoryBackendService,
+              private snackBarService: SnackBarService,
               private keycloak: KeycloakService,
               public readonly router: Router,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar,
               private store: Store<GlobalState>) {
   }
 
@@ -57,13 +57,16 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.dataSource.paginator = this.matPaginator;
     this.dataSource.sort = this.matSort;
 
-    this.store.select('category').subscribe((data) => {
-      this.currentPage = data.pagination.pageIndex;
-      this.currentSize = data.pagination.pageSize;
+    this.store.select('category').pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((data) => {
+        this.currentPage = data.pagination.pageIndex;
+        this.currentSize = data.pagination.pageSize;
 
-      this.currentSortField = data.sorting.sortField;
-      this.currentDirection = data.sorting.sortDirection;
-    })
+        this.currentSortField = data.sorting.sortField;
+        this.currentDirection = data.sorting.sortDirection;
+      })
 
     this.store.dispatch(loadingCategories({
         pageIndex: this.currentPage,
@@ -73,14 +76,17 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.store.select('category').subscribe((data) => {
-        this.dataSource = new MatTableDataSource<Category>(data.data.content);
+    this.store.select('category').pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((data) => {
+          this.dataSource = new MatTableDataSource<Category>(data.data.content);
 
-        this.loading = data.loading;
+          this.loading = data.loading;
 
-        this.totalElements = data.data.totalElements;
-      }
-    );
+          this.totalElements = data.data.totalElements;
+        }
+      );
   }
 
   ngOnDestroy() {
@@ -94,22 +100,22 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((res) => {
       switch (res.event) {
         case "confirm-option":
-          this.categoryService.deleteCategory(id).subscribe(() => {
-              this.categoryService.getAllCategories(
-                this.currentPage,
-                this.currentSize,
-                this.currentSortField,
-                this.currentDirection
-              );
-              this.snackBar.open("Category was successfully deleted!", 'OK', {
-                duration: 5000
-              })
-            },
-            (error) => {
-              this.snackBar.open(`${error.message}`, 'OK', {
-                duration: 3000
+          this.categoryService.deleteCategory(id).pipe(
+            takeUntil(this.unsubscribe)
+          )
+            .subscribe(() => {
+                this.categoryService.getAllCategories(
+                  this.currentPage,
+                  this.currentSize,
+                  this.currentSortField,
+                  this.currentDirection
+                );
+
+                this.snackBarService.success("Category was successfully deleted!");
+              },
+              (error) => {
+                this.snackBarService.error(`${error.message}`);
               });
-            });
           break;
 
         case "cancel-option":
@@ -149,10 +155,13 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       this.currentSize,
       this.currentSortField,
       this.currentDirection
-    ).subscribe(
-      (data) => {
-        this.dataSource.data = data.content;
-      }
-    );
+    ).pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe(
+        (data) => {
+          this.dataSource.data = data.content;
+        }
+      );
   }
 }

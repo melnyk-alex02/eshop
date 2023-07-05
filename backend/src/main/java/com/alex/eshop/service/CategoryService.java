@@ -6,7 +6,7 @@ import com.alex.eshop.dto.CategoryUpdateDTO;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

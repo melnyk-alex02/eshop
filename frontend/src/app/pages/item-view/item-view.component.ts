@@ -13,8 +13,6 @@ export class ItemViewComponent implements OnInit {
 
   item: Item;
 
-  role: boolean;
-
   private unsubscribe: Subject<void> = new Subject();
 
   constructor(private itemService: ItemBackendService,

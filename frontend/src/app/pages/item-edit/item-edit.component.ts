@@ -5,10 +5,10 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { Item } from "../../models/item";
 import { Category } from "../../models/category";
+import { SnackBarService } from "../../services/snack-bar.service";
 
 @Component({
   selector: 'app-item-edit',
@@ -26,11 +26,11 @@ export class ItemEditComponent implements OnInit {
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
+              private snackBarService: SnackBarService,
               private route: ActivatedRoute,
               private router: Router,
               private formBuilder: FormBuilder,
-              private dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -61,30 +61,37 @@ export class ItemEditComponent implements OnInit {
 
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
-    dialogRef.afterClosed().subscribe((res) => {
-      switch (res.event) {
-        case "confirm-option":
-          this.itemService.updateItem(this.form.getRawValue()).subscribe(() => {
-            JSON.stringify(this.form.value)
-            this.router.navigate(['admin/items'])
-          })
+    dialogRef.afterClosed().pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((res) => {
+        switch (res.event) {
+          case "confirm-option":
+            this.itemService.updateItem(this.form.getRawValue()).pipe(
+              takeUntil(this.unsubscribe)
+            )
+              .subscribe(() => {
+                JSON.stringify(this.form.value)
+                this.router.navigate(['admin/items'])
+              })
 
-          this.snackBar.open("Item was successfully updated!", 'OK', {
-            duration: 5000
-          })
+            this.snackBarService.success("Item was successfully updated!")
 
-          break;
+            break;
 
-        case "cancel-option":
-          dialogRef.close();
-          break;
-      }
-    });
+          case "cancel-option":
+            dialogRef.close();
+            break;
+        }
+      });
   }
 
   getCategories() {
-    return this.categoryService.getAllCategories(0, 0, '', '').subscribe((res) => {
-      this.categories = res.content;
-    })
+    return this.categoryService.getAllCategories(0, 0, '', '').pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((res) => {
+        this.categories = res.content;
+      })
   }
 }

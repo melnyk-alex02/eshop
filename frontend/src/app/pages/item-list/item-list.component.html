@@ -18,22 +18,22 @@
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="sortChanged($event)">
 
         <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header = 'id'>#</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header='id'>#</th>
           <td mat-cell *matCellDef="let item"> {{item.id}} </td>
         </ng-container>
 
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header ='name'>Name</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header='name'>Name</th>
           <td mat-cell *matCellDef="let item"> {{item.name}} </td>
         </ng-container>
 
         <ng-container matColumnDef="description">
-          <th style="width: 500px" mat-header-cell *matHeaderCellDef mat-sort-header = 'description'> Description</th>
-          <td mat-cell *matCellDef="let item"> <p class="mat-line-clamp"> {{item.description}} </p> </td>
+          <th style="width: 30%" mat-header-cell *matHeaderCellDef mat-sort-header='description'> Description</th>
+          <td mat-cell *matCellDef="let item"><p class="mat-line-clamp"> {{item.description}} </p></td>
         </ng-container>
 
         <ng-container matColumnDef="categoryName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header = 'categoryName'> Category Name</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header='categoryName'> Category Name</th>
           <td mat-cell *matCellDef="let item"> {{item.categoryName}} </td>
         </ng-container>
 

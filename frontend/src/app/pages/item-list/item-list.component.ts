@@ -3,15 +3,15 @@ import { ItemBackendService } from "../../services/item-backend.service";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Item } from "../../models/item";
 import { MatSort, Sort } from "@angular/material/sort";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
 import { changingItemPagination, changingItemSorting, loadingItems } from "../../store/actions/item.actions"
+import { SnackBarService } from "../../services/snack-bar.service";
 
 @Component({
   selector: 'app-item-list',
@@ -41,9 +41,9 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
 
   constructor(private itemService: ItemBackendService,
+              private snackBarService: SnackBarService,
               public readonly router: Router,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar,
               public store: Store<GlobalState>) {
   }
 
@@ -51,14 +51,17 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.dataSource.paginator = this.matPaginator;
     this.dataSource.sort = this.matSort;
 
-    this.store.select('item').subscribe((data) => {
-      this.currentSize = data.pagination.pageSize;
-      this.currentPage = data.pagination.pageIndex
+    this.store.select('item').pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((data) => {
+        this.currentSize = data.pagination.pageSize;
+        this.currentPage = data.pagination.pageIndex
 
-      this.currentSortField = data.sorting.sortField;
-      this.currentDirection = data.sorting.sortDirection;
+        this.currentSortField = data.sorting.sortField;
+        this.currentDirection = data.sorting.sortDirection;
 
-    })
+      })
 
     this.store.dispatch(loadingItems({
         pageIndex: this.currentPage,
@@ -68,15 +71,18 @@ export class ItemListComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.store.select('item').subscribe(
-      (data) => {
-        this.dataSource = new MatTableDataSource(data.data.content)
+    this.store.select('item').pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe(
+        (data) => {
+          this.dataSource = new MatTableDataSource(data.data.content)
 
-        this.loading = data.loading;
+          this.loading = data.loading;
 
-        this.totalElements = data.data.totalElements;
-      }
-    );
+          this.totalElements = data.data.totalElements;
+        }
+      );
   }
 
   ngOnDestroy() {
@@ -87,33 +93,36 @@ export class ItemListComponent implements OnInit, OnDestroy {
   deleteItem(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
-    dialogRef.afterClosed().subscribe((res) => {
-      switch (res.event) {
-        case "confirm-option": {
-          this.itemService.deleteItem(id).subscribe(() => {
-              this.store.dispatch(loadingItems({
-                pageIndex: this.currentPage,
-                pageSize: this.currentSize,
-                sortField: this.currentSortField,
-                sortDirection: this.currentDirection
-              }))
-            },
-            (error) => {
-              this.snackBar.open(`${error.message}`, 'OK', {
-                duration: 5000
-              })
-            });
+    dialogRef.afterClosed().pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((res) => {
+        switch (res.event) {
+          case "confirm-option": {
+            this.itemService.deleteItem(id)
+              .pipe(
+                takeUntil(this.unsubscribe)
+              )
+              .subscribe(() => {
+                  this.store.dispatch(loadingItems({
+                    pageIndex: this.currentPage,
+                    pageSize: this.currentSize,
+                    sortField: this.currentSortField,
+                    sortDirection: this.currentDirection
+                  }))
+                },
+                (error) => {
+                  this.snackBarService.error(`${error.message}`);
+                });
 
-          this.snackBar.open('Item was deleted successfully!', 'OK', {
-            duration: 5000
-          })
-          break;
+            this.snackBarService.success('Item was deleted successfully!');
+            break;
+          }
+          case "cancel-option": {
+            break;
+          }
         }
-        case "cancel-option": {
-          break;
-        }
-      }
-    });
+      });
   }
 
   pageChanged(event: PageEvent) {
@@ -130,7 +139,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize,
       sortField: this.currentSortField,
       sortDirection: this.currentDirection
-    }))
+    }));
   }
 
   sortChanged(event: Sort) {
@@ -147,10 +156,13 @@ export class ItemListComponent implements OnInit, OnDestroy {
       this.currentSize,
       this.currentSortField,
       this.currentDirection
-    ).subscribe(
-      (data) => {
-        this.dataSource.data = data.content;
-      }
-    );
+    ).pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe(
+        (data) => {
+          this.dataSource.data = data.content;
+        }
+      );
   }
 }
