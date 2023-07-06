@@ -35,7 +35,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   currentSize: number;
 
   currentSortField: string;
-  currentDirection: string;
+  currentDirection: string | any;
 
   private unsubscribe: Subject<void> = new Subject()
 
@@ -143,7 +143,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   sortChanged(event: Sort) {
     this.currentSortField = event.active;
-    this.currentDirection = event.direction === 'asc' ? 'desc' : 'asc';
+    this.currentDirection = event.direction;
 
     this.store.dispatch(changingCategorySorting({
       sortField: this.currentSortField,

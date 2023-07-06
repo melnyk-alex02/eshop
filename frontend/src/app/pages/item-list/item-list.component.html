@@ -15,7 +15,11 @@
     <div class="row">
     </div>
     <div class="row">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="sortChanged($event)">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort
+             (matSortChange)="sortChanged($event)"
+             [matSortActive]="currentSortField"
+             [matSortDirection]="currentDirection"
+             matSortDisableClear>
 
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef mat-sort-header='id'>#</th>
