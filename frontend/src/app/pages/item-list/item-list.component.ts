@@ -51,9 +51,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.dataSource.paginator = this.matPaginator;
     this.dataSource.sort = this.matSort;
 
-    this.store.select('item').pipe(
-      takeUntil(this.unsubscribe)
-    )
+    this.store.select('item')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((data) => {
         this.currentSize = data.pagination.pageSize;
         this.currentPage = data.pagination.pageIndex
@@ -71,9 +72,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.store.select('item').pipe(
-      takeUntil(this.unsubscribe)
-    )
+    this.store.select('item')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe(
         (data) => {
           this.dataSource = new MatTableDataSource(data.data.content)
@@ -93,36 +95,39 @@ export class ItemListComponent implements OnInit, OnDestroy {
   deleteItem(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
-    dialogRef.afterClosed().pipe(
-      takeUntil(this.unsubscribe)
-    )
-      .subscribe((res) => {
-        switch (res.event) {
-          case "confirm-option": {
-            this.itemService.deleteItem(id)
-              .pipe(
-                takeUntil(this.unsubscribe)
-              )
-              .subscribe(() => {
-                  this.store.dispatch(loadingItems({
-                    pageIndex: this.currentPage,
-                    pageSize: this.currentSize,
-                    sortField: this.currentSortField,
-                    sortDirection: this.currentDirection
-                  }))
-                },
-                (error) => {
-                  this.snackBarService.error(`${error.message}`);
-                });
+    dialogRef.afterClosed().subscribe((res) => {
+      switch (res.event) {
+        case "confirm-option": {
+          this.itemService.deleteItem(id)
+            .pipe(
+              takeUntil(this.unsubscribe)
+            )
+            .subscribe(() => {
+                this.itemService.getAllItems(
+                  this.currentPage,
+                  this.currentSize,
+                  this.currentSortField,
+                  this.currentDirection
+                )
+                  .pipe(
+                    takeUntil(this.unsubscribe)
+                  )
+                  .subscribe((data) => {
+                    this.dataSource.data = data.content;
+                  });
+              },
+              (error) => {
+                this.snackBarService.error(`${error.message}`);
+              });
 
-            this.snackBarService.success('Item was deleted successfully!');
-            break;
-          }
-          case "cancel-option": {
-            break;
-          }
+          this.snackBarService.success('Item was deleted successfully!');
+          break;
         }
-      });
+        case "cancel-option": {
+          break;
+        }
+      }
+    });
   }
 
   pageChanged(event: PageEvent) {
@@ -156,9 +161,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
       this.currentSize,
       this.currentSortField,
       this.currentDirection
-    ).pipe(
-      takeUntil(this.unsubscribe)
     )
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe(
         (data) => {
           this.dataSource.data = data.content;

@@ -49,10 +49,7 @@ export class ItemCreateComponent implements OnInit {
 
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
-    dialogRef.afterClosed().pipe(
-      takeUntil(this.unsubscribe)
-    )
-      .subscribe((res) => {
+    dialogRef.afterClosed().subscribe((res) => {
         switch (res.event) {
           case 'confirm-option':
             this.itemService.createItem(this.form.getRawValue())

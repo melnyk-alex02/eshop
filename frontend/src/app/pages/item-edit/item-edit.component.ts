@@ -34,13 +34,14 @@ export class ItemEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
-      takeUntil(this.unsubscribe),
-      switchMap((params: ParamMap) => {
-        const id = params.get('id');
-        return this.itemService.getItemById(Number(id));
-      })
-    )
+    this.route.paramMap
+      .pipe(
+        takeUntil(this.unsubscribe),
+        switchMap((params: ParamMap) => {
+          const id = params.get('id');
+          return this.itemService.getItemById(Number(id));
+        })
+      )
       .subscribe((data) => {
         this.item = data;
 
@@ -61,35 +62,34 @@ export class ItemEditComponent implements OnInit {
 
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
-    dialogRef.afterClosed().pipe(
-      takeUntil(this.unsubscribe)
-    )
-      .subscribe((res) => {
-        switch (res.event) {
-          case "confirm-option":
-            this.itemService.updateItem(this.form.getRawValue()).pipe(
+    dialogRef.afterClosed().subscribe((res) => {
+      switch (res.event) {
+        case "confirm-option":
+          this.itemService.updateItem(this.form.getRawValue())
+            .pipe(
               takeUntil(this.unsubscribe)
             )
-              .subscribe(() => {
-                JSON.stringify(this.form.value)
-                this.router.navigate(['admin/items'])
-              })
+            .subscribe(() => {
+              JSON.stringify(this.form.value)
+              this.router.navigate(['admin/items'])
+            })
 
-            this.snackBarService.success("Item was successfully updated!")
+          this.snackBarService.success("Item was successfully updated!")
 
-            break;
+          break;
 
-          case "cancel-option":
-            dialogRef.close();
-            break;
-        }
-      });
+        case "cancel-option":
+          dialogRef.close();
+          break;
+      }
+    });
   }
 
   getCategories() {
-    return this.categoryService.getAllCategories(0, 0, '', '').pipe(
-      takeUntil(this.unsubscribe)
-    )
+    return this.categoryService.getAllCategories(0, 0, '', '')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((res) => {
         this.categories = res.content;
       })

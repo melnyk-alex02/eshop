@@ -57,9 +57,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.dataSource.paginator = this.matPaginator;
     this.dataSource.sort = this.matSort;
 
-    this.store.select('category').pipe(
-      takeUntil(this.unsubscribe)
-    )
+    this.store.select('category')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((data) => {
         this.currentPage = data.pagination.pageIndex;
         this.currentSize = data.pagination.pageSize;
@@ -76,9 +77,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.store.select('category').pipe(
-      takeUntil(this.unsubscribe)
-    )
+    this.store.select('category')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((data) => {
           this.dataSource = new MatTableDataSource<Category>(data.data.content);
 
@@ -100,16 +102,23 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((res) => {
       switch (res.event) {
         case "confirm-option":
-          this.categoryService.deleteCategory(id).pipe(
-            takeUntil(this.unsubscribe)
-          )
+          this.categoryService.deleteCategory(id)
+            .pipe(
+              takeUntil(this.unsubscribe)
+            )
             .subscribe(() => {
                 this.categoryService.getAllCategories(
                   this.currentPage,
                   this.currentSize,
                   this.currentSortField,
                   this.currentDirection
-                );
+                )
+                  .pipe(
+                    takeUntil(this.unsubscribe)
+                  )
+                  .subscribe((data) => {
+                    this.dataSource.data = data.content;
+                  });
 
                 this.snackBarService.success("Category was successfully deleted!");
               },
@@ -155,9 +164,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       this.currentSize,
       this.currentSortField,
       this.currentDirection
-    ).pipe(
-      takeUntil(this.unsubscribe)
     )
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
       .subscribe(
         (data) => {
           this.dataSource.data = data.content;

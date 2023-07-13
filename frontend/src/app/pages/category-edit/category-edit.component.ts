@@ -52,10 +52,7 @@ export class CategoryEditComponent implements OnInit {
 
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
-    dialogRef.afterClosed().pipe(
-      takeUntil(this.unsubscribe)
-    )
-      .subscribe((res) => {
+    dialogRef.afterClosed().subscribe((res) => {
         switch (res.event) {
           case "confirm-option":
             this.categoryService.updateCategory(this.form.getRawValue())
