@@ -57,7 +57,6 @@ export class ItemCreateComponent implements OnInit {
                 takeUntil(this.unsubscribe)
               )
               .subscribe(() => {
-                JSON.stringify(this.form.value);
                 this.router.navigate(['admin/items'])
               });
 

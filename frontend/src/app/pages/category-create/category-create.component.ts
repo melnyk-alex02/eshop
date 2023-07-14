@@ -51,7 +51,6 @@ export class CategoryCreateComponent implements OnInit {
             takeUntil(this.unsubscribe)
           )
             .subscribe(() => {
-              JSON.stringify(this.form.value);
               this.router.navigate(['admin/categories']);
             });
 

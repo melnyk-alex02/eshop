@@ -60,7 +60,6 @@ export class CategoryEditComponent implements OnInit {
                 takeUntil(this.unsubscribe)
               )
               .subscribe(() => {
-                JSON.stringify(this.form.value);
                 this.router.navigate(['admin/categories'])
               });
 

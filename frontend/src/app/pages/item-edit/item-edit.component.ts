@@ -70,7 +70,6 @@ export class ItemEditComponent implements OnInit {
               takeUntil(this.unsubscribe)
             )
             .subscribe(() => {
-              JSON.stringify(this.form.value)
               this.router.navigate(['admin/items'])
             })
 
