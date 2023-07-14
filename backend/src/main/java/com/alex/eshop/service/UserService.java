@@ -4,7 +4,7 @@ import com.alex.eshop.dto.UserDTO;
 import com.alex.eshop.dto.UserRegisterDTO;
 import com.alex.eshop.keycloak.KeycloakService;
 import com.alex.eshop.mapper.UserMapper;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;

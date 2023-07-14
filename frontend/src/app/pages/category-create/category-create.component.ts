@@ -4,8 +4,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { Category } from "../../models/category";
+import { SnackBarService } from "../../services/snack-bar.service";
 
 @Component({
   selector: 'app-category-create',
@@ -21,6 +22,7 @@ export class CategoryCreateComponent implements OnInit {
   private unsubscribe: Subject<void> = new Subject();
 
   constructor(private categoryService: CategoryBackendService,
+              private snackBarService: SnackBarService,
               private route: ActivatedRoute,
               private router: Router,
               private formBuilder: FormBuilder,
@@ -45,11 +47,14 @@ export class CategoryCreateComponent implements OnInit {
     dialogRef.afterClosed().subscribe((res) => {
       switch (res.event) {
         case "confirm-option":
-          this.categoryService.createCategory(this.form.getRawValue()).subscribe(() => {
-            JSON.stringify(this.form.value);
-            this.router.navigate(['admin/categories']);
-          });
+          this.categoryService.createCategory(this.form.getRawValue()).pipe(
+            takeUntil(this.unsubscribe)
+          )
+            .subscribe(() => {
+              this.router.navigate(['admin/categories']);
+            });
 
+          this.snackBarService.success('Category was successfully created')
           break;
 
         case "cancel-option":

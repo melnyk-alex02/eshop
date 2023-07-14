@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {  CategoryBackendService } from "../../services/category-backend.service";
+import { CategoryBackendService } from "../../services/category-backend.service";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
@@ -53,19 +53,22 @@ export class CategoryEditComponent implements OnInit {
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
     dialogRef.afterClosed().subscribe((res) => {
-      switch (res.event) {
-        case "confirm-option":
-          this.categoryService.updateCategory(this.form.getRawValue()).subscribe(() => {
-            JSON.stringify(this.form.value);
-            this.router.navigate(['admin/categories'])
-          });
+        switch (res.event) {
+          case "confirm-option":
+            this.categoryService.updateCategory(this.form.getRawValue())
+              .pipe(
+                takeUntil(this.unsubscribe)
+              )
+              .subscribe(() => {
+                this.router.navigate(['admin/categories'])
+              });
 
-          break;
+            break;
 
-        case "cancel-option":
-          dialogRef.close();
-          break;
-      }
-    });
+          case "cancel-option":
+            dialogRef.close();
+            break;
+        }
+      });
   }
 }

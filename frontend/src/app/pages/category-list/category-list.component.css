@@ -1,11 +1,11 @@
-.container {
-  margin-top: 80px;
-}
-
 .spinner {
   margin-top: 250px;
   display: grid;
   place-items: center;
+}
+
+.container {
+  margin-top: 80px;
 }
 
 button {
@@ -13,6 +13,7 @@ button {
 }
 
 .button-1 {
+  margin-left: 10%;
   margin-top: 15px;
   display: flex;
   flex-direction: column;
@@ -33,4 +34,16 @@ button {
 .button-1:focus {
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
   outline: 0;
+}
+
+.mat-line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+}
+
+.paginator{
+  margin-right: 5%;
 }

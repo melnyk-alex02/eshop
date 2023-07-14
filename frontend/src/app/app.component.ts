@@ -11,5 +11,5 @@ export class AppComponent{
 
   constructor(private keycloakService: KeycloakService) {
   }
-   isAdmin = this.keycloakService.isUserInRole('ROLE_USER')
+   isAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN')
 }

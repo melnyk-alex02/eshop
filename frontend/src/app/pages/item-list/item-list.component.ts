@@ -1,14 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ItemBackendService } from "../../services/item-backend.service";
-import { MatTable } from "@angular/material/table";
-import { KeycloakService } from "keycloak-angular";
-import { ActivatedRoute, Router } from "@angular/router";
+import { MatTable, MatTableDataSource } from "@angular/material/table";
+import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Item } from "../../models/item";
+import { MatSort, Sort } from "@angular/material/sort";
+import { GlobalState } from "../../store/states/global.state";
+import { Store } from "@ngrx/store";
+import { changingItemPagination, changingItemSorting, loadingItems } from "../../store/actions/item.actions"
+import { SnackBarService } from "../../services/snack-bar.service";
 
 @Component({
   selector: 'app-item-list',
@@ -16,34 +19,72 @@ import { Item } from "../../models/item";
   styleUrls: ['./item-list.component.css']
 })
 
-export class ItemListComponent implements OnInit {
+export class ItemListComponent implements OnInit, OnDestroy {
+  totalElements: number;
+  loading: boolean;
 
-  items: Item[] = [];
+  dataSource = new MatTableDataSource<Item>();
+  displayedColumns: string[] = ['id', "name", "description", "categoryName", "imageSrc", "actions"];
 
-  role: boolean;
-  totalElements = 0;
-  pageSize: number = 5;
-  currentPage: number = 0;
+  currentPage: number;
+  currentSize: number;
+
+  currentSortField: string;
+  currentDirection: string | any;
 
   private unsubscribe: Subject<void> = new Subject();
 
-  displayedColumns: string[] = ['id', "name", "description", "categoryId", "imageSrc", "actions"]
-
   @ViewChild(MatTable) table: any;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator) matPaginator: MatPaginator;
+
+  @ViewChild(MatSort, {static: true}) matSort: MatSort;
 
   constructor(private itemService: ItemBackendService,
-              private keycloak: KeycloakService,
+              private snackBarService: SnackBarService,
               public readonly router: Router,
-              private route: ActivatedRoute,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              public store: Store<GlobalState>) {
   }
 
   ngOnInit() {
-    this.role = this.keycloak.isUserInRole('ROLE_ADMIN')
-    this.getAllItems(this.currentPage, this.pageSize);
+    this.dataSource.paginator = this.matPaginator;
+    this.dataSource.sort = this.matSort;
+
+    this.store.select('item')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((data) => {
+        this.currentSize = data.pagination.pageSize;
+        this.currentPage = data.pagination.pageIndex
+
+        this.currentSortField = data.sorting.sortField;
+        this.currentDirection = data.sorting.sortDirection;
+
+      })
+
+    this.store.dispatch(loadingItems({
+        pageIndex: this.currentPage,
+        pageSize: this.currentSize,
+        sortField: this.currentSortField,
+        sortDirection: this.currentDirection
+      })
+    );
+
+    this.store.select('item')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        (data) => {
+          this.dataSource = new MatTableDataSource(data.data.content)
+
+          this.loading = data.loading;
+
+          this.totalElements = data.data.totalElements;
+        }
+      );
   }
 
   ngOnDestroy() {
@@ -51,49 +92,83 @@ export class ItemListComponent implements OnInit {
     this.unsubscribe.complete();
   }
 
-  getAllItems(page?: number, size?: number) {
-
-    this.itemService.getAllItems(page, size).subscribe(data => {
-      this.items = data.content;
-
-      this.paginator.pageIndex = this.currentPage;
-      this.totalElements = data.totalElements;
-
-      this.table.renderRows();
-    })
-  }
-
   deleteItem(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
     dialogRef.afterClosed().subscribe((res) => {
       switch (res.event) {
-        case "confirm-option":
-          this.itemService.deleteItem(id).subscribe(() => {
-              this.getAllItems(this.currentPage, this.pageSize);
-            },
-            (error) => {
-              console.log(error);
+        case "confirm-option": {
+          this.itemService.deleteItem(id)
+            .pipe(
+              takeUntil(this.unsubscribe)
+            )
+            .subscribe(() => {
+                this.itemService.getAllItems(
+                  this.currentPage,
+                  this.currentSize,
+                  this.currentSortField,
+                  this.currentDirection
+                )
+                  .pipe(
+                    takeUntil(this.unsubscribe)
+                  )
+                  .subscribe((data) => {
+                    this.dataSource.data = data.content;
+                  });
+              },
+              (error) => {
+                this.snackBarService.error(`${error.message}`);
+              });
 
-              this.snackBar.open(`${error.message}`, 'OK', {
-                duration: 5000
-              })
-            })
-          this.snackBar.open('Item was deleted successfully!', 'OK', {
-            duration: 5000
-          })
+          this.snackBarService.success('Item was deleted successfully!');
           break;
-
-        case "cancel-option":
+        }
+        case "cancel-option": {
           break;
+        }
       }
-
-    })
+    });
   }
 
   pageChanged(event: PageEvent) {
-    this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.getAllItems(this.currentPage, this.pageSize)
+    this.currentSize = event.pageSize;
+
+    this.store.dispatch(changingItemPagination({
+      pageIndex: this.currentPage,
+      pageSize: this.currentSize
+    }));
+
+    this.store.dispatch(loadingItems({
+      pageIndex: this.currentPage,
+      pageSize: this.currentSize,
+      sortField: this.currentSortField,
+      sortDirection: this.currentDirection
+    }));
+  }
+
+  sortChanged(event: Sort) {
+    this.currentSortField = event.active;
+    this.currentDirection = event.direction;
+
+    this.store.dispatch(changingItemSorting({
+      sortField: this.currentSortField,
+      sortDirection: this.currentDirection
+    }));
+
+    this.itemService.getAllItems(
+      this.currentPage,
+      this.currentSize,
+      this.currentSortField,
+      this.currentDirection
+    )
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        (data) => {
+          this.dataSource.data = data.content;
+        }
+      );
   }
 }

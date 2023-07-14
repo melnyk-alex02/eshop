@@ -18,18 +18,26 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <mat-form-field appereance="fill">
         <mat-label>Name</mat-label>
-        <input matInput maxlength="15" inputmode="tel" placeholder="Type new name" formControlName="name" #nameInput>
-        <mat-hint>Min character 5: {{ nameInput.value.length }}/5</mat-hint>
+        <input matInput maxlength="255"
+               placeholder="Type new name"
+               formControlName="name"
+               #nameInput>
         <mat-error>Name is required</mat-error>
         <mat-error *ngIf="form.controls['name'].errors?.['minlength']">
           Please enter more than 5 character
+        </mat-error>
+        <mat-error *ngIf="form.controls['name'].errors?.['maxLength']">
+          Entered name is too long
         </mat-error>
       </mat-form-field>
       <br>
       <mat-form-field appereance="outline">
         <mat-label>Description</mat-label>
-        <input matInput type="description" formControlName="description" placeholder="Type new description" #descInput>
-        <mat-hint>Min character 10: {{ descInput.value.length }}/10</mat-hint>
+        <textarea matInput placeholder="Type new description"
+                  rows="6"
+                  type="description"
+                  formControlName="description"
+                  #descInput></textarea>
         <mat-error>Description is required</mat-error>
         <mat-error *ngIf="form.controls['description'].errors?.['minlength']">
           Please enter more than 10 character
@@ -39,7 +47,7 @@
       <mat-form-field appereance="outline">
         <mat-label>Select Category ID</mat-label>
         <mat-select value="selected" [formControlName]="'categoryId'">
-          <mat-option [value]="category.id" *ngFor="let category of collection">
+          <mat-option [value]="category.id" *ngFor="let category of categories">
             {{category.id}}. {{category.name}}
           </mat-option>
         </mat-select>
@@ -47,16 +55,14 @@
       <br>
       <mat-form-field appereance="outline">
         <mat-label>ImageSrc</mat-label>
-        <input matInput type="imageSrc" formControlName="imageSrc" placeholder="Type new imageSrc" #descInput>
-        <mat-hint>Min character 10: {{ descInput.value.length }}/10</mat-hint>
-        <mat-error>ImageSrc is required</mat-error>
-        <mat-error *ngIf="form.controls['imageSrc'].errors?.['minlength']">
-          Please enter more than 10 character
-        </mat-error>
+        <input matInput maxlength="500"
+               type="imageSrc"
+               formControlName="imageSrc"
+               placeholder="Type new imageSrc" #imgInput>
       </mat-form-field>
     </form>
   </div>
   <div class="button">
-    <button (click)="onSubmit()">Submit</button>
+    <button (click)="onSubmit()" [disabled]="form.invalid">Submit</button>
   </div>
 </ng-container>

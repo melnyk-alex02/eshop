@@ -5,9 +5,10 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { Item } from "../../models/item";
+import { Category } from "../../models/category";
+import { SnackBarService } from "../../services/snack-bar.service";
 
 @Component({
   selector: 'app-item-edit',
@@ -19,37 +20,37 @@ export class ItemEditComponent implements OnInit {
   item: Item;
   private unsubscribe: Subject<void> = new Subject();
 
-  collection: any[];
+  categories: Category[];
 
-  //@ts-ignore
-  form: FormGroup = new FormGroup<Item>({});
+  form: FormGroup = new FormGroup<any>({});
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
+              private snackBarService: SnackBarService,
               private route: ActivatedRoute,
               private router: Router,
               private formBuilder: FormBuilder,
-              private dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
-      takeUntil(this.unsubscribe),
-      switchMap((params: ParamMap) => {
-        const id = params.get('id');
-        return this.itemService.getItemById(Number(id));
-      })
-    )
+    this.route.paramMap
+      .pipe(
+        takeUntil(this.unsubscribe),
+        switchMap((params: ParamMap) => {
+          const id = params.get('id');
+          return this.itemService.getItemById(Number(id));
+        })
+      )
       .subscribe((data) => {
         this.item = data;
 
         this.form = this.formBuilder.group({
           id: [this.item.id],
-          name: [this.item.name, [Validators.required, Validators.minLength(5)]],
+          name: [this.item.name, [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
           description: [this.item.description, [Validators.required, Validators.minLength(10)]],
-          categoryId: [this.item.categoryId, this.getCollection()],
-          imageSrc: [this.item.imageSrc, [Validators.required, Validators.minLength(10)]]
+          categoryId: [this.item.categoryId, this.getCategories()],
+          imageSrc: [this.item.imageSrc]
         })
       })
   }
@@ -64,14 +65,15 @@ export class ItemEditComponent implements OnInit {
     dialogRef.afterClosed().subscribe((res) => {
       switch (res.event) {
         case "confirm-option":
-          this.itemService.updateItem(this.form.getRawValue()).subscribe(() => {
-            JSON.stringify(this.form.value)
-            this.router.navigate(['admin/items'])
-          })
+          this.itemService.updateItem(this.form.getRawValue())
+            .pipe(
+              takeUntil(this.unsubscribe)
+            )
+            .subscribe(() => {
+              this.router.navigate(['admin/items'])
+            })
 
-          this.snackBar.open("Item was successfully updated!", 'OK', {
-            duration: 5000
-          })
+          this.snackBarService.success("Item was successfully updated!")
 
           break;
 
@@ -82,9 +84,13 @@ export class ItemEditComponent implements OnInit {
     });
   }
 
-  getCollection() {
-    return this.categoryService.getAllCategories().subscribe((res) => {
-      this.collection = res.content;
-    })
+  getCategories() {
+    return this.categoryService.getAllCategories(0, 0, '', '')
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((res) => {
+        this.categories = res.content;
+      })
   }
 }

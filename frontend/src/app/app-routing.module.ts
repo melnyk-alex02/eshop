@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CategoryListComponent } from "./pages/category-list/category-list.component";
-import { AuthGuard } from "../utils/guard/auth.guard";
+import { AuthGuard } from "./utils/guard/auth.guard";
 import { CategoryEditComponent } from "./pages/category-edit/category-edit.component";
 import { CategoryViewComponent } from "./pages/category-view/category-view.component";
 import { CategoryCreateComponent } from "./pages/category-create/category-create.component";
