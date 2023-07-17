@@ -10,8 +10,9 @@ import { Item } from "../../models/item";
 import { MatSort, Sort } from "@angular/material/sort";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
-import { changingItemPagination, changingItemSorting, loadingItems } from "../../store/actions/item.actions"
+import { changingItemPagination, changingItemSorting } from "../../store/actions/item.actions"
 import { SnackBarService } from "../../services/snack-bar.service";
+import { selectItemPagination, selectItemSorting } from "../../store/selectors/item.selectors";
 
 @Component({
   selector: 'app-item-list',
@@ -25,6 +26,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   dataSource = new MatTableDataSource<Item>();
   displayedColumns: string[] = ['id', "name", "description", "categoryName", "imageSrc", "actions"];
+
+  sorting$;
+
+  pagination$;
 
   currentPage: number;
   currentSize: number;
@@ -45,46 +50,44 @@ export class ItemListComponent implements OnInit, OnDestroy {
               public readonly router: Router,
               public dialog: MatDialog,
               public store: Store<GlobalState>) {
+    this.pagination$ = this.store.select(selectItemPagination);
+
+    this.sorting$ = this.store.select(selectItemSorting);
   }
 
   ngOnInit() {
     this.dataSource.paginator = this.matPaginator;
     this.dataSource.sort = this.matSort;
 
-    this.store.select('item')
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
+    this.pagination$.pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((pagination) => {
+        this.currentPage = pagination.pageIndex;
+        this.currentSize = pagination.pageSize;
+      });
+
+    this.sorting$.pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((sorting) => {
+      this.currentSortField = sorting.sortField;
+      this.currentDirection = sorting.sortDirection;
+    });
+
+    this.itemService.getAllItems(
+      this.currentPage,
+      this.currentSize,
+      this.currentSortField,
+      this.currentDirection
+    ).pipe(
+      takeUntil(this.unsubscribe)
+    )
       .subscribe((data) => {
-        this.currentSize = data.pagination.pageSize;
-        this.currentPage = data.pagination.pageIndex
+        this.dataSource.data = data.content;
 
-        this.currentSortField = data.sorting.sortField;
-        this.currentDirection = data.sorting.sortDirection;
-
-      })
-
-    this.store.dispatch(loadingItems({
-        pageIndex: this.currentPage,
-        pageSize: this.currentSize,
-        sortField: this.currentSortField,
-        sortDirection: this.currentDirection
-      })
-    );
-
-    this.store.select('item')
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        (data) => {
-          this.dataSource = new MatTableDataSource(data.data.content)
-
-          this.loading = data.loading;
-
-          this.totalElements = data.data.totalElements;
-        }
-      );
+        this.totalElements = data.totalElements;
+      });
   }
 
   ngOnDestroy() {
@@ -139,12 +142,17 @@ export class ItemListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    this.store.dispatch(loadingItems({
-      pageIndex: this.currentPage,
-      pageSize: this.currentSize,
-      sortField: this.currentSortField,
-      sortDirection: this.currentDirection
-    }));
+    this.itemService.getAllItems(
+      this.currentPage,
+      this.currentSize,
+      this.currentSortField,
+      this.currentDirection
+    ).pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((data) => {
+        this.dataSource.data = data.content;
+      })
   }
 
   sortChanged(event: Sort) {

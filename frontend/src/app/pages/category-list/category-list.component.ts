@@ -11,13 +11,9 @@ import { Subject, takeUntil } from "rxjs";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
 import { MatSort, Sort } from "@angular/material/sort";
-import {
-  changingCategoryPagination,
-  changingCategorySorting,
-  loadingCategories
-} from "../../store/actions/category.actions";
+import { changingCategoryPagination, changingCategorySorting } from "../../store/actions/category.actions";
 import { SnackBarService } from "../../services/snack-bar.service";
-
+import { selectCategoryPagination, selectCategorySorting } from "../../store/selectors/category.selectors";
 
 @Component({
   selector: 'app-category-list',
@@ -30,6 +26,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   dataSource = new MatTableDataSource<Category>();
   displayedColumns: string[] = ['id', 'name', 'description', 'actions']
+
+  sorting$;
+
+  pagination$
 
   currentPage: number;
   currentSize: number;
@@ -51,44 +51,44 @@ export class CategoryListComponent implements OnInit, OnDestroy {
               public readonly router: Router,
               public dialog: MatDialog,
               private store: Store<GlobalState>) {
+    this.pagination$ = this.store.select(selectCategoryPagination);
+
+    this.sorting$ = this.store.select(selectCategorySorting);
   }
 
   ngOnInit() {
     this.dataSource.paginator = this.matPaginator;
     this.dataSource.sort = this.matSort;
 
-    this.store.select('category')
+    this.pagination$.pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((pagination) => {
+        this.currentPage = pagination.pageIndex;
+        this.currentSize = pagination.pageSize;
+      });
+
+    this.sorting$.pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((sorting) => {
+        this.currentSortField = sorting.sortField;
+        this.currentDirection = sorting.sortDirection;
+      });
+
+    this.categoryService.getAllCategories(
+      this.currentPage,
+      this.currentSize,
+      this.currentSortField,
+      this.currentDirection
+    )
       .pipe(
         takeUntil(this.unsubscribe)
       )
       .subscribe((data) => {
-        this.currentPage = data.pagination.pageIndex;
-        this.currentSize = data.pagination.pageSize;
-
-        this.currentSortField = data.sorting.sortField;
-        this.currentDirection = data.sorting.sortDirection;
-      })
-
-    this.store.dispatch(loadingCategories({
-        pageIndex: this.currentPage,
-        pageSize: this.currentSize,
-        sortField: this.currentSortField,
-        sortDirection: this.currentDirection
-      })
-    );
-
-    this.store.select('category')
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((data) => {
-          this.dataSource = new MatTableDataSource<Category>(data.data.content);
-
-          this.loading = data.loading;
-
-          this.totalElements = data.data.totalElements;
-        }
-      );
+        this.dataSource.data = data.content;
+        this.totalElements = data.totalElements;
+      });
   }
 
   ngOnDestroy() {
@@ -142,12 +142,19 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    this.store.dispatch(loadingCategories({
-      pageIndex: this.currentPage,
-      pageSize: this.currentSize,
-      sortField: this.currentSortField,
-      sortDirection: this.currentDirection
-    }));
+    this.categoryService.getAllCategories(
+      this.currentPage,
+      this.currentSize,
+      this.currentSortField,
+      this.currentDirection
+    )
+      .pipe(
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((data) => {
+          this.dataSource.data = data.content
+        }
+      );
   }
 
   sortChanged(event: Sort) {

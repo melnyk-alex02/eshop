@@ -1,15 +1,9 @@
-import { Page } from "./page";
-
-export interface State<T>{
-  data: Page<T>;
-  loading: boolean;
-  error: string;
-
-  pagination:{
+export interface State<T> {
+  pagination: {
     pageIndex: number;
     pageSize: number;
   }
-  sorting:{
+  sorting: {
     sortField: string;
     sortDirection: string;
   }
