@@ -21,6 +21,6 @@ public interface CategoryMapper {
 
     Category toEntity(CategoryUpdateDTO categoryUpdateDTO);
 
-    List<Category> toEntity(List<CategoryDTO> categoryDTO);
+    List<Category> toEntity(List<CategoryCreateDTO> categoryCreateDTOList);
 
 }

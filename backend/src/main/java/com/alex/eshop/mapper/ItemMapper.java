@@ -29,7 +29,8 @@ public interface ItemMapper {
     @Mapping(source = "categoryId", target = "category.id")
     Item toEntity(ItemUpdateDTO itemUpdateDTO);
 
-    List<Item> toEntity(List<ItemDTO> itemDto);
+    @Mapping(source = "categoryId", target =  "category.id")
+    List<Item> toEntity(List<ItemCreateDTO> itemDto);
 
     List<ItemDTO> toDto(Page<Item> itemPage);
 }
