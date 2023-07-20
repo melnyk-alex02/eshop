@@ -1,7 +1,7 @@
 package com.alex.eshop.service;
 
-import com.alex.eshop.dto.UserDTO;
-import com.alex.eshop.dto.UserRegisterDTO;
+import com.alex.eshop.dto.userDTOs.UserDTO;
+import com.alex.eshop.dto.userDTOs.UserRegisterDTO;
 import com.alex.eshop.keycloak.KeycloakService;
 import com.alex.eshop.mapper.UserMapper;
 import org.springframework.transaction.annotation.Transactional;

@@ -24,6 +24,8 @@ export class ItemCreateComponent implements OnInit {
 
   categories: Category[];
 
+  fileName = '';
+
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
               private snackBarService: SnackBarService,
@@ -47,27 +49,24 @@ export class ItemCreateComponent implements OnInit {
     this.unsubscribe.complete();
   }
 
-  onSubmit() {
-    const dialogRef = this.dialog.open(DialogWindowComponent);
-    dialogRef.afterClosed().subscribe((res) => {
-        switch (res.event) {
-          case 'confirm-option':
-            this.itemService.createItem(this.form.getRawValue())
-              .pipe(
-                takeUntil(this.unsubscribe)
-              )
-              .subscribe(() => {
-                this.router.navigate(['admin/items'])
-              });
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
 
-            this.snackBarService.success('Item was successfully created!')
-            break;
+    if (file) {
+      this.fileName = file.name;
 
-          case "cancel-option":
-            dialogRef.close();
-            break;
-        }
-      });
+      this.itemService.uploadItems(file).pipe(
+        takeUntil(this.unsubscribe)
+      )
+        .subscribe(() => {
+            this.router.navigate(["admin/items"]);
+            this.snackBarService.success("Items uploaded successfully");
+          },
+          (error) => {
+            this.fileName='';
+            this.snackBarService.error(error.message);
+          });
+    }
   }
 
   getCategories() {
@@ -78,5 +77,28 @@ export class ItemCreateComponent implements OnInit {
       .subscribe((res) => {
         this.categories = res.content;
       });
+  }
+
+  onSubmit() {
+    const dialogRef = this.dialog.open(DialogWindowComponent);
+    dialogRef.afterClosed().subscribe((res) => {
+      switch (res.event) {
+        case 'confirm-option':
+          this.itemService.createItem(this.form.getRawValue())
+            .pipe(
+              takeUntil(this.unsubscribe)
+            )
+            .subscribe(() => {
+              this.router.navigate(['admin/items'])
+            });
+
+          this.snackBarService.success('Item was successfully created!')
+          break;
+
+        case "cancel-option":
+          dialogRef.close();
+          break;
+      }
+    });
   }
 }

@@ -1,7 +1,7 @@
 package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.constants.Role;
-import com.alex.eshop.dto.StatsDTO;
+import com.alex.eshop.dto.statsDTOs.StatsDTO;
 import com.alex.eshop.service.StatsService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

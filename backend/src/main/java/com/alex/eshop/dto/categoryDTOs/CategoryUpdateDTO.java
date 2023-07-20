@@ -1,6 +1,6 @@
-package com.alex.eshop.dto;
+package com.alex.eshop.dto.categoryDTOs;
 
-public class CategoryDTO {
+public class CategoryUpdateDTO {
     private Long id;
     private String name;
     private String description;

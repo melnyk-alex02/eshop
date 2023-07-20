@@ -1,15 +1,28 @@
 package com.alex.eshop.service;
 
-import com.alex.eshop.dto.CategoryCreateDTO;
-import com.alex.eshop.dto.CategoryDTO;
-import com.alex.eshop.dto.CategoryUpdateDTO;
+import com.alex.eshop.dto.categoryDTOs.CategoryCreateDTO;
+import com.alex.eshop.dto.categoryDTOs.CategoryDTO;
+import com.alex.eshop.dto.categoryDTOs.CategoryUpdateDTO;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
-import org.springframework.transaction.annotation.Transactional;
+import com.alex.eshop.utils.CsvHeaderChecker;
+import com.alex.eshop.utils.FormatChecker;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -34,6 +47,40 @@ public class CategoryService {
 
     public CategoryDTO createCategory(CategoryCreateDTO categoryCreateDTO) {
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryCreateDTO)));
+    }
+
+    public List<CategoryDTO> uploadCategoriesFromCsv(MultipartFile file) {
+        FormatChecker.isCsv(file);
+
+        String[] headers = {"name", "description"};
+
+        CsvHeaderChecker.checkHeaders(file, headers);
+
+        List<CategoryCreateDTO> categoryCreateDTOList = new ArrayList<>();
+
+        try (BufferedReader fileReader = new BufferedReader(
+                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+             CSVParser csvParser = new CSVParser(
+                     fileReader,
+                     CSVFormat.DEFAULT.builder()
+                             .setHeader(headers)
+                             .setSkipHeaderRecord(true)
+                             .build())
+        ) {
+            Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+
+            for (CSVRecord csvRecord : csvRecords) {
+                CategoryCreateDTO categoryCreateDTO = new CategoryCreateDTO();
+
+                categoryCreateDTO.setName(csvRecord.get("name"));
+                categoryCreateDTO.setDescription(csvRecord.get("description"));
+
+                categoryCreateDTOList.add(categoryCreateDTO);
+            }
+            return categoryMapper.toDto(categoryRepository.saveAll(categoryMapper.toEntity(categoryCreateDTOList)));
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public CategoryDTO updateCategory(CategoryUpdateDTO categoryUpdateDTO) {

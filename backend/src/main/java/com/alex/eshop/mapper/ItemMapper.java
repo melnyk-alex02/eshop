@@ -1,8 +1,8 @@
 package com.alex.eshop.mapper;
 
-import com.alex.eshop.dto.ItemCreateDTO;
-import com.alex.eshop.dto.ItemDTO;
-import com.alex.eshop.dto.ItemUpdateDTO;
+import com.alex.eshop.dto.itemDTOs.ItemCreateDTO;
+import com.alex.eshop.dto.itemDTOs.ItemDTO;
+import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
 import com.alex.eshop.entity.Item;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,7 +29,8 @@ public interface ItemMapper {
     @Mapping(source = "categoryId", target = "category.id")
     Item toEntity(ItemUpdateDTO itemUpdateDTO);
 
-    List<Item> toEntity(List<ItemDTO> itemDto);
+    @Mapping(source = "categoryId", target =  "category.id")
+    List<Item> toEntity(List<ItemCreateDTO> itemDto);
 
     List<ItemDTO> toDto(Page<Item> itemPage);
 }

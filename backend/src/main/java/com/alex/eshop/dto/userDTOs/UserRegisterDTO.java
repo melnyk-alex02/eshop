@@ -1,4 +1,4 @@
-package com.alex.eshop.dto;
+package com.alex.eshop.dto.userDTOs;
 
 public class UserRegisterDTO {
     private String username;
