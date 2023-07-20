@@ -1,29 +1,11 @@
-import { createReducer, on } from "@ngrx/store";
+import { on } from "@ngrx/store";
 import { initialCategoryState } from "../states/category.state";
 import * as CategoryActions from "../actions/category.actions"
+import { createRehydrationReducer } from "./rehydration.reducer";
 
-export const categoryReducer = createReducer(
+export const categoryReducer = createRehydrationReducer(
+  'categoryState',
   initialCategoryState,
-  on(CategoryActions.loadingCategories, state => ({
-    ...state,
-    loading: true,
-    error: ''
-  })),
-  on(CategoryActions.loadingCategoriesSuccessful, (state, {page}) => ({
-    ...state,
-    data: {content: [...page.content], totalElements: page.totalElements},
-    loading: false,
-    error: ''
-  })),
-  on(CategoryActions.loadingCategoriesFailure, (state, {error}) => ({
-    ...state,
-    loading: false,
-    error: error,
-    data: {
-      content: [],
-      totalElements: 0
-    }
-  })),
   on(CategoryActions.changingCategoryPagination, (state, {pageIndex, pageSize}) => ({
     ...state,
     pagination: {

@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CategoryBackendService } from "./services/category-backend.service";
 import { HttpClientModule } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableModule } from "@angular/material/table";
@@ -79,8 +78,7 @@ import { StorageModule } from "./store/storage.module";
     useFactory: initializeKeycloak,
     multi: true,
     deps: [KeycloakService],
-  },
-    CategoryBackendService],
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

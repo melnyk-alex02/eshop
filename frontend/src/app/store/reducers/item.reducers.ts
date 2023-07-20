@@ -1,29 +1,11 @@
-import { createReducer, on } from "@ngrx/store";
+import { on } from "@ngrx/store";
 import { initialItemState } from "../states/item.state";
 import * as ItemActions from "../actions/item.actions"
+import { createRehydrationReducer } from "./rehydration.reducer";
 
-export const itemReducer = createReducer(
+export const itemReducer = createRehydrationReducer(
+  'itemState',
   initialItemState,
-  on(ItemActions.loadingItems, state => ({
-    ...state,
-    loading: true,
-    error: ''
-  })),
-  on(ItemActions.loadingItemsSuccessful, (state, {page}) => ({
-    ...state,
-    data: {content: [...page.content], totalElements: page.totalElements},
-    loading: false,
-    error: ''
-  })),
-  on(ItemActions.loadingItemsFailure, (state, {error}) => ({
-    ...state,
-    loading: false,
-    error: error,
-    data: {
-      content: [],
-      totalElements: 0
-    }
-  })),
   on(ItemActions.changingItemPagination, (state, {pageIndex, pageSize}) => ({
     ...state,
     pagination: {
@@ -33,7 +15,7 @@ export const itemReducer = createReducer(
   })),
   on(ItemActions.changingItemSorting, (state, {sortField, sortDirection}) => ({
     ...state,
-    sorting:{
+    sorting: {
       sortField: sortField,
       sortDirection: sortDirection
     }
