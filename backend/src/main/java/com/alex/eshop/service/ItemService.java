@@ -4,19 +4,19 @@ import com.alex.eshop.dto.ItemCreateDTO;
 import com.alex.eshop.dto.ItemDTO;
 import com.alex.eshop.dto.ItemUpdateDTO;
 import com.alex.eshop.exception.DataNotFoundException;
-import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
+import com.alex.eshop.utils.CsvHeaderChecker;
 import com.alex.eshop.utils.FormatChecker;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -62,40 +62,40 @@ public class ItemService {
     }
 
     public List<ItemDTO> uploadItemsFromCsv(MultipartFile file) {
-        List<ItemCreateDTO> itemCreateDTOList = new ArrayList<>();
+        FormatChecker.isCsv(file);
 
         String[] headers = {"name", "description", "categoryId", "imageSrc"};
 
-        if (FormatChecker.isCsv(file)) {
-            try (BufferedReader fileReader = new BufferedReader(
-                    new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)
-            );
-                 CSVParser csvParser = new CSVParser(
-                         fileReader,
-                         CSVFormat.DEFAULT.builder()
-                                 .setHeader(headers)
-                                 .setSkipHeaderRecord(true)
-                                 .build()
-                 )
-            ) {
-                Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+        CsvHeaderChecker.checkHeaders(file, headers);
 
-                for (CSVRecord csvRecord : csvRecords) {
-                    ItemCreateDTO itemCreateDTO = new ItemCreateDTO();
+        List<ItemCreateDTO> itemCreateDTOList = new ArrayList<>();
 
-                    itemCreateDTO.setName(csvRecord.get("name"));
-                    itemCreateDTO.setDescription(csvRecord.get("description"));
-                    itemCreateDTO.setCategoryId(Long.parseLong(csvRecord.get("categoryId")));
-                    itemCreateDTO.setImageSrc(csvRecord.get("imageSrc"));
+        try (BufferedReader fileReader = new BufferedReader(
+                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)
+        );
+             CSVParser csvParser = new CSVParser(
+                     fileReader,
+                     CSVFormat.DEFAULT.builder()
+                             .setHeader(headers)
+                             .setSkipHeaderRecord(true)
+                             .build()
+             )
+        ) {
+            Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
-                    itemCreateDTOList.add(itemCreateDTO);
-                }
-                return itemMapper.toDto(itemRepository.saveAll(itemMapper.toEntity(itemCreateDTOList)));
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage());
+            for (CSVRecord csvRecord : csvRecords) {
+                ItemCreateDTO itemCreateDTO = new ItemCreateDTO();
+
+                itemCreateDTO.setName(csvRecord.get("name"));
+                itemCreateDTO.setDescription(csvRecord.get("description"));
+                itemCreateDTO.setCategoryId(Long.parseLong(csvRecord.get("categoryId")));
+                itemCreateDTO.setImageSrc(csvRecord.get("imageSrc"));
+
+                itemCreateDTOList.add(itemCreateDTO);
             }
-        } else {
-            throw new InvalidDataException("Unsupported file format");
+            return itemMapper.toDto(itemRepository.saveAll(itemMapper.toEntity(itemCreateDTOList)));
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
