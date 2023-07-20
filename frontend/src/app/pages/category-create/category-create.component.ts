@@ -19,6 +19,8 @@ export class CategoryCreateComponent implements OnInit {
 
   form: FormGroup;
 
+  fileName = '';
+
   private unsubscribe: Subject<void> = new Subject();
 
   constructor(private categoryService: CategoryBackendService,
@@ -40,6 +42,25 @@ export class CategoryCreateComponent implements OnInit {
   ngOnDestroy() {
     this.unsubscribe.next();
     this.unsubscribe.complete();
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      this.fileName = file.name;
+
+      this.categoryService.uploadCategories(file).pipe(
+        takeUntil(this.unsubscribe)
+      )
+        .subscribe(() => {
+            this.router.navigate(['admin/categories']);
+            this.snackBarService.success("Categories was loaded successfully");
+          },
+          (error) => {
+            this.snackBarService.error(error.message);
+          });
+    }
   }
 
   onSubmit() {

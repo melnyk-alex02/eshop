@@ -29,3 +29,20 @@
 <div class="button">
   <button (click)="onSubmit()" [disabled]="form.invalid">Submit</button>
 </div>
+<div class="text">
+  <h4>Or use csv file to load Items: </h4>
+</div>
+<div>
+  <input type="file" class="file-input"
+         (change)="onFileSelected($event)" #fileUpload>
+</div>
+
+<div class="file-upload">
+
+  {{fileName || "No file uploaded yet."}}
+
+  <button mat-mini-fab color="primary" class="upload-btn"
+          (click)="fileUpload.click()">
+    <mat-icon>attach_file</mat-icon>
+  </button>
+</div>

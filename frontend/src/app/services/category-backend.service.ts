@@ -31,6 +31,16 @@ export class CategoryBackendService {
     return this.http.get<Category>(`${SERVER_API_URL}/categories/` + id.valueOf());
   }
 
+  public uploadCategories(file: File): Observable<Category[]> {
+    const formData: FormData = new FormData();
+
+    formData.append("file", file);
+
+    return this.http.post<Category[]>(`${SERVER_API_URL}/upload-categories`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   public createCategory(data: Category): Observable<Category> {
     return this.http.post<Category>(`${SERVER_API_URL}/categories`, data).pipe(
       catchError(this.handleError)

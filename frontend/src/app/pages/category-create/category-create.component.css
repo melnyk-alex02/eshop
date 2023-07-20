@@ -7,6 +7,19 @@
   margin-left: 15px;
 }
 
+.text {
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
+.file-input{
+  display: none;
+}
+
+.file-upload{
+  margin-left: 2%;
+}
+
 button {
   display: flex;
   flex-direction: column;

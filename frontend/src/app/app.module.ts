@@ -35,6 +35,7 @@ import { AccessDeniedPageComponent } from "./pages/access-denied-page/access-den
 import { CategoryListComponent } from "./pages/category-list/category-list.component";
 import { MatSortModule } from "@angular/material/sort";
 import { StorageModule } from "./store/storage.module";
+import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { StorageModule } from "./store/storage.module";
     ReactiveFormsModule,
     MatToolbarModule,
     MatPaginatorModule,
+    MatIconModule,
     MatProgressSpinnerModule,
     StorageModule
   ],

@@ -23,6 +23,16 @@ export class ItemBackendService {
     );
   }
 
+  public uploadItems(file: File): Observable<Item[]>{
+
+    const formData: FormData = new FormData();
+
+    formData.append("file", file);
+    return this.http.post<Item[]>(`${SERVER_API_URL}/upload-items`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   public createItem(data: Item): Observable<Item> {
     return this.http.post<Item>(`${SERVER_API_URL}/items`, data).pipe(
       catchError(this.handleError)

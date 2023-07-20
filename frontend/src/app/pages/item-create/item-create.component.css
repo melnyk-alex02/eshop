@@ -4,7 +4,22 @@
 }
 
 .container {
+  overflow: hidden;
   margin-left: 15px;
+  display: flex;
+}
+
+.text {
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
+.file-input{
+ display: none;
+}
+
+.file-upload{
+margin-left: 2%;
 }
 
 button {
