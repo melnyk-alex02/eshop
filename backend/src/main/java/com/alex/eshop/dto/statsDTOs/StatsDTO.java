@@ -1,4 +1,4 @@
-package com.alex.eshop.dto;
+package com.alex.eshop.dto.statsDTOs;
 
 public class StatsDTO {
      private String category;

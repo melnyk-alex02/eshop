@@ -1,7 +1,7 @@
 package com.alex.eshop.keycloak;
 
 import com.alex.eshop.constants.Role;
-import com.alex.eshop.dto.UserRegisterDTO;
+import com.alex.eshop.dto.userDTOs.UserRegisterDTO;
 import com.alex.eshop.exception.ConflictException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.webconfig.ApplicationProperties;

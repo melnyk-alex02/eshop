@@ -1,4 +1,4 @@
-package com.alex.eshop.dto;
+package com.alex.eshop.dto.userDTOs;
 
 import java.time.LocalDateTime;
 import java.util.List;

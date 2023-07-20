@@ -1,6 +1,6 @@
 package com.alex.eshop.mapper;
 
-import com.alex.eshop.dto.UserDTO;
+import com.alex.eshop.dto.userDTOs.UserDTO;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,8 +1,8 @@
 package com.alex.eshop.service;
 
-import com.alex.eshop.dto.ItemCreateDTO;
-import com.alex.eshop.dto.ItemDTO;
-import com.alex.eshop.dto.ItemUpdateDTO;
+import com.alex.eshop.dto.itemDTOs.ItemCreateDTO;
+import com.alex.eshop.dto.itemDTOs.ItemDTO;
+import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;

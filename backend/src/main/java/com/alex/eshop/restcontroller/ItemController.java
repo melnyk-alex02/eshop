@@ -1,9 +1,9 @@
 package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.constants.Role;
-import com.alex.eshop.dto.ItemCreateDTO;
-import com.alex.eshop.dto.ItemDTO;
-import com.alex.eshop.dto.ItemUpdateDTO;
+import com.alex.eshop.dto.itemDTOs.ItemCreateDTO;
+import com.alex.eshop.dto.itemDTOs.ItemDTO;
+import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
 import com.alex.eshop.service.ItemService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

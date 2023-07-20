@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public class CsvHeaderChecker {
-    public static boolean checkHeaders(MultipartFile file, String[] expectedHeaders) {
+    public static void checkHeaders(MultipartFile file, String[] expectedHeaders) {
         try (BufferedReader fileReader = new BufferedReader(
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)
         );
@@ -36,13 +36,11 @@ public class CsvHeaderChecker {
                 String header = csvRecord.get(i);
 
                 if (!header.equalsIgnoreCase(expectedHeaders[i])) {
-                    System.out.println(expectedHeaders[i]);
                     throw new InvalidDataException("Please, check presence or/and order of headers in file: '" + file.getOriginalFilename() + "'.");
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return true;
     }
 }

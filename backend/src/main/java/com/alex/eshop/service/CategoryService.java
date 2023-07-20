@@ -1,8 +1,8 @@
 package com.alex.eshop.service;
 
-import com.alex.eshop.dto.CategoryCreateDTO;
-import com.alex.eshop.dto.CategoryDTO;
-import com.alex.eshop.dto.CategoryUpdateDTO;
+import com.alex.eshop.dto.categoryDTOs.CategoryCreateDTO;
+import com.alex.eshop.dto.categoryDTOs.CategoryDTO;
+import com.alex.eshop.dto.categoryDTOs.CategoryUpdateDTO;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
