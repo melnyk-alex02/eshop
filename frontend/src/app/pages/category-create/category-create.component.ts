@@ -58,6 +58,7 @@ export class CategoryCreateComponent implements OnInit {
             this.snackBarService.success("Categories was loaded successfully");
           },
           (error) => {
+            this.fileName = '';
             this.snackBarService.error(error.message);
           });
     }

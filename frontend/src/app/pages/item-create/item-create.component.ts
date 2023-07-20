@@ -63,6 +63,7 @@ export class ItemCreateComponent implements OnInit {
             this.snackBarService.success("Items uploaded successfully");
           },
           (error) => {
+            this.fileName='';
             this.snackBarService.error(error.message);
           });
     }
