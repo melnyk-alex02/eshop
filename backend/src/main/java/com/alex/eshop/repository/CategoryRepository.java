@@ -3,6 +3,7 @@ package com.alex.eshop.repository;
 import com.alex.eshop.dto.statsDTOs.StatsDTO;
 import com.alex.eshop.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
     @Query("select count(i) from Item i where i.category.id =:id")
     long countItemsByCategory(Long id);
 

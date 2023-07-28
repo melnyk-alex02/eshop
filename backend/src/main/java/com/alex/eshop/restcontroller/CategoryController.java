@@ -29,6 +29,12 @@ public class CategoryController {
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
+    @GetMapping("/categories/search")
+    public List<CategoryDTO> searchCategories(@RequestParam("name") String name) {
+        return categoryService.searchCategories(name);
+    }
+
+    @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories/{id}")
     public CategoryDTO getCategory(@PathVariable Long id) {
         return categoryService.getCategory(id);
@@ -42,7 +48,7 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @PostMapping("/upload-categories")
-    public List<CategoryDTO> uploadCategoriesFromCsv(MultipartFile file){
+    public List<CategoryDTO> uploadCategoriesFromCsv(MultipartFile file) {
         return categoryService.uploadCategoriesFromCsv(file);
     }
 
@@ -51,6 +57,7 @@ public class CategoryController {
     public CategoryDTO updateCategory(@RequestBody CategoryUpdateDTO categoryUpdateDTO) {
         return categoryService.updateCategory(categoryUpdateDTO);
     }
+
     @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @DeleteMapping("/categories/{id}")
     public void deleteCategory(@PathVariable Long id) {

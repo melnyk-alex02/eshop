@@ -3,7 +3,9 @@ package com.alex.eshop.service;
 import com.alex.eshop.dto.categoryDTOs.CategoryCreateDTO;
 import com.alex.eshop.dto.categoryDTOs.CategoryDTO;
 import com.alex.eshop.dto.categoryDTOs.CategoryUpdateDTO;
+import com.alex.eshop.entity.Category;
 import com.alex.eshop.exception.DataNotFoundException;
+import com.alex.eshop.filterSpecifications.CategorySpecification;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
 import com.alex.eshop.utils.CsvHeaderChecker;
@@ -13,6 +15,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +41,17 @@ public class CategoryService {
 
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
+    }
+
+    public List<CategoryDTO> searchCategories(String name) {
+        Specification<Category> categorySpecification = Specification.where(CategorySpecification.hasNameContaining(name));
+
+        List<CategoryDTO> categoryDTOList = categoryMapper.toDto(categoryRepository.findAll(categorySpecification));
+        if (categoryDTOList.isEmpty()) {
+            throw new DataNotFoundException("There are no categories found with your search preferences");
+        } else {
+            return categoryDTOList;
+        }
     }
 
     public CategoryDTO getCategory(Long id) {

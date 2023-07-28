@@ -7,6 +7,7 @@ public class ItemDTO {
     private String categoryName;
     private String description;
     private String imageSrc;
+    private Boolean hasImage;
 
     public Long getId() {
         return id;
@@ -54,5 +55,13 @@ public class ItemDTO {
 
     public void setImageSrc(String imageSrc) {
         this.imageSrc = imageSrc;
+    }
+
+    public Boolean getHasImage() {
+        return hasImage;
+    }
+
+    public void setHasImage(Boolean hasImage) {
+        this.hasImage = hasImage;
     }
 }

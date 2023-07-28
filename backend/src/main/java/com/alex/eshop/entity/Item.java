@@ -10,9 +10,10 @@ public class Item {
     private String name;
     @ManyToOne
     private Category category;
-
     private String description;
     private String imageSrc;
+    @Transient
+    private Boolean hasImage;
 
     public Long getId() {
         return id;
@@ -54,4 +55,11 @@ public class Item {
         this.imageSrc = imageSrc;
     }
 
+    public Boolean isHasImage() {
+        return imageSrc != null && !imageSrc.isEmpty();
+    }
+
+    public void setHasImage(boolean hasImage) {
+        this.hasImage = hasImage;
+    }
 }
