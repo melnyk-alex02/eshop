@@ -44,7 +44,7 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> searchCategories(String name) {
-        Specification<Category> categorySpecification = Specification.where(CategorySpecification.hasNameContaining(name));
+        Specification<Category> categorySpecification = CategorySpecification.hasNameContaining(name);
 
         List<CategoryDTO> categoryDTOList = categoryMapper.toDto(categoryRepository.findAll(categorySpecification));
         if (categoryDTOList.isEmpty()) {

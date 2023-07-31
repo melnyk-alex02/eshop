@@ -11,9 +11,9 @@ public class ItemSpecification {
     public static Specification<Item> hasImage(Boolean hasImage) {
         return (root, query, criteriaBuilder) -> {
             if (Boolean.TRUE.equals(hasImage)) {
-                return criteriaBuilder.isNotNull(root.get("imageSrc"));
+                return criteriaBuilder.notEqual(root.get("imageSrc"), "");
             } else if (Boolean.FALSE.equals(hasImage)) {
-                return criteriaBuilder.isNull(root.get("imageSrc"));
+                return criteriaBuilder.equal(root.get("imageSrc"), "");
             }
             return null;
         };
