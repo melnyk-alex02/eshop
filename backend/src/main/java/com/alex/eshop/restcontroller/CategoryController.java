@@ -30,8 +30,9 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories/search")
-    public List<CategoryDTO> searchCategories(@RequestParam("name") String name) {
-        return categoryService.searchCategories(name);
+    public Page<CategoryDTO> searchCategories(Pageable pageable,
+                                              @RequestParam("name") String name) {
+        return categoryService.searchCategories(pageable, name);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")

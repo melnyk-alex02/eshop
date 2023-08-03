@@ -36,8 +36,11 @@ public class ItemController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items/search")
-    public List<ItemDTO> searchItems(@RequestParam("name") String name, @RequestParam(value = "hasImage", required = false) Boolean hasImage, @RequestParam(value = "categoryId", required = false) Long categoryId) {
-        return itemService.searchItems(name, hasImage, categoryId);
+    public Page<ItemDTO> searchItems(Pageable pageable,
+                                     @RequestParam("name") String name,
+                                     @RequestParam(value = "hasImage", required = false) Boolean hasImage,
+                                     @RequestParam(value = "categoryId", required = false) Long categoryId) {
+        return itemService.searchItems(pageable, name, hasImage, categoryId);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")

@@ -45,16 +45,16 @@ public class ItemService {
         return itemRepository.findAll(pageable).map(itemMapper::toDto);
     }
 
-    public List<ItemDTO> searchItems(String name, Boolean hasImage, Long categoryId) {
+    public Page<ItemDTO> searchItems(Pageable pageable, String name, Boolean hasImage, Long categoryId) {
         Specification<Item> itemSpecification = ItemSpecification.hasNameContaining(name)
                 .and(ItemSpecification.hasImage(hasImage))
                 .and(ItemSpecification.hasCategoryId(categoryId));
 
-        List<ItemDTO> itemDTOList = itemMapper.toDto(itemRepository.findAll(itemSpecification));
-        if (itemDTOList.isEmpty()) {
+        Page<ItemDTO> itemDTOPage = itemRepository.findAll(itemSpecification, pageable).map(itemMapper::toDto);
+        if (itemDTOPage.isEmpty()) {
             throw new DataNotFoundException("There are no items found with your search preferences");
         } else {
-            return itemDTOList;
+            return itemDTOPage;
         }
     }
 
