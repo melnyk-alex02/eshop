@@ -10,5 +10,12 @@ export const initialItemState: State<Item> = {
   sorting: {
     sortField: 'id',
     sortDirection: 'asc'
+  },
+
+  filtering:{
+    name: '',
+    hasImage:'',
+    categoryId:'',
+    filteringPage: 0
   }
 };

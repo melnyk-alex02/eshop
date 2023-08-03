@@ -11,9 +11,17 @@ import { Subject, takeUntil } from "rxjs";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
 import { MatSort, Sort } from "@angular/material/sort";
-import { changingCategoryPagination, changingCategorySorting } from "../../store/actions/category.actions";
+import {
+  changingCategoryFiltering,
+  changingCategoryPagination,
+  changingCategorySorting
+} from "../../store/actions/category.actions";
 import { SnackBarService } from "../../services/snack-bar.service";
-import { selectCategoryPagination, selectCategorySorting } from "../../store/selectors/category.selectors";
+import {
+  selectCategoryFiltering,
+  selectCategoryPagination,
+  selectCategorySorting
+} from "../../store/selectors/category.selectors";
 
 @Component({
   selector: 'app-category-list',
@@ -29,21 +37,23 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   sorting$;
 
-  pagination$
+  pagination$;
+
+  filtering$;
+
+  filterName: string;
+
+  filteringPage: number;
 
   currentPage: number;
   currentSize: number;
 
   currentSortField: string;
   currentDirection: string | any;
-
-  private unsubscribe: Subject<void> = new Subject()
-
   @ViewChild(MatTable) table: any;
-
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
-
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
+  private unsubscribe: Subject<void> = new Subject()
 
   constructor(private categoryService: CategoryBackendService,
               private snackBarService: SnackBarService,
@@ -54,6 +64,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.pagination$ = this.store.select(selectCategoryPagination);
 
     this.sorting$ = this.store.select(selectCategorySorting);
+
+    this.filtering$ = this.store.select(selectCategoryFiltering)
   }
 
   ngOnInit() {
@@ -76,19 +88,19 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         this.currentDirection = sorting.sortDirection;
       });
 
-    this.categoryService.getAllCategories(
-      this.currentPage,
-      this.currentSize,
-      this.currentSortField,
-      this.currentDirection
+    this.filtering$.pipe(
+      takeUntil(this.unsubscribe)
     )
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((data) => {
-        this.dataSource.data = data.content;
-        this.totalElements = data.totalElements;
-      });
+      .subscribe((filtering: any) => {
+        this.filterName = filtering.name;
+      })
+
+    if (this.filterName && this.filterName.length >= 3) {
+      this.searchCategories();
+    } else {
+      this.filterName = '';
+      this.getAllCategories();
+    }
   }
 
   ngOnDestroy() {
@@ -107,18 +119,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
               takeUntil(this.unsubscribe)
             )
             .subscribe(() => {
-                this.categoryService.getAllCategories(
-                  this.currentPage,
-                  this.currentSize,
-                  this.currentSortField,
-                  this.currentDirection
-                )
-                  .pipe(
-                    takeUntil(this.unsubscribe)
-                  )
-                  .subscribe((data) => {
-                    this.dataSource.data = data.content;
-                  });
+                this.getAllCategories();
 
                 this.snackBarService.success("Category was successfully deleted!");
               },
@@ -142,19 +143,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    this.categoryService.getAllCategories(
-      this.currentPage,
-      this.currentSize,
-      this.currentSortField,
-      this.currentDirection
-    )
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((data) => {
-          this.dataSource.data = data.content
-        }
-      );
+    if (this.filterName && this.filterName.length >= 3) {
+      this.searchCategories();
+    } else {
+      this.getAllCategories();
+    }
   }
 
   sortChanged(event: Sort) {
@@ -166,6 +159,14 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       sortDirection: this.currentDirection
     }));
 
+    if (this.filterName && this.filterName.length >= 3) {
+      this.searchCategories();
+    } else {
+      this.getAllCategories();
+    }
+  }
+
+  getAllCategories() {
     this.categoryService.getAllCategories(
       this.currentPage,
       this.currentSize,
@@ -175,10 +176,58 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe)
       )
-      .subscribe(
-        (data) => {
+      .subscribe((data) => {
+          this.loading = true;
+
           this.dataSource.data = data.content;
+
+          this.totalElements = data.totalElements;
+        },
+        (error) => {
+          this.snackBarService.error(error.message);
+
+          this.dataSource.data = [];
         }
-      );
+        , () => {
+          this.loading = false;
+        });
+  }
+
+  searchCategories() {
+    setTimeout(() => {
+      this.categoryService.searchCategories(
+        this.filteringPage,
+        this.currentSize,
+        this.currentSortField,
+        this.currentDirection,
+        this.filterName)
+        .pipe(
+          takeUntil(this.unsubscribe)
+        )
+        .subscribe((data) => {
+            this.loading = true;
+
+            this.dataSource.data = data.content;
+
+            this.totalElements = data.totalElements;
+          },
+          (error) => {
+            this.snackBarService.error(error.message);
+
+            this.dataSource.data = [];
+          },
+          () => {
+            this.loading = false;
+          });
+    }, 500);
+
+    if (this.matPaginator) {
+      this.matPaginator.pageIndex = this.filteringPage;
+    }
+
+    this.store.dispatch(changingCategoryFiltering({
+      name: this.filterName,
+      filteringPage: this.filteringPage
+    }))
   }
 }

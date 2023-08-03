@@ -23,7 +23,7 @@ export class ItemBackendService {
     );
   }
 
-  public uploadItems(file: File): Observable<Item[]>{
+  public uploadItems(file: File): Observable<Item[]> {
 
     const formData: FormData = new FormData();
 
@@ -56,6 +56,26 @@ export class ItemBackendService {
       .set('sort', sortField + ',' + sortDirection);
 
     return this.http.get<Page<Item>>(`${SERVER_API_URL}/items`, {params});
+  }
+
+  public searchItems(pageIndex: number,
+                     pageSize: number,
+                     sortField: string,
+                     sortDirection: 'asc' | 'desc' | string,
+                     name: string,
+                     hasImage: boolean | string,
+                     categoryId: number | string): Observable<Page<Item>> {
+    let params = new HttpParams()
+      .set('page', pageIndex)
+      .set('size', pageSize)
+      .set('sort', sortField + ',' + sortDirection)
+      .set('name', name)
+      .set('hasImage', hasImage)
+      .set('categoryId', categoryId);
+
+    return this.http.get<Page<Item>>(`${SERVER_API_URL}/items/search`, {params}).pipe(
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -4,8 +4,15 @@
   place-items: center;
 }
 
-.container {
-  margin-top: 80px;
+.header {
+  margin-top: 5%;
+  margin-left: 11.1%;
+}
+
+.filter-section {
+  margin-left: 11.1%;
+  display: flex;
+  flex-direction: row;
 }
 
 button {

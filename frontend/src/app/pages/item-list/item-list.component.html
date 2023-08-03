@@ -10,8 +10,34 @@
 </ng-container>
 
 <ng-container *ngIf="!this.loading">
-  <div class="container">
+  <div class="header">
     <h1 style="color: black">Item table</h1>
+  </div>
+  <div class="filter-section">
+    <mat-form-field>
+      <input matInput (keyup)="searchItems(filterPage)" placeholder="Search" [(ngModel)]="filterName">
+      <mat-icon matPrefix class="my-icon">search</mat-icon>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Has Image</mat-label>
+      <mat-select [(ngModel)]="filterHasImage" (selectionChange)="searchItems(filterPage)">
+        <mat-option [value]="''">All</mat-option>
+        <mat-option [value]="true">With Image</mat-option>
+        <mat-option [value]="false">Without Image</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Select Category</mat-label>
+      <mat-select [(ngModel)]="filterCategoryId" (selectionChange)="searchItems(filterPage)">
+        <mat-option [value]="''">All categories</mat-option>
+        <mat-option [value]="category.id" *ngFor="let category of categories">
+          {{category.id}}. {{category.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="container">
     <div class="row">
     </div>
     <div class="row">

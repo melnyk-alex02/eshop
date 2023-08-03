@@ -4,17 +4,23 @@
   place-items: center;
 }
 
-.container {
-  margin-top: 80px;
+.header {
+  margin-top: 5%;
+  margin-left: 11.1%;
 }
-
 button {
   margin: 10px;
 }
 
+.filter-section {
+  margin-left: 11.1%;
+  display: flex;
+  flex-direction: row;
+}
+
+
 .button-1 {
   margin-left: 10%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,6 +50,6 @@ button {
   -webkit-line-clamp: 1;
 }
 
-.paginator{
+.paginator {
   margin-right: 5%;
 }

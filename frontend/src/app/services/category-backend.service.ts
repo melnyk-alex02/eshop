@@ -27,6 +27,22 @@ export class CategoryBackendService {
     return this.http.get<Page<Category>>(`${SERVER_API_URL}/categories`, {params});
   }
 
+  public searchCategories(pageIndex: number,
+                          pageSize: number,
+                          sortField: string,
+                          sortDirection: 'asc' | 'desc' | string,
+                          name: string): Observable<Page<Category>> {
+    let params = new HttpParams()
+      .set('page', pageIndex)
+      .set('size', pageSize)
+      .set('sort', sortField + ',' + sortDirection)
+      .set('name', name);
+
+    return this.http.get<Page<Category>>(`${SERVER_API_URL}/categories/search`, {params}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   public getCategoryById(id: number): Observable<Category> {
     return this.http.get<Category>(`${SERVER_API_URL}/categories/` + id.valueOf());
   }
