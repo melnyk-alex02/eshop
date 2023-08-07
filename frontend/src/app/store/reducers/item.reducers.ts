@@ -20,13 +20,18 @@ export const itemReducer = createRehydrationReducer(
       sortDirection: sortDirection
     }
   })),
-  on(ItemActions.changingItemFiltering, (state, {name, hasImage, categoryId, filteringPage}) => ({
+  on(ItemActions.changingItemFiltering, (state, {
+    name,
+    hasImage,
+    categoryId,
+    filterPage
+  }) => ({
     ...state,
     filtering: {
       name: name,
       hasImage: hasImage,
       categoryId: categoryId,
-      filteringPage: filteringPage
+      filterPage: filterPage
     }
   }))
 );

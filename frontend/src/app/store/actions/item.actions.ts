@@ -18,5 +18,5 @@ export const changingItemSorting = createAction(
 
 export const changingItemFiltering = createAction(
   ItemAction.ChangingItemFiltering,
-  props<{ name: string, hasImage: boolean | string, categoryId: number | string, filteringPage: number }>()
+  props<{ name: string, hasImage: boolean | string, categoryId: number | string, filterPage: number }>()
 );

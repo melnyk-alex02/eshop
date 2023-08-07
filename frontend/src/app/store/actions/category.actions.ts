@@ -18,5 +18,5 @@ export const changingCategorySorting = createAction(
 
 export const changingCategoryFiltering = createAction(
   CategoryActions.ChangingCategoryFiltering,
-  props<{name: string, filteringPage: number}>()
+  props<{ name: string, filterPage: number }>()
 );

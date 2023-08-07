@@ -23,11 +23,6 @@ import { Category } from "../../models/category";
 })
 
 export class ItemListComponent implements OnInit, OnDestroy {
-  filterName: string;
-  filterHasImage: boolean | string = '';
-  filterCategoryId: number | string = '';
-  filterPage: number;
-
   categories: Category[];
 
   totalElements: number;
@@ -48,6 +43,11 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   currentSortField: string;
   currentDirection: string | any;
+
+  filterName: string;
+  filterHasImage: boolean | string = '';
+  filterCategoryId: number | string = '';
+  filterPage: number;
 
   @ViewChild(MatTable) table: any;
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
@@ -105,7 +105,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       this.filterHasImage = '';
       this.filterPage = 0;
 
-      this.getAllData();
+      this.getAllItems();
     }
 
     this.categoryService.getAllCategories(0, 0, '', '').pipe(
@@ -132,7 +132,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
               takeUntil(this.unsubscribe)
             )
             .subscribe(() => {
-                this.getAllData();
+                this.getAllItems();
               },
               (error) => {
                 this.snackBarService.error(`${error.message}`);
@@ -157,11 +157,14 @@ export class ItemListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    if (this.filterName && this.filterName.length >= 3) {
+    if (this.filterName.length >= 3) {
       this.filterPage = event.pageIndex;
+
       this.searchItems(this.filterPage);
     } else {
-      this.getAllData()
+      this.matPaginator.pageIndex = event.pageIndex;
+
+      this.getAllItems()
     }
   }
 
@@ -174,14 +177,16 @@ export class ItemListComponent implements OnInit, OnDestroy {
       sortDirection: this.currentDirection
     }));
 
-    if (this.filterName) {
+    if (this.filterName && this.filterName.length >= 3) {
       this.searchItems(this.filterPage);
     } else {
-      this.getAllData()
+      this.filterName = '';
+      this.filterPage = 0;
+      this.getAllItems()
     }
   }
 
-  getAllData() {
+  getAllItems() {
     this.itemService.getAllItems(
       this.currentPage,
       this.currentSize,
@@ -206,42 +211,55 @@ export class ItemListComponent implements OnInit, OnDestroy {
   }
 
   searchItems(filterPage: number) {
-    setTimeout(() => {
-      this.itemService.searchItems(
-        filterPage,
-        this.currentSize,
-        this.currentSortField,
-        this.currentDirection,
-        this.filterName,
-        this.filterHasImage,
-        this.filterCategoryId
-      ).pipe(
-        takeUntil(this.unsubscribe)
-      )
-        .subscribe((data) => {
-            this.loading = true;
+    if (this.filterName && this.filterName.length >= 3) {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = 0;
+      }
+      setTimeout(() => {
+        this.itemService.searchItems(
+          filterPage,
+          this.currentSize,
+          this.currentSortField,
+          this.currentDirection,
+          this.filterName,
+          this.filterHasImage,
+          this.filterCategoryId
+        ).pipe(
+          takeUntil(this.unsubscribe)
+        )
+          .subscribe((data) => {
+              this.loading = true;
 
-            this.dataSource.data = data.content;
+              this.dataSource.data = data.content;
 
-            this.totalElements = data.totalElements;
+              this.totalElements = data.totalElements;
 
-            this.matPaginator.length = data.totalElements;
-          },
-          (error) => {
-            this.snackBarService.error(error.message);
+              this.matPaginator.length = data.totalElements;
+            },
+            (error) => {
+              this.snackBarService.error(error.message);
 
-            this.dataSource.data = [];
-          },
-          () => {
-            this.loading = false;
-          })
-    }, 500);
+              this.dataSource.data = [];
+            },
+            () => {
+              this.loading = false;
+            })
+      }, 500);
+    } else if (!this.filterName) {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = this.currentPage;
+      }
+      this.filterName = '';
+      this.filterPage = 0;
+
+      this.getAllItems();
+    }
 
     this.store.dispatch(changingItemFiltering({
       name: this.filterName,
       hasImage: this.filterHasImage,
       categoryId: this.filterCategoryId,
-      filteringPage: this.filterPage
+      filterPage: this.filterPage
     }));
   }
 }

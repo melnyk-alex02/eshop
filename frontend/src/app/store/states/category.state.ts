@@ -14,6 +14,6 @@ export const initialCategoryState: State<Category> = {
 
   filtering: {
     name: '',
-    filteringPage: 0
+    filterPage: 0
   }
 };

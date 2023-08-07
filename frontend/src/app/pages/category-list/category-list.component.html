@@ -15,7 +15,7 @@
   </div>
   <div class="filter-section">
     <mat-form-field>
-      <input matInput (keyup)="searchCategories()" placeholder="Search" [(ngModel)]="filterName">
+      <input matInput (keyup)="searchCategories(filterPage)" placeholder="Search" [(ngModel)]="filterName">
       <mat-icon matPrefix class="my-icon">search</mat-icon>
     </mat-form-field>
   </div>

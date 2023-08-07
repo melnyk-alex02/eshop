@@ -30,6 +30,7 @@ import {
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
   totalElements: number;
+
   loading: boolean;
 
   dataSource = new MatTableDataSource<Category>();
@@ -41,15 +42,15 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   filtering$;
 
-  filterName: string;
-
-  filteringPage: number;
-
   currentPage: number;
   currentSize: number;
 
   currentSortField: string;
   currentDirection: string | any;
+
+  filterName: string;
+  filterPage: number;
+
   @ViewChild(MatTable) table: any;
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
@@ -93,12 +94,15 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     )
       .subscribe((filtering: any) => {
         this.filterName = filtering.name;
-      })
+        this.filterPage = filtering.filterPag;
+      });
 
     if (this.filterName && this.filterName.length >= 3) {
-      this.searchCategories();
+      this.searchCategories(this.filterPage);
     } else {
       this.filterName = '';
+      this.filterPage = 0;
+
       this.getAllCategories();
     }
   }
@@ -143,8 +147,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    if (this.filterName && this.filterName.length >= 3) {
-      this.searchCategories();
+    if (this.filterName.length >= 3) {
+      this.filterPage = event.pageIndex;
+
+      this.searchCategories(this.filterPage);
     } else {
       this.getAllCategories();
     }
@@ -160,8 +166,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     }));
 
     if (this.filterName && this.filterName.length >= 3) {
-      this.searchCategories();
+      this.searchCategories(this.filterPage);
     } else {
+      this.filterName = '';
       this.getAllCategories();
     }
   }
@@ -193,41 +200,50 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         });
   }
 
-  searchCategories() {
-    setTimeout(() => {
-      this.categoryService.searchCategories(
-        this.filteringPage,
-        this.currentSize,
-        this.currentSortField,
-        this.currentDirection,
-        this.filterName)
-        .pipe(
-          takeUntil(this.unsubscribe)
-        )
-        .subscribe((data) => {
-            this.loading = true;
+  searchCategories(filterPage: number) {
+    if (this.filterName && this.filterName.length >= 3) {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = 0;
+      }
+      setTimeout(() => {
+        this.categoryService.searchCategories(
+          filterPage,
+          this.currentSize,
+          this.currentSortField,
+          this.currentDirection,
+          this.filterName)
+          .pipe(
+            takeUntil(this.unsubscribe)
+          )
+          .subscribe((data) => {
+              this.loading = true;
 
-            this.dataSource.data = data.content;
+              this.dataSource.data = data.content;
 
-            this.totalElements = data.totalElements;
-          },
-          (error) => {
-            this.snackBarService.error(error.message);
+              this.totalElements = data.totalElements;
+            },
+            (error) => {
+              this.snackBarService.error(error.message);
 
-            this.dataSource.data = [];
-          },
-          () => {
-            this.loading = false;
-          });
-    }, 500);
+              this.dataSource.data = [];
+            },
+            () => {
+              this.loading = false;
+            });
+      }, 500);
+    } else if (!this.filterName) {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = this.currentPage;
+      }
+      this.filterName = '';
+      this.filterPage = 0;
 
-    if (this.matPaginator) {
-      this.matPaginator.pageIndex = this.filteringPage;
+      this.getAllCategories();
     }
 
     this.store.dispatch(changingCategoryFiltering({
       name: this.filterName,
-      filteringPage: this.filteringPage
-    }))
+      filterPage: this.filterPage
+    }));
   }
 }

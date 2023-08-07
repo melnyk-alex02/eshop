@@ -1,6 +1,6 @@
 import { Item } from "../../models/item";
 import { State } from "../../models/state";
-import { createAction, createFeatureSelector, createSelector } from "@ngrx/store";
+import { createFeatureSelector, createSelector } from "@ngrx/store";
 
 export const selectItemState = createFeatureSelector<State<Item>>("item");
 
