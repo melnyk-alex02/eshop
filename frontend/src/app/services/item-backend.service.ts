@@ -17,7 +17,7 @@ export class ItemBackendService {
     return this.http.get<Item>(`${SERVER_API_URL}/items/` + id.valueOf());
   }
 
-  public updateItem(data: Item) {
+  public updateItem(data: Item): Observable<Item> {
     return this.http.put<Item>(`${SERVER_API_URL}/items`, data).pipe(
       catchError(this.handleError)
     );
@@ -39,10 +39,14 @@ export class ItemBackendService {
     );
   }
 
-  public deleteItem(id: number) {
+  public deleteItem(id: number) : Observable<Item> {
     return this.http.delete<Item>(`${SERVER_API_URL}/items/` + id.valueOf()).pipe(
       catchError(this.handleError)
     );
+  }
+
+  public getLastFiveAddedItems(): Observable<Item[]> {
+    return this.http.get<Item[]>(`${SERVER_API_URL}/items/last`);
   }
 
   public getAllItems(pageIndex: number,

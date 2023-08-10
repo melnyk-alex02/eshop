@@ -35,6 +35,7 @@ import { CategoryListComponent } from "./pages/category-list/category-list.compo
 import { MatSortModule } from "@angular/material/sort";
 import { StorageModule } from "./store/storage.module";
 import { MatIconModule } from "@angular/material/icon";
+import { MatCardModule } from "@angular/material/card";
 
 @NgModule({
   declarations: [
@@ -52,6 +53,30 @@ import { MatIconModule } from "@angular/material/icon";
     AdminPageComponent,
     AccessDeniedPageComponent,
   ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatTableModule,
+        MatSnackBarModule,
+        MatInputModule,
+        MatDialogModule,
+        MatCommonModule,
+        MatSortModule,
+        HttpClientModule,
+        NgbModule,
+        KeycloakAngularModule,
+        AppRoutingModule,
+        ReactiveFormsModule,
+        MatToolbarModule,
+        MatPaginatorModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        StorageModule,
+        MatCardModule
+    ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
