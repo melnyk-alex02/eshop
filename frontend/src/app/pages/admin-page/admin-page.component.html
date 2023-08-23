@@ -2,7 +2,7 @@
   <h1>Welcome to Admin Panel</h1>
 </div>
 
-<ng-container *ngIf="this.loading">
+<ng-container *ngIf="!this.lastFiveItemsList && this.dataSource.data">
   <div class="spinner">
     <mat-progress-spinner
       class="example-margin"
@@ -13,7 +13,7 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="!this.loading">
+<ng-container *ngIf="this.lastFiveItemsList && this.dataSource.data">
   <div class="text">
     <p>Last five added items: </p>
   </div>

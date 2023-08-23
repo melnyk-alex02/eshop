@@ -34,15 +34,17 @@ export class CategoryEditComponent implements OnInit {
         return this.categoryService.getCategoryById(Number(id));
       })
     )
-      .subscribe((data) => {
-        this.category = data;
+      .subscribe({
+        next: (data) => {
+          this.category = data;
 
-        this.form = this.formBuilder.group({
-          id: [this.category.id],
-          name: [this.category.name, [Validators.required, Validators.minLength(5)]],
-          description: [this.category.description, [Validators.required, Validators.minLength(10)]]
-        })
-      })
+          this.form = this.formBuilder.group({
+            id: [this.category.id],
+            name: [this.category.name, [Validators.required, Validators.minLength(5)]],
+            description: [this.category.description, [Validators.required, Validators.minLength(10)]]
+          })
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -52,15 +54,18 @@ export class CategoryEditComponent implements OnInit {
 
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.afterClosed().subscribe({
+      next: (res) => {
         switch (res.event) {
           case "confirm-option":
             this.categoryService.updateCategory(this.form.getRawValue())
               .pipe(
                 takeUntil(this.unsubscribe)
               )
-              .subscribe(() => {
-                this.router.navigate(['admin/categories'])
+              .subscribe({
+                next: () => {
+                  this.router.navigate(['admin/categories'])
+                }
               });
 
             break;
@@ -69,6 +74,7 @@ export class CategoryEditComponent implements OnInit {
             dialogRef.close();
             break;
         }
-      });
+      }
+    });
   }
 }

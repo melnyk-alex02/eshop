@@ -25,8 +25,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   currentPage: number = 0;
   currentSize: number = 5;
 
-  loading: boolean;
-
   @ViewChild(MatTable) table: any;
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
 
@@ -45,18 +43,14 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.itemService.getLastFiveAddedItems().pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((data) => {
-          this.loading = true;
-
+      .subscribe({
+        next: (data) => {
           this.lastFiveItemsList = data;
         },
-        (error) => {
+        error: (error) => {
           this.snackBarService.error(error.message);
-          this.loading = false;
-        },
-        () => {
-          this.loading = false;
-        })
+        }
+      })
   }
 
   ngOnDestroy() {
@@ -76,24 +70,17 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       this.currentPage,
       this.currentSize
     ).pipe(
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((data) => {
-          console.log(data.content);
-
-          this.loading = true;
-
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe({
+        next: (data) => {
           this.dataSource.data = data.content;
 
           this.totalElements = data.totalElements;
         },
-        (error) => {
-          this.loading = false;
-
+        error: (error) => {
           this.snackBarService.error(error.message);
-        },
-        () => {
-          this.loading = false;
-        })
+        }
+      })
   }
 }

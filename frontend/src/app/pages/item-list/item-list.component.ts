@@ -74,17 +74,21 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.pagination$.pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((pagination) => {
-        this.currentPage = pagination.pageIndex;
-        this.currentSize = pagination.pageSize;
+      .subscribe({
+        next: (pagination) => {
+          this.currentPage = pagination.pageIndex;
+          this.currentSize = pagination.pageSize;
+        }
       });
 
     this.sorting$.pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((sorting) => {
-        this.currentSortField = sorting.sortField;
-        this.currentDirection = sorting.sortDirection;
+      .subscribe({
+        next: (sorting) => {
+          this.currentSortField = sorting.sortField;
+          this.currentDirection = sorting.sortDirection;
+        }
       });
 
     this.filtering$.pipe(
@@ -111,9 +115,11 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.categoryService.getAllCategories(0, 0, '', '').pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((data) => {
-        this.categories = data.content;
-      })
+      .subscribe({
+        next: (data) => {
+          this.categories = data.content;
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -124,25 +130,28 @@ export class ItemListComponent implements OnInit, OnDestroy {
   deleteItem(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
-    dialogRef.afterClosed().subscribe((res) => {
-      switch (res.event) {
-        case "confirm-option": {
-          this.itemService.deleteItem(id)
-            .pipe(
-              takeUntil(this.unsubscribe)
-            )
-            .subscribe(() => {
-                this.getAllItems();
-              },
-              (error) => {
-                this.snackBarService.error(`${error.message}`);
+    dialogRef.afterClosed().subscribe({next: (res) => {
+        switch (res.event) {
+          case "confirm-option": {
+            this.itemService.deleteItem(id)
+              .pipe(
+                takeUntil(this.unsubscribe)
+              )
+              .subscribe({
+                next: () => {
+                  this.getAllItems();
+                },
+                error: (error) => {
+                  this.snackBarService.error(`${error.message}`);
+                }
               });
 
-          this.snackBarService.success('Item was deleted successfully!');
-          break;
-        }
-        case "cancel-option": {
-          break;
+            this.snackBarService.success('Item was deleted successfully!');
+            break;
+          }
+          case "cancel-option": {
+            break;
+          }
         }
       }
     });
@@ -206,6 +215,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   }
 
   getAllItems() {
+    this.loading = true;
+
     this.itemService.getAllItems(
       this.currentPage,
       this.currentSize,
@@ -214,19 +225,19 @@ export class ItemListComponent implements OnInit, OnDestroy {
     ).pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((data) => {
-          this.loading = true;
-
+      .subscribe({
+        next: (data) => {
           this.dataSource.data = data.content;
 
           this.totalElements = data.totalElements;
         },
-        (error) => {
+        error: (error) => {
           this.snackBarService.error(error.message);
         },
-        () => {
+        complete: () => {
           this.loading = false;
-        });
+        }
+      });
   }
 
   searchItems(filterPage: number) {
@@ -234,6 +245,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = 0;
       }
+      this.loading = true;
+
       this.itemService.searchItems(
         filterPage,
         this.currentSize,
@@ -247,23 +260,23 @@ export class ItemListComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-        .subscribe((data) => {
-            this.loading = true;
-
+        .subscribe({
+          next: (data) => {
             this.dataSource.data = data.content;
 
             this.totalElements = data.totalElements;
 
             this.matPaginator.length = data.totalElements;
           },
-          (error) => {
+          error: (error) => {
             this.snackBarService.error(error.message);
 
             this.dataSource.data = [];
           },
-          () => {
+          complete: () => {
             this.loading = false;
-          })
+          }
+        });
     } else if (this.filterName == '') {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = this.currentPage;

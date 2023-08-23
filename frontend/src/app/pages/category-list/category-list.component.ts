@@ -76,25 +76,31 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.pagination$.pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((pagination) => {
-        this.currentPage = pagination.pageIndex;
-        this.currentSize = pagination.pageSize;
+      .subscribe({
+        next: (pagination) => {
+          this.currentPage = pagination.pageIndex;
+          this.currentSize = pagination.pageSize;
+        }
       });
 
     this.sorting$.pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((sorting) => {
-        this.currentSortField = sorting.sortField;
-        this.currentDirection = sorting.sortDirection;
+      .subscribe({
+        next: (sorting) => {
+          this.currentSortField = sorting.sortField;
+          this.currentDirection = sorting.sortDirection;
+        }
       });
 
     this.filtering$.pipe(
       takeUntil(this.unsubscribe)
     )
-      .subscribe((filtering: any) => {
-        this.filterName = filtering.name;
-        this.filterPage = filtering.filterPag;
+      .subscribe({
+        next: (filtering: any) => {
+          this.filterName = filtering.name;
+          this.filterPage = filtering.filterPag;
+        }
       });
 
     if (this.filterName && this.filterName.length >= 3) {
@@ -122,14 +128,16 @@ export class CategoryListComponent implements OnInit, OnDestroy {
             .pipe(
               takeUntil(this.unsubscribe)
             )
-            .subscribe(() => {
+            .subscribe({
+              next: () => {
                 this.getAllCategories();
 
                 this.snackBarService.success("Category was successfully deleted!");
               },
-              (error) => {
+              error: (error) => {
                 this.snackBarService.error(`${error.message}`);
-              });
+              }
+            });
           break;
 
         case "cancel-option":
@@ -184,6 +192,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   getAllCategories() {
+    this.loading = true;
+
     this.categoryService.getAllCategories(
       this.currentPage,
       this.currentSize,
@@ -193,21 +203,21 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe)
       )
-      .subscribe((data) => {
-          this.loading = true;
-
+      .subscribe({
+        next: (data) => {
           this.dataSource.data = data.content;
 
           this.totalElements = data.totalElements;
         },
-        (error) => {
+        error: (error) => {
           this.snackBarService.error(error.message);
 
           this.dataSource.data = [];
         }
-        , () => {
+        , complete: () => {
           this.loading = false;
-        });
+        }
+      });
   }
 
   searchCategories(filterPage: number) {

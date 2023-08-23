@@ -27,9 +27,11 @@ export class ItemViewComponent implements OnInit {
         return this.itemService.getItemById(Number(id));
       })
     )
-      .subscribe(data => {
-        this.item = data;
-      })
+      .subscribe({
+        next: data => {
+          this.item = data;
+        }
+      });
   }
 
   ngOnDestroy() {
