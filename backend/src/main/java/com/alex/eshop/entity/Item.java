@@ -12,8 +12,6 @@ public class Item {
     private Category category;
     private String description;
     private String imageSrc;
-    @Transient
-    private Boolean hasImage;
 
     public Long getId() {
         return id;
@@ -53,13 +51,5 @@ public class Item {
 
     public void setImageSrc(String imageSrc) {
         this.imageSrc = imageSrc;
-    }
-
-    public Boolean isHasImage() {
-        return imageSrc != null && !imageSrc.isEmpty();
-    }
-
-    public void setHasImage(boolean hasImage) {
-        this.hasImage = hasImage;
     }
 }

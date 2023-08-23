@@ -53,9 +53,9 @@ public class ItemService {
         Page<ItemDTO> itemDTOPage = itemRepository.findAll(itemSpecification, pageable).map(itemMapper::toDto);
         if (itemDTOPage.isEmpty()) {
             throw new DataNotFoundException("There are no items found with your search preferences");
-        } else {
-            return itemDTOPage;
         }
+        return itemDTOPage;
+
     }
 
     public ItemDTO getItemWithCategoryInfo(Long id) {

@@ -7,7 +7,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Category } from "../../models/category";
-import { Subject, takeUntil } from "rxjs";
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
 import { MatSort, Sort } from "@angular/material/sort";
@@ -173,6 +173,16 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     }
   }
 
+  clearFilters() {
+    this.filterName = '';
+
+    this.getAllCategories();
+
+    if (this.matPaginator) {
+      this.matPaginator.pageIndex = this.currentPage;
+    }
+  }
+
   getAllCategories() {
     this.categoryService.getAllCategories(
       this.currentPage,
@@ -205,32 +215,32 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = 0;
       }
-      setTimeout(() => {
-        this.categoryService.searchCategories(
-          filterPage,
-          this.currentSize,
-          this.currentSortField,
-          this.currentDirection,
-          this.filterName)
-          .pipe(
-            takeUntil(this.unsubscribe)
-          )
-          .subscribe((data) => {
-              this.loading = true;
+      this.categoryService.searchCategories(
+        filterPage,
+        this.currentSize,
+        this.currentSortField,
+        this.currentDirection,
+        this.filterName)
+        .pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+          takeUntil(this.unsubscribe)
+        )
+        .subscribe((data) => {
+            this.loading = true;
 
-              this.dataSource.data = data.content;
+            this.dataSource.data = data.content;
 
-              this.totalElements = data.totalElements;
-            },
-            (error) => {
-              this.snackBarService.error(error.message);
+            this.totalElements = data.totalElements;
+          },
+          (error) => {
+            this.snackBarService.error(error.message);
 
-              this.dataSource.data = [];
-            },
-            () => {
-              this.loading = false;
-            });
-      }, 500);
+            this.dataSource.data = [];
+          },
+          () => {
+            this.loading = false;
+          });
     } else if (!this.filterName) {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = this.currentPage;

@@ -50,9 +50,8 @@ public class CategoryService {
                 .map(categoryMapper::toDto);
         if (categoryDTOPage.isEmpty()) {
             throw new DataNotFoundException("There are no categories found with your search preferences");
-        } else {
-            return categoryDTOPage;
         }
+        return categoryDTOPage;
     }
 
     public CategoryDTO getCategory(Long id) {

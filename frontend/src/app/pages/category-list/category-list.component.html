@@ -18,6 +18,12 @@
       <input matInput (keyup)="searchCategories(filterPage)" placeholder="Search" [(ngModel)]="filterName">
       <mat-icon matPrefix class="my-icon">search</mat-icon>
     </mat-form-field>
+    <div>
+      <button class="clear-button" (click)="clearFilters()">
+        <i class="fas fa-filter"></i> Clear Filters
+      </button>
+    </div>
+
   </div>
   <div class="container">
     <div class="row">

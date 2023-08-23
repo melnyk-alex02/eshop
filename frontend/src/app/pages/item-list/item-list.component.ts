@@ -4,7 +4,7 @@ import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { Subject, takeUntil } from "rxjs";
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Item } from "../../models/item";
 import { MatSort, Sort } from "@angular/material/sort";
@@ -186,6 +186,25 @@ export class ItemListComponent implements OnInit, OnDestroy {
     }
   }
 
+  clearFilters() {
+    this.filterName = '';
+    this.filterHasImage = '';
+    this.filterCategoryId = ''
+
+    this.getAllItems();
+
+    if (this.matPaginator) {
+      this.matPaginator.pageIndex = this.currentPage;
+    }
+
+    this.store.dispatch(changingItemFiltering({
+      name: this.filterName,
+      hasImage: this.filterHasImage,
+      categoryId: this.filterCategoryId,
+      filterPage: this.filterPage
+    }));
+  }
+
   getAllItems() {
     this.itemService.getAllItems(
       this.currentPage,
@@ -215,41 +234,41 @@ export class ItemListComponent implements OnInit, OnDestroy {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = 0;
       }
-      setTimeout(() => {
-        this.itemService.searchItems(
-          filterPage,
-          this.currentSize,
-          this.currentSortField,
-          this.currentDirection,
-          this.filterName,
-          this.filterHasImage,
-          this.filterCategoryId
-        ).pipe(
-          takeUntil(this.unsubscribe)
-        )
-          .subscribe((data) => {
-              this.loading = true;
+      this.itemService.searchItems(
+        filterPage,
+        this.currentSize,
+        this.currentSortField,
+        this.currentDirection,
+        this.filterName,
+        this.filterHasImage,
+        this.filterCategoryId
+      ).pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
+        .subscribe((data) => {
+            this.loading = true;
 
-              this.dataSource.data = data.content;
+            this.dataSource.data = data.content;
 
-              this.totalElements = data.totalElements;
+            this.totalElements = data.totalElements;
 
-              this.matPaginator.length = data.totalElements;
-            },
-            (error) => {
-              this.snackBarService.error(error.message);
+            this.matPaginator.length = data.totalElements;
+          },
+          (error) => {
+            this.snackBarService.error(error.message);
 
-              this.dataSource.data = [];
-            },
-            () => {
-              this.loading = false;
-            })
-      }, 500);
-    } else if (!this.filterName) {
+            this.dataSource.data = [];
+          },
+          () => {
+            this.loading = false;
+          })
+    } else if (this.filterName == '') {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = this.currentPage;
       }
-      this.filterName = '';
+      this.filterName = ''
       this.filterPage = 0;
 
       this.getAllItems();
