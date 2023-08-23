@@ -18,11 +18,9 @@ import { SnackBarService } from "../../services/snack-bar.service";
 export class ItemEditComponent implements OnInit {
 
   item: Item;
-  private unsubscribe: Subject<void> = new Subject();
-
   categories: Category[];
-
   form: FormGroup = new FormGroup<any>({});
+  private unsubscribe: Subject<void> = new Subject();
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
@@ -42,17 +40,19 @@ export class ItemEditComponent implements OnInit {
           return this.itemService.getItemById(Number(id));
         })
       )
-      .subscribe((data) => {
-        this.item = data;
+      .subscribe({
+        next: (data) => {
+          this.item = data;
 
-        this.form = this.formBuilder.group({
-          id: [this.item.id],
-          name: [this.item.name, [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
-          description: [this.item.description, [Validators.required, Validators.minLength(10)]],
-          categoryId: [this.item.categoryId, this.getCategories()],
-          imageSrc: [this.item.imageSrc]
-        })
-      })
+          this.form = this.formBuilder.group({
+            id: [this.item.id],
+            name: [this.item.name, [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
+            description: [this.item.description, [Validators.required, Validators.minLength(10)]],
+            categoryId: [this.item.categoryId, this.getCategories()],
+            imageSrc: [this.item.imageSrc]
+          });
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -62,24 +62,28 @@ export class ItemEditComponent implements OnInit {
 
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
-    dialogRef.afterClosed().subscribe((res) => {
-      switch (res.event) {
-        case "confirm-option":
-          this.itemService.updateItem(this.form.getRawValue())
-            .pipe(
-              takeUntil(this.unsubscribe)
-            )
-            .subscribe(() => {
-              this.router.navigate(['admin/items'])
-            })
+    dialogRef.afterClosed().subscribe({
+      next: (res) => {
+        switch (res.event) {
+          case "confirm-option":
+            this.itemService.updateItem(this.form.getRawValue())
+              .pipe(
+                takeUntil(this.unsubscribe)
+              )
+              .subscribe({
+                next: () => {
+                  this.router.navigate(['admin/items'])
+                }
+              });
 
-          this.snackBarService.success("Item was successfully updated!")
+            this.snackBarService.success("Item was successfully updated!")
 
-          break;
+            break;
 
-        case "cancel-option":
-          dialogRef.close();
-          break;
+          case "cancel-option":
+            dialogRef.close();
+            break;
+        }
       }
     });
   }
@@ -89,8 +93,9 @@ export class ItemEditComponent implements OnInit {
       .pipe(
         takeUntil(this.unsubscribe)
       )
-      .subscribe((res) => {
-        this.categories = res.content;
-      })
+      .subscribe({ next: (res) => {
+          this.categories = res.content;
+        }
+      });
   }
 }

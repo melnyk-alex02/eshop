@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { KeycloakService } from "keycloak-angular";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { ItemBackendService } from "../../services/item-backend.service";
-import { MatTable } from "@angular/material/table";
 import { Role } from "../../models/role";
 import { Subject, switchMap, takeUntil } from "rxjs";
 import { Category } from "../../models/category";
@@ -20,8 +19,6 @@ export class CategoryViewComponent implements OnInit {
   role: boolean;
 
   private unsubscribe: Subject<void> = new Subject<void>();
-
-  @ViewChild(MatTable) table: any;
 
   constructor(private categoryService: CategoryBackendService,
               private itemService: ItemBackendService,
@@ -40,8 +37,10 @@ export class CategoryViewComponent implements OnInit {
         return this.categoryService.getCategoryById(Number(id));
       })
     )
-      .subscribe((data) => {
-        this.category = data;
+      .subscribe({
+        next: (data) => {
+          this.category = data;
+        }
       });
   }
 

@@ -2,10 +2,10 @@ package com.alex.eshop.service;
 
 import com.alex.eshop.dto.statsDTOs.StatsDTO;
 import com.alex.eshop.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -16,7 +16,7 @@ public class StatsService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<StatsDTO> getStats() {
-        return categoryRepository.getStats();
+    public Page<StatsDTO> getStats(Pageable pageable) {
+        return categoryRepository.getStats(pageable);
     }
 }

@@ -53,14 +53,16 @@ export class CategoryCreateComponent implements OnInit {
       this.categoryService.uploadCategories(file).pipe(
         takeUntil(this.unsubscribe)
       )
-        .subscribe(() => {
+        .subscribe({
+          next: () => {
             this.router.navigate(['admin/categories']);
             this.snackBarService.success("Categories was loaded successfully");
           },
-          (error) => {
+          error: (error) => {
             this.fileName = '';
             this.snackBarService.error(error.message);
-          });
+          }
+        });
     }
   }
 
@@ -72,8 +74,10 @@ export class CategoryCreateComponent implements OnInit {
           this.categoryService.createCategory(this.form.getRawValue()).pipe(
             takeUntil(this.unsubscribe)
           )
-            .subscribe(() => {
-              this.router.navigate(['admin/categories']);
+            .subscribe({
+              next: () => {
+                this.router.navigate(['admin/categories']);
+              }
             });
 
           this.snackBarService.success('Category was successfully created')

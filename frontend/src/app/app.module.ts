@@ -35,6 +35,7 @@ import { CategoryListComponent } from "./pages/category-list/category-list.compo
 import { MatSortModule } from "@angular/material/sort";
 import { StorageModule } from "./store/storage.module";
 import { MatIconModule } from "@angular/material/icon";
+import { MatCardModule } from "@angular/material/card";
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { MatIconModule } from "@angular/material/icon";
     MatIconModule,
     MatProgressSpinnerModule,
     StorageModule,
-    FormsModule
+    FormsModule,
+    MatCardModule
   ],
   providers: [{
     provide: APP_INITIALIZER,
