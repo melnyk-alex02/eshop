@@ -19,5 +19,12 @@ export const categoryReducer = createRehydrationReducer(
       sortField: sortField,
       sortDirection: sortDirection
     }
+  })),
+  on(CategoryActions.changingCategoryFiltering, (state, {name, filterPage}) => ({
+    ...state,
+    filtering: {
+      name: name,
+      filterPage: filterPage
+    }
   }))
 );

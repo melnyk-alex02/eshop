@@ -10,5 +10,10 @@ export const initialCategoryState: State<Category> = {
   sorting: {
     sortField: 'id',
     sortDirection: 'asc'
+  },
+
+  filtering: {
+    name: '',
+    filterPage: 0
   }
 };

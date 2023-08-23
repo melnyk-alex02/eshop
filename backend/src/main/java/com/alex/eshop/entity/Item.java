@@ -10,7 +10,6 @@ public class Item {
     private String name;
     @ManyToOne
     private Category category;
-
     private String description;
     private String imageSrc;
 
@@ -53,5 +52,4 @@ public class Item {
     public void setImageSrc(String imageSrc) {
         this.imageSrc = imageSrc;
     }
-
 }

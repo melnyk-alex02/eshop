@@ -3,7 +3,9 @@ package com.alex.eshop.service;
 import com.alex.eshop.dto.itemDTOs.ItemCreateDTO;
 import com.alex.eshop.dto.itemDTOs.ItemDTO;
 import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
+import com.alex.eshop.entity.Item;
 import com.alex.eshop.exception.DataNotFoundException;
+import com.alex.eshop.filterSpecifications.ItemSpecification;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
 import com.alex.eshop.utils.CsvHeaderChecker;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +43,19 @@ public class ItemService {
 
     public Page<ItemDTO> getAllItems(Pageable pageable) {
         return itemRepository.findAll(pageable).map(itemMapper::toDto);
+    }
+
+    public Page<ItemDTO> searchItems(Pageable pageable, String name, Boolean hasImage, Long categoryId) {
+        Specification<Item> itemSpecification = ItemSpecification.hasNameContaining(name)
+                .and(ItemSpecification.hasImage(hasImage))
+                .and(ItemSpecification.hasCategoryId(categoryId));
+
+        Page<ItemDTO> itemDTOPage = itemRepository.findAll(itemSpecification, pageable).map(itemMapper::toDto);
+        if (itemDTOPage.isEmpty()) {
+            throw new DataNotFoundException("There are no items found with your search preferences");
+        }
+        return itemDTOPage;
+
     }
 
     public ItemDTO getItemWithCategoryInfo(Long id) {

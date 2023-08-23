@@ -14,7 +14,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
 import { initializeKeycloak } from "./utils/init/keycloak-init.factory";
 import { CategoryEditComponent } from './pages/category-edit/category-edit.component';
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
 import { FirstPageComponent } from './pages/first-page/first-page.component';
 import { CategoryViewComponent } from './pages/category-view/category-view.component';
@@ -73,7 +73,8 @@ import { MatIconModule } from "@angular/material/icon";
     MatPaginatorModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    StorageModule
+    StorageModule,
+    FormsModule
   ],
   providers: [{
     provide: APP_INITIALIZER,

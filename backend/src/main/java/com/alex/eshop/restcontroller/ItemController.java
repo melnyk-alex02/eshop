@@ -30,8 +30,17 @@ public class ItemController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items")
-    public Page<ItemDTO> getAllItems(Pageable pageable){
+    public Page<ItemDTO> getAllItems(Pageable pageable) {
         return itemService.getAllItems(pageable);
+    }
+
+    @PreAuthorize("hasRole('" + Role.USER + "')")
+    @GetMapping("/items/search")
+    public Page<ItemDTO> searchItems(Pageable pageable,
+                                     @RequestParam("name") String name,
+                                     @RequestParam(value = "hasImage", required = false) Boolean hasImage,
+                                     @RequestParam(value = "categoryId", required = false) Long categoryId) {
+        return itemService.searchItems(pageable, name, hasImage, categoryId);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
@@ -42,8 +51,7 @@ public class ItemController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/item")
-    public Page<ItemDTO> getItemWithCategory(Long categoryId,
-                                             Pageable pageable) {
+    public Page<ItemDTO> getItemWithCategory(Long categoryId, Pageable pageable) {
         return itemService.getItemsInCategory(categoryId, pageable);
     }
 
@@ -53,9 +61,9 @@ public class ItemController {
         return itemService.createItem(itemCreateDTO);
     }
 
-    @PreAuthorize("hasRole('"+ Role.ADMIN + "')")
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @PostMapping("/upload-items")
-    public List<ItemDTO> uploadItemsFromCsv(MultipartFile file){
+    public List<ItemDTO> uploadItemsFromCsv(MultipartFile file) {
         return itemService.uploadItemsFromCsv(file);
     }
 

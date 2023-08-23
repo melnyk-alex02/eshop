@@ -16,7 +16,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('" + Role.ADMIN + "')")// TODO: add roles
+    @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @GetMapping("/users/{Uuid}")
     public UserDTO getUser(@PathVariable String Uuid) {
         return userService.getUserByUuid(Uuid);

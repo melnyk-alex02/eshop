@@ -13,3 +13,8 @@ export const selectCategorySorting = createSelector(
   selectCategoryState,
   (state) => state.sorting
 );
+
+export const selectCategoryFiltering = createSelector(
+  selectCategoryState,
+  (state) => state.filtering
+);

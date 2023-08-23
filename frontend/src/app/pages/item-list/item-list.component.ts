@@ -4,15 +4,17 @@ import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { Subject, takeUntil } from "rxjs";
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Item } from "../../models/item";
 import { MatSort, Sort } from "@angular/material/sort";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
-import { changingItemPagination, changingItemSorting } from "../../store/actions/item.actions"
+import { changingItemFiltering, changingItemPagination, changingItemSorting } from "../../store/actions/item.actions"
 import { SnackBarService } from "../../services/snack-bar.service";
-import { selectItemPagination, selectItemSorting } from "../../store/selectors/item.selectors";
+import { selectItemFiltering, selectItemPagination, selectItemSorting } from "../../store/selectors/item.selectors";
+import { CategoryBackendService } from "../../services/category-backend.service";
+import { Category } from "../../models/category";
 
 @Component({
   selector: 'app-item-list',
@@ -21,7 +23,10 @@ import { selectItemPagination, selectItemSorting } from "../../store/selectors/i
 })
 
 export class ItemListComponent implements OnInit, OnDestroy {
+  categories: Category[];
+
   totalElements: number;
+
   loading: boolean;
 
   dataSource = new MatTableDataSource<Item>();
@@ -31,21 +36,26 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   pagination$;
 
+  filtering$;
+
   currentPage: number;
   currentSize: number;
 
   currentSortField: string;
   currentDirection: string | any;
 
-  private unsubscribe: Subject<void> = new Subject();
+  filterName: string;
+  filterHasImage: boolean | string = '';
+  filterCategoryId: number | string = '';
+  filterPage: number;
 
   @ViewChild(MatTable) table: any;
-
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
-
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
+  private unsubscribe: Subject<void> = new Subject();
 
   constructor(private itemService: ItemBackendService,
+              private categoryService: CategoryBackendService,
               private snackBarService: SnackBarService,
               public readonly router: Router,
               public dialog: MatDialog,
@@ -53,6 +63,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.pagination$ = this.store.select(selectItemPagination);
 
     this.sorting$ = this.store.select(selectItemSorting);
+
+    this.filtering$ = this.store.select(selectItemFiltering);
   }
 
   ngOnInit() {
@@ -71,23 +83,37 @@ export class ItemListComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe)
     )
       .subscribe((sorting) => {
-      this.currentSortField = sorting.sortField;
-      this.currentDirection = sorting.sortDirection;
-    });
+        this.currentSortField = sorting.sortField;
+        this.currentDirection = sorting.sortDirection;
+      });
 
-    this.itemService.getAllItems(
-      this.currentPage,
-      this.currentSize,
-      this.currentSortField,
-      this.currentDirection
-    ).pipe(
+    this.filtering$.pipe(
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe((filtering: any) => {
+        this.filterName = filtering.name;
+        this.filterHasImage = filtering.hasImage;
+        this.filterCategoryId = filtering.categoryId;
+        this.filterPage = filtering.filterPage
+      });
+
+    if (this.filterName && this.filterName.length >= 3) {
+      this.searchItems(this.filterPage);
+    } else {
+      this.filterName = '';
+      this.filterCategoryId = '';
+      this.filterHasImage = '';
+      this.filterPage = 0;
+
+      this.getAllItems();
+    }
+
+    this.categoryService.getAllCategories(0, 0, '', '').pipe(
       takeUntil(this.unsubscribe)
     )
       .subscribe((data) => {
-        this.dataSource.data = data.content;
-
-        this.totalElements = data.totalElements;
-      });
+        this.categories = data.content;
+      })
   }
 
   ngOnDestroy() {
@@ -106,18 +132,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
               takeUntil(this.unsubscribe)
             )
             .subscribe(() => {
-                this.itemService.getAllItems(
-                  this.currentPage,
-                  this.currentSize,
-                  this.currentSortField,
-                  this.currentDirection
-                )
-                  .pipe(
-                    takeUntil(this.unsubscribe)
-                  )
-                  .subscribe((data) => {
-                    this.dataSource.data = data.content;
-                  });
+                this.getAllItems();
               },
               (error) => {
                 this.snackBarService.error(`${error.message}`);
@@ -142,17 +157,15 @@ export class ItemListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    this.itemService.getAllItems(
-      this.currentPage,
-      this.currentSize,
-      this.currentSortField,
-      this.currentDirection
-    ).pipe(
-      takeUntil(this.unsubscribe)
-    )
-      .subscribe((data) => {
-        this.dataSource.data = data.content;
-      })
+    if (this.filterName.length >= 3) {
+      this.filterPage = event.pageIndex;
+
+      this.searchItems(this.filterPage);
+    } else {
+      this.matPaginator.pageIndex = event.pageIndex;
+
+      this.getAllItems()
+    }
   }
 
   sortChanged(event: Sort) {
@@ -164,19 +177,108 @@ export class ItemListComponent implements OnInit, OnDestroy {
       sortDirection: this.currentDirection
     }));
 
+    if (this.filterName && this.filterName.length >= 3) {
+      this.searchItems(this.filterPage);
+    } else {
+      this.filterName = '';
+      this.filterPage = 0;
+      this.getAllItems()
+    }
+  }
+
+  clearFilters() {
+    this.filterName = '';
+    this.filterHasImage = '';
+    this.filterCategoryId = ''
+
+    this.getAllItems();
+
+    if (this.matPaginator) {
+      this.matPaginator.pageIndex = this.currentPage;
+    }
+
+    this.store.dispatch(changingItemFiltering({
+      name: this.filterName,
+      hasImage: this.filterHasImage,
+      categoryId: this.filterCategoryId,
+      filterPage: this.filterPage
+    }));
+  }
+
+  getAllItems() {
     this.itemService.getAllItems(
       this.currentPage,
       this.currentSize,
       this.currentSortField,
       this.currentDirection
+    ).pipe(
+      takeUntil(this.unsubscribe)
     )
-      .pipe(
+      .subscribe((data) => {
+          this.loading = true;
+
+          this.dataSource.data = data.content;
+
+          this.totalElements = data.totalElements;
+        },
+        (error) => {
+          this.snackBarService.error(error.message);
+        },
+        () => {
+          this.loading = false;
+        });
+  }
+
+  searchItems(filterPage: number) {
+    if (this.filterName && this.filterName.length >= 3) {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = 0;
+      }
+      this.itemService.searchItems(
+        filterPage,
+        this.currentSize,
+        this.currentSortField,
+        this.currentDirection,
+        this.filterName,
+        this.filterHasImage,
+        this.filterCategoryId
+      ).pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(
-        (data) => {
-          this.dataSource.data = data.content;
-        }
-      );
+        .subscribe((data) => {
+            this.loading = true;
+
+            this.dataSource.data = data.content;
+
+            this.totalElements = data.totalElements;
+
+            this.matPaginator.length = data.totalElements;
+          },
+          (error) => {
+            this.snackBarService.error(error.message);
+
+            this.dataSource.data = [];
+          },
+          () => {
+            this.loading = false;
+          })
+    } else if (this.filterName == '') {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = this.currentPage;
+      }
+      this.filterName = ''
+      this.filterPage = 0;
+
+      this.getAllItems();
+    }
+
+    this.store.dispatch(changingItemFiltering({
+      name: this.filterName,
+      hasImage: this.filterHasImage,
+      categoryId: this.filterCategoryId,
+      filterPage: this.filterPage
+    }));
   }
 }

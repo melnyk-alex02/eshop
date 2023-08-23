@@ -16,15 +16,11 @@ import { SnackBarService } from "../../services/snack-bar.service";
   styleUrls: ['./item-create.component.css']
 })
 export class ItemCreateComponent implements OnInit {
-  private unsubscribe: Subject<void> = new Subject();
-
   item: Item;
-
   form: FormGroup;
-
   categories: Category[];
-
   fileName = '';
+  private unsubscribe: Subject<void> = new Subject();
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
@@ -40,7 +36,7 @@ export class ItemCreateComponent implements OnInit {
       name: [null, [Validators.required, Validators.minLength(5)]],
       description: [null, [Validators.required, Validators.minLength(10)]],
       categoryId: [null, this.getCategories()],
-      imageSrc: [null],
+      imageSrc: [''],
     })
   }
 
@@ -63,7 +59,7 @@ export class ItemCreateComponent implements OnInit {
             this.snackBarService.success("Items uploaded successfully");
           },
           (error) => {
-            this.fileName='';
+            this.fileName = '';
             this.snackBarService.error(error.message);
           });
     }

@@ -7,13 +7,21 @@ import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Category } from "../../models/category";
-import { Subject, takeUntil } from "rxjs";
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
 import { MatSort, Sort } from "@angular/material/sort";
-import { changingCategoryPagination, changingCategorySorting } from "../../store/actions/category.actions";
+import {
+  changingCategoryFiltering,
+  changingCategoryPagination,
+  changingCategorySorting
+} from "../../store/actions/category.actions";
 import { SnackBarService } from "../../services/snack-bar.service";
-import { selectCategoryPagination, selectCategorySorting } from "../../store/selectors/category.selectors";
+import {
+  selectCategoryFiltering,
+  selectCategoryPagination,
+  selectCategorySorting
+} from "../../store/selectors/category.selectors";
 
 @Component({
   selector: 'app-category-list',
@@ -22,6 +30,7 @@ import { selectCategoryPagination, selectCategorySorting } from "../../store/sel
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
   totalElements: number;
+
   loading: boolean;
 
   dataSource = new MatTableDataSource<Category>();
@@ -29,7 +38,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   sorting$;
 
-  pagination$
+  pagination$;
+
+  filtering$;
 
   currentPage: number;
   currentSize: number;
@@ -37,13 +48,13 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   currentSortField: string;
   currentDirection: string | any;
 
-  private unsubscribe: Subject<void> = new Subject()
+  filterName: string;
+  filterPage: number;
 
   @ViewChild(MatTable) table: any;
-
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
-
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
+  private unsubscribe: Subject<void> = new Subject()
 
   constructor(private categoryService: CategoryBackendService,
               private snackBarService: SnackBarService,
@@ -54,6 +65,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.pagination$ = this.store.select(selectCategoryPagination);
 
     this.sorting$ = this.store.select(selectCategorySorting);
+
+    this.filtering$ = this.store.select(selectCategoryFiltering)
   }
 
   ngOnInit() {
@@ -76,19 +89,22 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         this.currentDirection = sorting.sortDirection;
       });
 
-    this.categoryService.getAllCategories(
-      this.currentPage,
-      this.currentSize,
-      this.currentSortField,
-      this.currentDirection
+    this.filtering$.pipe(
+      takeUntil(this.unsubscribe)
     )
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((data) => {
-        this.dataSource.data = data.content;
-        this.totalElements = data.totalElements;
+      .subscribe((filtering: any) => {
+        this.filterName = filtering.name;
+        this.filterPage = filtering.filterPag;
       });
+
+    if (this.filterName && this.filterName.length >= 3) {
+      this.searchCategories(this.filterPage);
+    } else {
+      this.filterName = '';
+      this.filterPage = 0;
+
+      this.getAllCategories();
+    }
   }
 
   ngOnDestroy() {
@@ -107,18 +123,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
               takeUntil(this.unsubscribe)
             )
             .subscribe(() => {
-                this.categoryService.getAllCategories(
-                  this.currentPage,
-                  this.currentSize,
-                  this.currentSortField,
-                  this.currentDirection
-                )
-                  .pipe(
-                    takeUntil(this.unsubscribe)
-                  )
-                  .subscribe((data) => {
-                    this.dataSource.data = data.content;
-                  });
+                this.getAllCategories();
 
                 this.snackBarService.success("Category was successfully deleted!");
               },
@@ -142,19 +147,13 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    this.categoryService.getAllCategories(
-      this.currentPage,
-      this.currentSize,
-      this.currentSortField,
-      this.currentDirection
-    )
-      .pipe(
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((data) => {
-          this.dataSource.data = data.content
-        }
-      );
+    if (this.filterName.length >= 3) {
+      this.filterPage = event.pageIndex;
+
+      this.searchCategories(this.filterPage);
+    } else {
+      this.getAllCategories();
+    }
   }
 
   sortChanged(event: Sort) {
@@ -166,6 +165,25 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       sortDirection: this.currentDirection
     }));
 
+    if (this.filterName && this.filterName.length >= 3) {
+      this.searchCategories(this.filterPage);
+    } else {
+      this.filterName = '';
+      this.getAllCategories();
+    }
+  }
+
+  clearFilters() {
+    this.filterName = '';
+
+    this.getAllCategories();
+
+    if (this.matPaginator) {
+      this.matPaginator.pageIndex = this.currentPage;
+    }
+  }
+
+  getAllCategories() {
     this.categoryService.getAllCategories(
       this.currentPage,
       this.currentSize,
@@ -175,10 +193,67 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe)
       )
-      .subscribe(
-        (data) => {
+      .subscribe((data) => {
+          this.loading = true;
+
           this.dataSource.data = data.content;
+
+          this.totalElements = data.totalElements;
+        },
+        (error) => {
+          this.snackBarService.error(error.message);
+
+          this.dataSource.data = [];
         }
-      );
+        , () => {
+          this.loading = false;
+        });
+  }
+
+  searchCategories(filterPage: number) {
+    if (this.filterName && this.filterName.length >= 3) {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = 0;
+      }
+      this.categoryService.searchCategories(
+        filterPage,
+        this.currentSize,
+        this.currentSortField,
+        this.currentDirection,
+        this.filterName)
+        .pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+          takeUntil(this.unsubscribe)
+        )
+        .subscribe((data) => {
+            this.loading = true;
+
+            this.dataSource.data = data.content;
+
+            this.totalElements = data.totalElements;
+          },
+          (error) => {
+            this.snackBarService.error(error.message);
+
+            this.dataSource.data = [];
+          },
+          () => {
+            this.loading = false;
+          });
+    } else if (!this.filterName) {
+      if (this.matPaginator) {
+        this.matPaginator.pageIndex = this.currentPage;
+      }
+      this.filterName = '';
+      this.filterPage = 0;
+
+      this.getAllCategories();
+    }
+
+    this.store.dispatch(changingCategoryFiltering({
+      name: this.filterName,
+      filterPage: this.filterPage
+    }));
   }
 }
