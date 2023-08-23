@@ -225,6 +225,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = 0;
       }
+      this.loading = true;
+
       this.categoryService.searchCategories(
         filterPage,
         this.currentSize,
@@ -236,21 +238,21 @@ export class CategoryListComponent implements OnInit, OnDestroy {
           distinctUntilChanged(),
           takeUntil(this.unsubscribe)
         )
-        .subscribe((data) => {
-            this.loading = true;
-
+        .subscribe({
+          next: (data) => {
             this.dataSource.data = data.content;
 
             this.totalElements = data.totalElements;
           },
-          (error) => {
+          error: (error) => {
             this.snackBarService.error(error.message);
 
             this.dataSource.data = [];
           },
-          () => {
+          complete: () => {
             this.loading = false;
-          });
+          }
+        });
     } else if (!this.filterName) {
       if (this.matPaginator) {
         this.matPaginator.pageIndex = this.currentPage;

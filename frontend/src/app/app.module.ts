@@ -53,30 +53,6 @@ import { MatCardModule } from "@angular/material/card";
     AdminPageComponent,
     AccessDeniedPageComponent,
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatTableModule,
-        MatSnackBarModule,
-        MatInputModule,
-        MatDialogModule,
-        MatCommonModule,
-        MatSortModule,
-        HttpClientModule,
-        NgbModule,
-        KeycloakAngularModule,
-        AppRoutingModule,
-        ReactiveFormsModule,
-        MatToolbarModule,
-        MatPaginatorModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        StorageModule,
-        MatCardModule
-    ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -99,7 +75,8 @@ import { MatCardModule } from "@angular/material/card";
     MatIconModule,
     MatProgressSpinnerModule,
     StorageModule,
-    FormsModule
+    FormsModule,
+    MatCardModule
   ],
   providers: [{
     provide: APP_INITIALIZER,
