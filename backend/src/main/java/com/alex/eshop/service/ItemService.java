@@ -120,7 +120,7 @@ public class ItemService {
             throw new DataNotFoundException("There is no item with id " + itemUpdateDTO.getId());
         }
         if (!itemRepository.existsByCategoryId(itemUpdateDTO.getCategoryId())) {
-            throw new DataNotFoundException("There is no category with id" + itemUpdateDTO.getCategoryId());
+            throw new DataNotFoundException("There is no category with id " + itemUpdateDTO.getCategoryId());
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));
     }
