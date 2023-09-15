@@ -50,11 +50,7 @@ public class ItemService {
                 .and(ItemSpecification.hasImage(hasImage))
                 .and(ItemSpecification.hasCategoryId(categoryId));
 
-        Page<ItemDTO> itemDTOPage = itemRepository.findAll(itemSpecification, pageable).map(itemMapper::toDto);
-        if (itemDTOPage.isEmpty()) {
-            throw new DataNotFoundException("There are no items found with your search preferences");
-        }
-        return itemDTOPage;
+        return itemRepository.findAll(itemSpecification, pageable).map(itemMapper::toDto);
 
     }
 
