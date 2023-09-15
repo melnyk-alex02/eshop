@@ -189,6 +189,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     if (this.matPaginator) {
       this.matPaginator.pageIndex = this.currentPage;
     }
+
+    this.store.dispatch(changingCategoryFiltering({
+      name:this.filterName,
+      filterPage: this.filterPage
+    }));
   }
 
   getAllCategories() {
@@ -244,12 +249,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
             this.totalElements = data.totalElements;
           },
-          error: (error) => {
-            this.snackBarService.error(error.message);
-
-            this.dataSource.data = [];
-          },
           complete: () => {
+            if(this.dataSource.data.length == 0){
+              this.snackBarService.error("There are no categories by your search preferences");
+            }
+
             this.loading = false;
           }
         });

@@ -38,9 +38,7 @@ export class CategoryBackendService {
       .set('sort', sortField + ',' + sortDirection)
       .set('name', name);
 
-    return this.http.get<Page<Category>>(`${SERVER_API_URL}/categories/search`, {params}).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<Page<Category>>(`${SERVER_API_URL}/categories/search`, {params});
   }
 
   public getCategoryById(id: number): Observable<Category> {

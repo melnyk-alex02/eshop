@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.loading">
+<ng-container *ngIf="!this.dataSource.data">
   <div class="spinner">
     <mat-progress-spinner
       class="example-margin"
@@ -9,10 +9,11 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="!this.loading">
+<ng-container *ngIf="this.dataSource.data">
   <div class="header">
     <h1 style="color: black">Category table</h1>
   </div>
+
   <div class="filter-section">
     <mat-form-field>
       <input matInput (keyup)="searchCategories(filterPage)" placeholder="Search" [(ngModel)]="filterName">
