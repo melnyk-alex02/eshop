@@ -24,6 +24,7 @@
                 <constraints foreignKeyName="category_id" references="category(id)"/>
             </column>
             <column name="description" type="text"/>
+            <column name="price" type="DECIMAL(12, 2)"/>
             <column name="image_src" type="varchar(500)"/>
         </createTable>
     </changeSet>
@@ -39,25 +40,25 @@
         </sql>
     </changeSet>
     <changeSet author="bestuser" id="3">
-        <sql>insert into item (name, description, category_id , image_src)
-             values ('Dell XPS 13 Laptop', 'This ultra-portable laptop features a 13.3-inch display, 11th Gen Intel Core processors, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), ''),
-                    ('HP Pavilion Desktop', 'This powerful desktop PC features a 10th Gen Intel Core i7 processor, NVIDIA GeForce GTX graphics, and a 512GB SSD.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), ''),
-                    ('Asus Chromebook Flip', 'This 2-in-1 Chromebook features a 14-inch touchscreen, Intel Core i3 processor, and up to 8GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), ''),
-                    ('Corsair Vengeance RGB Pro RAM', 'This high-performance DDR4 RAM module features stunning RGB lighting and speeds of up to 3200MHz.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), ''),
-                    ('Logitech MX Master 3 Mouse', 'This advanced wireless mouse features a precision sensor, customizable buttons, and a comfortable ergonomic design.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), ''),
-                    ('Samsung 970 EVO Plus SSD', 'This NVMe SSD delivers lightning-fast read and write speeds, making it ideal for gaming and heavy workloads.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), ''),
-                    ('Cisco Catalyst 2960-X Switch', 'This enterprise-class switch features 24 Gigabit Ethernet ports and advanced security features such as MACsec encryption.', (SELECT id FROM category WHERE name = 'Networking'), ''),
-                    ('TP-Link Archer AX6000 Router', 'This high-speed Wi-Fi 6 router delivers blazing-fast wireless speeds of up to 6000Mbps, making it perfect for large homes or offices.', (SELECT id FROM category WHERE name = 'Networking'), ''),
-                    ('Netgear Orbi Pro Mesh System', 'This mesh Wi-Fi system provides fast and reliable wireless coverage for large areas, with easy setup and management via the Orbi app.', (SELECT id FROM category WHERE name = 'Networking'), ''),
-                    ('Microsoft Office 365', 'This popular productivity suite includes essential applications such as Word, Excel, PowerPoint, and Outlook, as well as cloud storage and other features.', (SELECT id FROM category WHERE name = 'Software'), ''),
-                    ('Norton 360 Deluxe', 'This all-in-one security suite includes antivirus protection, firewall, password manager, and other security features to keep your devices safe.', (SELECT id FROM category WHERE name = 'Software'), ''),
-                    ('Adobe Creative Cloud', 'This suite of creative software includes industry-standard applications such as Photoshop, Illustrator, InDesign, and Premiere Pro, as well as cloud storage and collaboration tools.', (SELECT id FROM category WHERE name = 'Software'), ''),
-                    ('Razer Blade 15 Gaming Laptop', 'This powerful gaming laptop features a 15.6-inch 144Hz display, NVIDIA GeForce RTX graphics, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Gaming'), ''),
-                    ('Alienware Aurora R12 Desktop', 'This high-performance gaming desktop features a 11th Gen Intel Core i9 processor, NVIDIA GeForce RTX graphics, and customizable RGB lighting.', (SELECT id FROM category WHERE name = 'Gaming'), ''),
-                    ('Logitech G Pro X Gaming Headset', 'This premium gaming headset features advanced audio drivers, customizable EQ, and comfortable memory foam ear pads.', (SELECT id FROM category where name ='Gaming'), ''),
-                    ('Nest Hello Video Doorbell', 'This smart doorbell features HD video, two-way audio, and facial recognition to keep your home secure.', (SELECT id FROM category where name ='Smart Home'), ''),
-                    ('Philips Hue Starter Kit', 'This smart lighting kit includes three color-changing bulbs and a hub, allowing you to control your lights with voice commands or a smartphone app.', (SELECT id FROM category where name ='Smart Home'), ''),
-                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), '')
+        <sql>insert into item (name, description, category_id, price, image_src)
+             values ('Dell XPS 13 Laptop', 'This ultra-portable laptop features a 13.3-inch display, 11th Gen Intel Core processors, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), 799,  ''),
+                    ('HP Pavilion Desktop', 'This powerful desktop PC features a 10th Gen Intel Core i7 processor, NVIDIA GeForce GTX graphics, and a 512GB SSD.', (SELECT id FROM category WHERE name = 'Computers and Laptops'),399, ''),
+                    ('Asus Chromebook Flip', 'This 2-in-1 Chromebook features a 14-inch touchscreen, Intel Core i3 processor, and up to 8GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), 249, ''),
+                    ('Corsair Vengeance RGB Pro RAM', 'This high-performance DDR4 RAM module features stunning RGB lighting and speeds of up to 3200MHz.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), 79.99, ''),
+                    ('Logitech MX Master 3 Mouse', 'This advanced wireless mouse features a precision sensor, customizable buttons, and a comfortable ergonomic design.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), 99.99,''),
+                    ('Samsung 970 EVO Plus SSD', 'This NVMe SSD delivers lightning-fast read and write speeds, making it ideal for gaming and heavy workloads.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), 79.99, ''),
+                    ('Cisco Catalyst 2960-X Switch', 'This enterprise-class switch features 24 Gigabit Ethernet ports and advanced security features such as MACsec encryption.', (SELECT id FROM category WHERE name = 'Networking'), 1999, ''),
+                    ('TP-Link Archer AX6000 Router', 'This high-speed Wi-Fi 6 router delivers blazing-fast wireless speeds of up to 6000Mbps, making it perfect for large homes or offices.', (SELECT id FROM category WHERE name = 'Networking'), 299.99, ''),
+                    ('Netgear Orbi Pro Mesh System', 'This mesh Wi-Fi system provides fast and reliable wireless coverage for large areas, with easy setup and management via the Orbi app.', (SELECT id FROM category WHERE name = 'Networking'), 399.99, ''),
+                    ('Microsoft Office 365', 'This popular productivity suite includes essential applications such as Word, Excel, PowerPoint, and Outlook, as well as cloud storage and other features.', (SELECT id FROM category WHERE name = 'Software'), 69.99, ''),
+                    ('Norton 360 Deluxe', 'This all-in-one security suite includes antivirus protection, firewall, password manager, and other security features to keep your devices safe.', (SELECT id FROM category WHERE name = 'Software'), 99.99, ''),
+                    ('Adobe Creative Cloud', 'This suite of creative software includes industry-standard applications such as Photoshop, Illustrator, InDesign, and Premiere Pro, as well as cloud storage and collaboration tools.', (SELECT id FROM category WHERE name = 'Software'), 9.99, ''),
+                    ('Razer Blade 15 Gaming Laptop', 'This powerful gaming laptop features a 15.6-inch 144Hz display, NVIDIA GeForce RTX graphics, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Gaming'), 1799, ''),
+                    ('Alienware Aurora R12 Desktop', 'This high-performance gaming desktop features a 11th Gen Intel Core i9 processor, NVIDIA GeForce RTX graphics, and customizable RGB lighting.', (SELECT id FROM category WHERE name = 'Gaming'), 1499, ''),
+                    ('Logitech G Pro X Gaming Headset', 'This premium gaming headset features advanced audio drivers, customizable EQ, and comfortable memory foam ear pads.', (SELECT id FROM category where name ='Gaming'), 99.99, ''),
+                    ('Nest Hello Video Doorbell', 'This smart doorbell features HD video, two-way audio, and facial recognition to keep your home secure.', (SELECT id FROM category where name ='Smart Home'), 229.99, ''),
+                    ('Philips Hue Starter Kit', 'This smart lighting kit includes three color-changing bulbs and a hub, allowing you to control your lights with voice commands or a smartphone app.', (SELECT id FROM category where name ='Smart Home'), 129.99, ''),
+                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), 199.99, '');
         </sql>
     </changeSet>
 </databaseChangeLog>

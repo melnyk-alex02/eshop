@@ -2,6 +2,8 @@ package com.alex.eshop.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Item {
     @Id
@@ -11,6 +13,7 @@ public class Item {
     @ManyToOne
     private Category category;
     private String description;
+    private BigDecimal price;
     private String imageSrc;
 
     public Long getId() {
@@ -43,6 +46,14 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public String getImageSrc() {

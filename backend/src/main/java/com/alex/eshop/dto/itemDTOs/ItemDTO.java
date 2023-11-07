@@ -1,11 +1,14 @@
 package com.alex.eshop.dto.itemDTOs;
 
+import java.math.BigDecimal;
+
 public class ItemDTO {
     private Long id;
     private String name;
     private Long categoryId;
     private String categoryName;
     private String description;
+    private BigDecimal price;
     private String imageSrc;
 
     public Long getId() {
@@ -46,6 +49,14 @@ public class ItemDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public String getImageSrc() {

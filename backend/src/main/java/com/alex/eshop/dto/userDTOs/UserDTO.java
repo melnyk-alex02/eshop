@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserDTO {
-    private String userUuid;
+    private String userId;
     private String email;
     private String username;
     private String firstName;
@@ -12,12 +12,12 @@ public class UserDTO {
     private LocalDateTime registerDate;
     private List<String> roles;
 
-    public String getUserUuid() {
-        return userUuid;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserUuid(String userUuid) {
-        this.userUuid = userUuid;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getEmail() {
