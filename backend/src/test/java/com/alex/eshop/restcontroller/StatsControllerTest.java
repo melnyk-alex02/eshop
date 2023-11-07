@@ -1,30 +1,21 @@
-package controllerTests;
+package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.EshopApplication;
-import config.TestConfig;
+import com.alex.eshop.constants.Role;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
 @SpringBootTest(classes = EshopApplication.class)
-@AutoConfigureMockMvc
-@Import(TestConfig.class)
-public class StatsControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+public class StatsControllerTest extends BaseWebTest {
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     public void testGetStats() throws Exception {
         mockMvc.perform(get("/api/stats"))
                 .andExpect(status().isOk())

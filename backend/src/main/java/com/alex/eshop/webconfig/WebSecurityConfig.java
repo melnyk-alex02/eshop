@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
-@Profile("active")
 public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -66,7 +65,7 @@ public class WebSecurityConfig {
                 JSONArray roles = (JSONArray) realmAccess.get("roles");
 
                 final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream()
-                        .map(role -> new SimpleGrantedAuthority("" + role)).collect(Collectors.toList());
+                        .map(role -> new SimpleGrantedAuthority("" + role)).toList();
                 grantedAuthorities.addAll(keycloakAuthorities);
 
                 return grantedAuthorities;

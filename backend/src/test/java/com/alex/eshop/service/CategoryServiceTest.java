@@ -1,4 +1,4 @@
-package serviceTests;
+package com.alex.eshop.service;
 
 import com.alex.eshop.dto.categoryDTOs.CategoryCreateDTO;
 import com.alex.eshop.dto.categoryDTOs.CategoryDTO;
@@ -8,7 +8,6 @@ import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
-import com.alex.eshop.service.CategoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

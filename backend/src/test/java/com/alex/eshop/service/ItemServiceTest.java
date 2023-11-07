@@ -1,4 +1,4 @@
-package serviceTests;
+package com.alex.eshop.service;
 
 import com.alex.eshop.dto.itemDTOs.ItemCreateDTO;
 import com.alex.eshop.dto.itemDTOs.ItemDTO;
@@ -9,7 +9,6 @@ import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
-import com.alex.eshop.service.ItemService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

@@ -1,9 +1,8 @@
-package serviceTests;
+package com.alex.eshop.service;
 
 
 import com.alex.eshop.dto.statsDTOs.StatsDTO;
 import com.alex.eshop.repository.CategoryRepository;
-import com.alex.eshop.service.StatsService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

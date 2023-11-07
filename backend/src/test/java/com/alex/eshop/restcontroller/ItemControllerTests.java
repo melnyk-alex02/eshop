@@ -1,32 +1,24 @@
-package controllerTests;
+package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.EshopApplication;
-import config.TestConfig;
+import com.alex.eshop.constants.Role;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
 @SpringBootTest(classes = EshopApplication.class)
-@AutoConfigureMockMvc
-@Import(TestConfig.class)
-public class ItemControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+public class ItemControllerTests extends BaseWebTest {
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
     @SqlGroup({
             @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
                     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -52,6 +44,7 @@ public class ItemControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
     @SqlGroup({
             @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
                     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -67,6 +60,7 @@ public class ItemControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
     @SqlGroup({
             @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
                     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -80,6 +74,7 @@ public class ItemControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testCreateItem() throws Exception {
@@ -96,6 +91,7 @@ public class ItemControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @SqlGroup({
             @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
                     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -117,6 +113,7 @@ public class ItemControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @SqlGroup({
             @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
                     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -130,6 +127,7 @@ public class ItemControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testUploadItemsFromCsv() throws Exception {
@@ -146,6 +144,7 @@ public class ItemControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
     @SqlGroup({
             @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
                     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -158,5 +157,13 @@ public class ItemControllerTests {
 
         mockMvc.perform(get("/api/items/search?page=0&name=" + name + "&hasImage=" + hasImage))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
+    public void whenDeleteWithUserRole_thenForbidden() throws Exception {
+        Long id = 19L;
+        mockMvc.perform(delete("/api/items/" + id))
+                .andExpect(status().isForbidden());
     }
 }

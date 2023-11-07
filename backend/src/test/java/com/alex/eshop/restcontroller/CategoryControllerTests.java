@@ -1,33 +1,25 @@
-package controllerTests;
+package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.EshopApplication;
-import config.TestConfig;
+import com.alex.eshop.constants.Role;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
 @SpringBootTest(classes = EshopApplication.class)
-@AutoConfigureMockMvc
-@Import(TestConfig.class)
-public class CategoryControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+public class CategoryControllerTests extends BaseWebTest {
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
     @SqlGroup({@Sql(scripts = "/sqlForControllerTests/categorySql/categories_table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
             @Sql(scripts = "/sqlForControllerTests/categorySql/cleanUp_categories.sql",
@@ -52,6 +44,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
     @SqlGroup({@Sql(scripts = "/sqlForControllerTests/categorySql/categories_table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
             @Sql(scripts = "/sqlForControllerTests/categorySql/cleanUp_categories.sql",
@@ -67,6 +60,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @Sql(scripts = "/sqlForControllerTests/categorySql/cleanUp_categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testCreateCategory() throws Exception {
@@ -80,6 +74,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @SqlGroup({@Sql(scripts = "/sqlForControllerTests/categorySql/categories_table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
             @Sql(scripts = "/sqlForControllerTests/categorySql/cleanUp_categories.sql",
@@ -95,6 +90,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @SqlGroup({@Sql(scripts = "/sqlForControllerTests/categorySql/categories_table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
             @Sql(scripts = "/sqlForControllerTests/categorySql/cleanUp_categories.sql",
@@ -107,6 +103,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     @Sql(scripts = "/sqlForControllerTests/categorySql/cleanUp_categories.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testUploadCategoriesFromCsv() throws Exception {
         String content = "name,description\ncategory 1,desc 1\ncategory 2,desc 2";
@@ -123,6 +120,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
     @SqlGroup({@Sql(scripts = "/sqlForControllerTests/categorySql/categories_table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
             @Sql(scripts = "/sqlForControllerTests/categorySql/cleanUp_categories.sql",

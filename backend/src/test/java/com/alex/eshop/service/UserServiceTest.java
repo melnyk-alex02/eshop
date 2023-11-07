@@ -1,4 +1,4 @@
-package serviceTests;
+package com.alex.eshop.service;
 
 import com.alex.eshop.constants.Role;
 import com.alex.eshop.dto.userDTOs.UserDTO;
@@ -6,7 +6,6 @@ import com.alex.eshop.dto.userDTOs.UserRegisterDTO;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.keycloak.KeycloakService;
 import com.alex.eshop.mapper.UserMapper;
-import com.alex.eshop.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.representations.AccessTokenResponse;
