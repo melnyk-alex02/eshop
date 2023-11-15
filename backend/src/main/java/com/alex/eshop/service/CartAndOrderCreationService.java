@@ -4,14 +4,11 @@ import com.alex.eshop.constants.OrderStatus;
 import com.alex.eshop.dto.cartDTOs.CartDTO;
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
 import com.alex.eshop.dto.orderDTOs.OrderItemDTO;
-import com.alex.eshop.entity.OrderItem;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.mapper.CartMapper;
-import com.alex.eshop.mapper.OrderItemMapper;
 import com.alex.eshop.mapper.OrderMapper;
 import com.alex.eshop.repository.CartRepository;
-import com.alex.eshop.repository.OrderItemsRepository;
 import com.alex.eshop.repository.OrderRepository;
 import com.alex.eshop.utils.OrderNumberGenerator;
 import org.springframework.stereotype.Service;
@@ -19,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,19 +26,13 @@ public class CartAndOrderCreationService {
     private final CartMapper cartMapper;
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
-    private final OrderItemsRepository orderItemsRepository;
-    private final OrderItemMapper orderItemMapper;
 
     public CartAndOrderCreationService(CartRepository cartRepository, CartMapper cartMapper,
-                                       OrderMapper orderMapper, OrderRepository orderRepository,
-                                       OrderItemsRepository orderItemsRepository,
-                                       OrderItemMapper orderItemMapper) {
+                                       OrderMapper orderMapper, OrderRepository orderRepository) {
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
         this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
-        this.orderItemsRepository = orderItemsRepository;
-        this.orderItemMapper = orderItemMapper;
     }
 
     public List<CartDTO> getAllCarts(String userId) {
@@ -83,10 +74,11 @@ public class CartAndOrderCreationService {
     }
 
 
-    public void createOrderFromCart(String userId) {
-        HashSet<OrderItemDTO> orderItemDTOSet = new HashSet<>();
+    public OrderDTO createOrderFromCart(String userId) {
+        if (!cartRepository.existsAllByUserId(userId)) {
+            throw new DataNotFoundException("There is no cart for current logged user");
+        }
 
-        OrderItem orderItems = new OrderItem();
         Integer count = 0;
         BigDecimal price = BigDecimal.ZERO;
         OrderDTO orderDTO = new OrderDTO();
@@ -95,28 +87,30 @@ public class CartAndOrderCreationService {
         orderDTO.setStatus(OrderStatus.NEW);
         orderDTO.setUserId(userId);
 
-
         List<CartDTO> cartDTOList = getAllCarts(userId);
 
+        List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
         for (CartDTO cartDTO : cartDTOList) {
             OrderItemDTO orderItemDTO = new OrderItemDTO();
-            orderItemDTO.setOrderId(orderDTO.getNumber());
+
+            orderItemDTO.setOrderNumber(orderDTO.getNumber());
             orderItemDTO.setItemId(cartDTO.getItemId());
+
+            orderItemDTOList.add(orderItemDTO);
+
             price = price.add(cartDTO.getItemPrice()).multiply(BigDecimal.valueOf(cartDTO.getCount()));
             count += cartDTO.getCount();
-
-            orderItemDTOSet.add(orderItemDTO);
         }
+
         orderDTO.setCount(count);
         orderDTO.setPrice(price);
-
-        orderDTO.setOrderItemDTOSet(orderItemDTOSet);
+        orderDTO.setOrderItemDTOList(orderItemDTOList);
 
         orderRepository.save(orderMapper.toEntity(orderDTO));
 
-        orderItemsRepository.saveAll(orderItemMapper.toEntity(orderItemDTOSet));
-
         deleteCart(userId);
+
+        return orderDTO;
     }
 
     public void deleteCart(String userId) {

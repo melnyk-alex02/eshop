@@ -2,7 +2,7 @@ package com.alex.eshop.dto.orderDTOs;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Set;
+import java.util.List;
 
 public class OrderDTO {
     private Long id;
@@ -11,7 +11,7 @@ public class OrderDTO {
     private ZonedDateTime createdDate;
     private BigDecimal price;
     private Integer count;
-    private Set<OrderItemDTO> orderItemDTOSet;
+    private List<OrderItemDTO> orderItemDTOList;
     private String userId;
     private ZonedDateTime purchasedDate;
 
@@ -71,12 +71,12 @@ public class OrderDTO {
         this.count = count;
     }
 
-    public Set<OrderItemDTO> getOrderItemDTOSet() {
-        return orderItemDTOSet;
+    public List<OrderItemDTO> getOrderItemDTOList() {
+        return orderItemDTOList;
     }
 
-    public void setOrderItemDTOSet(Set<OrderItemDTO> orderItemDTOSet) {
-        this.orderItemDTOSet = orderItemDTOSet;
+    public void setOrderItemDTOList(List<OrderItemDTO> orderItemDTOList) {
+        this.orderItemDTOList = orderItemDTOList;
     }
 
     public String getUserId() {

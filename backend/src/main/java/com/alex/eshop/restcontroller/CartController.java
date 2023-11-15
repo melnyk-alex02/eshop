@@ -2,6 +2,7 @@ package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.constants.Role;
 import com.alex.eshop.dto.cartDTOs.CartDTO;
+import com.alex.eshop.dto.orderDTOs.OrderDTO;
 import com.alex.eshop.service.CartAndOrderCreationService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class CartController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @PostMapping("/create-order")
-    public void createOrderFromCart(Principal principal) {
-          cartService.createOrderFromCart(principal.getName());
+    public OrderDTO createOrderFromCart(Principal principal) {
+          return cartService.createOrderFromCart(principal.getName());
     }
 }

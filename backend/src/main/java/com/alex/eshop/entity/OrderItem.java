@@ -3,18 +3,16 @@ package com.alex.eshop.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="order_items")
 public class OrderItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @ManyToOne
+    @JoinColumn(name = "order_number")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -41,4 +39,5 @@ public class OrderItem {
     public void setItem(Item item) {
         this.item = item;
     }
+
 }

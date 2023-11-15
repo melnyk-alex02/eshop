@@ -20,7 +20,7 @@
         </createTable>
     </changeSet>
     <changeSet id="5" author="bestuser">
-        <createTable tableName="order_table">
+        <createTable tableName="orders">
             <column name="number" type="VARCHAR(30)">
                 <constraints unique="true" primaryKey="true"/>
             </column>
@@ -31,22 +31,21 @@
                 <constraints checkConstraint="count >= 1"/>
             </column>
             <column name="created_date" type="TIMESTAMP"/>
-            <column name="timezone" type="VARCHAR(50)"/>
             <column name="price" type="DECIMAL(12, 2)"/>
             <column name="user_id" type="VARCHAR(255)"/>
             <column name="purchased_date" type="TIMESTAMP"/>
         </createTable>
     </changeSet>
     <changeSet id="6" author="bestuser">
-        <createTable tableName="order_items">
+        <createTable tableName="order_item">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="order_id" type="varchar(30)">
-                <constraints foreignKeyName="order_id" references="order_table(number)"/>
+            <column name="order_number" type="varchar(30)">
+                <constraints foreignKeyName="order_number" references="orders(number)"/>
             </column>
             <column name="item_id" type="bigint">
-                <constraints foreignKeyName="fk_order_items_item" references="cart(item_id)"/>
+                <constraints foreignKeyName="fk_order_items_item" references="item(id)"/>
             </column>
         </createTable>
     </changeSet>

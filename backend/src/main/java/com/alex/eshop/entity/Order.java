@@ -4,30 +4,28 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "order_table")
+@Table(name = "orders")
 public class Order {
     @Id
-    @Column(name = "number")
     private String number;
     private String status;
     private ZonedDateTime createdDate;
     private BigDecimal price;
     private Integer count;
     private String userId;
-    @OneToMany(mappedBy = "order")
-    private Set<OrderItem> orderItemsSet;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItemList;
     private ZonedDateTime purchasedDate;
 
-
-    public Set<OrderItem> getOrderItemsSet() {
-        return orderItemsSet;
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
     }
 
-    public void setOrderItemsSet(Set<OrderItem> orderItemsSet) {
-        this.orderItemsSet = orderItemsSet;
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
     }
 
     public String getNumber() {

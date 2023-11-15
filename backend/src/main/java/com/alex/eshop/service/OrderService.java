@@ -1,6 +1,7 @@
 package com.alex.eshop.service;
 
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
+import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.OrderMapper;
 import com.alex.eshop.repository.OrderRepository;
 import jakarta.transaction.Transactional;
@@ -17,7 +18,10 @@ public class OrderService {
         this.orderMapper = orderMapper;
     }
 
-    public OrderDTO getOrderByUserId(String userId, String orderNumber){
+    public OrderDTO getOrderByUserIdAndOrderNumber(String userId, String orderNumber) {
+        if (!orderRepository.existsByNumberAndUserId(orderNumber, userId)) {
+            throw new DataNotFoundException("There is no order with number " + orderNumber + " for current logged user");
+        }
         return orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
     }
 }

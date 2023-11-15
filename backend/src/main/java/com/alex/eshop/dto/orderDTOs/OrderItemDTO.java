@@ -2,7 +2,7 @@ package com.alex.eshop.dto.orderDTOs;
 
 public class OrderItemDTO {
     private Long id;
-    private String orderId;
+    private String orderNumber;
     private Long itemId;
 
     public Long getId() {
@@ -13,12 +13,12 @@ public class OrderItemDTO {
         this.id = id;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public String getOrderNumber() {
+        return orderNumber;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public Long getItemId() {
