@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.alex.eshop</groupId>
@@ -14,13 +14,14 @@
     <name>eshop</name>
     <description>Project for Spring Boot</description>
     <properties>
-        <java.version>19</java.version>
-        <liquibase.version>4.17.1</liquibase.version>
+        <java.version>21</java.version>
+        <liquibase.version>4.24.0</liquibase.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <keycloak.version>20.0.1</keycloak.version>
         <nimbusds.version>9.23</nimbusds.version>
         <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
-        <configuration.processor.version>3.0.0</configuration.processor.version>
+        <configuration.processor.version>3.1.5</configuration.processor.version>
+        <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -116,6 +117,57 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <version>${native.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <goals>
+                                    <goal>compile-no-fork</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                            <execution>
+                                <id>test-native</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <imageName>eshop</imageName>
+                            <mainClass>com.alex.eshop.EshopApplication</mainClass>
+                            <verbose>true</verbose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>graalvm-native-build-tools-snapshots</id>
+            <name>GraalVM native-build-tools Snapshots</name>
+            <url>https://raw.githubusercontent.com/graalvm/native-build-tools/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <plugins>
