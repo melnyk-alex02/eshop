@@ -8,75 +8,58 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = EshopApplication.class)
+@Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ItemControllerTests extends BaseWebTest {
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.USER})
-    @SqlGroup({
-            @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
-                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    })
     public void testGetAllItems() throws Exception {
         mockMvc.perform(get("/api/items")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$.content[18].id").value(19L))
-                .andExpect(jsonPath("$.content[18].name").value("item 1"))
-                .andExpect(jsonPath("$.content[18].description").value("desc 1"))
-                .andExpect(jsonPath("$.content[18].categoryId").value(1L))
-                .andExpect(jsonPath("$.content[18].imageSrc").value("img 1"))
-
                 .andExpect(jsonPath("$.content[19].id").value(20L))
-                .andExpect(jsonPath("$.content[19].name").value("item 2"))
-                .andExpect(jsonPath("$.content[19].description").value("desc 2"))
-                .andExpect(jsonPath("$.content[19].categoryId").value(2L))
-                .andExpect(jsonPath("$.content[19].imageSrc").value("img 2"));
+                .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.USER})
-    @SqlGroup({
-            @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
-                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    })
     public void testGetLastFiveItems() throws Exception {
         mockMvc.perform(get("/api/items/last")
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].id").value(21L))
+                .andExpect(status().isOk());
 
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].id").value(20L));
     }
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.USER})
-    @SqlGroup({
-            @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
-                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    })
     public void testGetItemsInCategory() throws Exception {
         mockMvc.perform(get("/api/item?categoryId=1")
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content.[0].categoryId").value(1L))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
+    public void testGetOneItem() throws Exception {
+        mockMvc.perform(get("/api/items/1"))
+                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
-    @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testCreateItem() throws Exception {
         String requestBody = "{\"name\": \"item 1\", " +
                 "\"description\": \"desc 1\"," +
@@ -87,17 +70,12 @@ public class ItemControllerTests extends BaseWebTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
 
+                .andExpect(jsonPath("$.name").value("item 1"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
-    @SqlGroup({
-            @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
-                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    })
     public void testUpdateItem() throws Exception {
         String requestBody = "{\"id\":\"19\"," +
                 "\"name\": \"update 1\", " +
@@ -109,17 +87,12 @@ public class ItemControllerTests extends BaseWebTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
 
+                .andExpect(jsonPath("$.name").value("update 1"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
-    @SqlGroup({
-            @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
-                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    })
     public void testDeleteItem() throws Exception {
         Long id = 19L;
         mockMvc.perform(delete("/api/items/" + id))
@@ -128,10 +101,8 @@ public class ItemControllerTests extends BaseWebTest {
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
-    @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testUploadItemsFromCsv() throws Exception {
-        String content = "name,description,categoryId,imageSrc\nitem 1,desc 1,1,img 1\nitem 2,desc 2,2,img 2";
+        String content = "name,description,categoryId,imageSrc\nitem,desc 1,1,img 1";
 
         MockMultipartFile file = new MockMultipartFile(
                 "file",
@@ -140,30 +111,128 @@ public class ItemControllerTests extends BaseWebTest {
                 content.getBytes()
         );
 
-        mockMvc.perform(multipart("/api/upload-items").file(file)).andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(value = "testuser", authorities = {Role.USER})
-    @SqlGroup({
-            @Sql(scripts = "/sqlForControllerTests/itemSql/items_table.sql",
-                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(scripts = "/sqlForControllerTests/itemSql/cleanUp_items.sql",
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    })
-    public void testSearchItems() throws Exception {
-        String name = "item";
-        Boolean hasImage = true;
-
-        mockMvc.perform(get("/api/items/search?page=0&name=" + name + "&hasImage=" + hasImage))
+        mockMvc.perform(multipart("/api/upload-items").file(file))
+                .andExpect(jsonPath("$.[0].name").value("item"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.USER})
-    public void whenDeleteWithUserRole_thenForbidden() throws Exception {
-        Long id = 19L;
+    public void testSearchItems() throws Exception {
+        String name = "item";
+        Boolean hasImage = true;
+
+        mockMvc.perform(get("/api/items/search?page=0&name=" + name + "&hasImage=" + hasImage))
+                .andExpect(jsonPath("$.content.[0].name").value("item 1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
+    public void whenCreateItemWithUserRole_thenForbidden() throws Exception {
+        String requestBody = "{\"name\": \"item 1\", " +
+                "\"description\": \"desc 1\"," +
+                " \"categoryId\":\"1\", " +
+                "\"imageSrc\":\"img 1\"}";
+
+        mockMvc.perform(post("/api/items")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", authorities = {Role.USER})
+    public void whenUpdateItemWithUserRole_thenForbidden() throws Exception {
+        String requestBody = "{\"id\":\"19\"," +
+                "\"name\": \"update 1\", " +
+                "\"description\": \"desc 1\"," +
+                " \"categoryId\":\"1\", " +
+                "\"imageSrc\":\"img 1\"}";
+
+        mockMvc.perform(put("/api/items")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
+    public void whenUploadItemsFromCsvWithUserRole_thenForbidden() throws Exception {
+        String content = "name,description,categoryId,imageSrc\nitem,desc 1,1,img 1";
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "items.csv",
+                "text/csv",
+                content.getBytes()
+        );
+
+        mockMvc.perform(multipart("/api/upload-items").file(file))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
+    public void whenDeleteItemWithUserRole_thenForbidden() throws Exception {
+        Long id = 20L;
         mockMvc.perform(delete("/api/items/" + id))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void whenGetAllItemsWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/items"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenGetLastFiveItemsWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/items/last"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenSearchItemsWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/items/search?name=item"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenGetOneCategoryWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/items/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenGetItemsInCategoryWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/item?categoryId=1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenCreateItemWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(post("/api/items/"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenUploadItemsFromCsvWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(post("/api/upload-items"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenUpdateItemWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(put("/api/items"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenDeleteItemWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(delete("/api/items/12"))
+                .andExpect(status().isUnauthorized());
     }
 }

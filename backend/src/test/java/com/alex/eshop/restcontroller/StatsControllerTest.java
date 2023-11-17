@@ -23,4 +23,15 @@ public class StatsControllerTest extends BaseWebTest {
                 .andExpect(jsonPath("$.content[5].itemsCount").value(3))
                 .andDo(print());
     }
+
+    @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
+    public void whenGetStatsWithRoleUser_thenForbidden() throws Exception {
+        mockMvc.perform(get("/api/stats")).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void whenGetStatsWithoutRole_thenUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/stats")).andExpect(status().isUnauthorized());
+    }
 }

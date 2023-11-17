@@ -24,4 +24,18 @@ public class UserControllerTests extends BaseWebTest {
 
         mockMvc.perform(get("/api/users/" + userUuid)).andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser(value = "testuser", authorities = {Role.USER})
+    public void whenGetUserWithRoleUser_thenForbidden() throws Exception {
+        String userUuid = "f07f6f24-c0a8-4460-9dc6-c7147583394d"; //userUuid of test-user
+
+        mockMvc.perform(get("/api/users/" + userUuid)).andExpect(status().isForbidden());
+    }
+    @Test
+    public void whenGetUserWithoutRole_thenUnauthorized() throws Exception {
+        String userUuid = "f07f6f24-c0a8-4460-9dc6-c7147583394d"; //userUuid of test-user
+
+        mockMvc.perform(get("/api/users/" + userUuid)).andExpect(status().isUnauthorized());
+    }
 }

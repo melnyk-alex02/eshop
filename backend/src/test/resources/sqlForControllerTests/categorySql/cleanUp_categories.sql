@@ -1,4 +1,8 @@
-delete from category where id = 7;
-delete from category  where id = 8;
+delete from category where name = 'category 1';
+delete from category where name = 'category 2';
+delete from category where name = 'category';
+delete from category where id = 9;
 
-ALTER TABLE category AUTO_INCREMENT = 7;
+
+
+alter table category auto_increment = 7;
