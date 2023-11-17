@@ -50,11 +50,7 @@ public class ItemService {
                 .and(ItemSpecification.hasImage(hasImage))
                 .and(ItemSpecification.hasCategoryId(categoryId));
 
-        Page<ItemDTO> itemDTOPage = itemRepository.findAll(itemSpecification, pageable).map(itemMapper::toDto);
-        if (itemDTOPage.isEmpty()) {
-            throw new DataNotFoundException("There are no items found with your search preferences");
-        }
-        return itemDTOPage;
+        return itemRepository.findAll(itemSpecification, pageable).map(itemMapper::toDto);
 
     }
 
@@ -120,7 +116,7 @@ public class ItemService {
             throw new DataNotFoundException("There is no item with id " + itemUpdateDTO.getId());
         }
         if (!itemRepository.existsByCategoryId(itemUpdateDTO.getCategoryId())) {
-            throw new DataNotFoundException("There is no category with id" + itemUpdateDTO.getCategoryId());
+            throw new DataNotFoundException("There is no category with id " + itemUpdateDTO.getCategoryId());
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));
     }

@@ -268,12 +268,11 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
             this.matPaginator.length = data.totalElements;
           },
-          error: (error) => {
-            this.snackBarService.error(error.message);
-
-            this.dataSource.data = [];
-          },
           complete: () => {
+            if(this.dataSource.data.length == 0){
+              this.snackBarService.error("There are no items by your search preferences");
+            }
+
             this.loading = false;
           }
         });
