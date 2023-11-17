@@ -17,12 +17,4 @@ public class StatsDTO {
     public long getItemsCount() {
         return itemsCount;
     }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setItemsCount(long itemsCount) {
-        this.itemsCount = itemsCount;
-    }
 }

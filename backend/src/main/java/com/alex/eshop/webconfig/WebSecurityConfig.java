@@ -4,13 +4,11 @@ import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -28,7 +26,7 @@ import java.util.stream.Collectors;
 public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf().disable()
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/error").permitAll()
@@ -66,7 +64,7 @@ public class WebSecurityConfig {
                 JSONArray roles = (JSONArray) realmAccess.get("roles");
 
                 final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream()
-                        .map(role -> new SimpleGrantedAuthority("" + role)).toList();
+                        .map(role -> new SimpleGrantedAuthority("" + role)).collect(Collectors.toList());
                 grantedAuthorities.addAll(keycloakAuthorities);
 
                 return grantedAuthorities;

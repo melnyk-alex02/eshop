@@ -51,7 +51,7 @@ public class ItemController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/item")
-    public Page<ItemDTO> getItemInCategory(Long categoryId, Pageable pageable) {
+    public Page<ItemDTO> getItemWithCategory(Long categoryId, Pageable pageable) {
         return itemService.getItemsInCategory(categoryId, pageable);
     }
 

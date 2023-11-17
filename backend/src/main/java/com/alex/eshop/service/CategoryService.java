@@ -46,8 +46,12 @@ public class CategoryService {
     public Page<CategoryDTO> searchCategories(Pageable pageable, String name) {
         Specification<Category> categorySpecification = CategorySpecification.hasNameContaining(name);
 
-        return categoryRepository.findAll(categorySpecification, pageable)
+        Page<CategoryDTO> categoryDTOPage = categoryRepository.findAll(categorySpecification, pageable)
                 .map(categoryMapper::toDto);
+        if (categoryDTOPage.isEmpty()) {
+            throw new DataNotFoundException("There are no categories found with your search preferences");
+        }
+        return categoryDTOPage;
     }
 
     public CategoryDTO getCategory(Long id) {
