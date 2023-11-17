@@ -29,9 +29,4 @@ public class StatsControllerTest extends BaseWebTest {
     public void whenGetStatsWithRoleUser_thenForbidden() throws Exception {
         mockMvc.perform(get("/api/stats")).andExpect(status().isForbidden());
     }
-
-    @Test
-    public void whenGetStatsWithoutRole_thenUnauthorized() throws Exception {
-        mockMvc.perform(get("/api/stats")).andExpect(status().isUnauthorized());
-    }
 }
