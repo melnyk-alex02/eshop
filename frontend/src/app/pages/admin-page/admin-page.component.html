@@ -19,10 +19,10 @@
   </div>
 
   <div class="cards">
-    <mat-card class="example-card" *ngFor="let item of lastFiveItemsList">
+    <mat-card appearance="outlined" class="example-card" *ngFor="let item of lastFiveItemsList">
       <mat-card-header>
         <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title> {{item.name }}</mat-card-title>
+        <mat-card-title>{{item.name }}</mat-card-title>
       </mat-card-header>
       <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item" style="width: 250px; height: 250px;">
       <mat-card-content>

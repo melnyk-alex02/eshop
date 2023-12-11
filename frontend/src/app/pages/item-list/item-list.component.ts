@@ -256,7 +256,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this.filterHasImage,
         this.filterCategoryId
       ).pipe(
-        debounceTime(500),
+        debounceTime(1000),
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
@@ -272,6 +272,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
             this.snackBarService.error(error.message);
 
             this.dataSource.data = [];
+            this.loading=false;
           },
           complete: () => {
             this.loading = false;

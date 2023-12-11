@@ -3,55 +3,26 @@
   display: grid;
   place-items: center;
 }
-
-.title {
-  margin-top: 80px;
-  text-align: center;
-}
-
-.row{
-  margin-top: 3%;
-}
-
-.cards {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  margin-left: 11.1%
-}
-
-
-.text{
+.header {
   margin-top: 5%;
-  text-align: center;
-  font-size: 20px
+  margin-left: 11.1%;
 }
 
 
-mat-card-title{
-  font-size: 14px;
+button {
+  margin: 10px;
 }
 
-.mat-line-clamp {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 2;
-}
-
-
-.button{
-  position: relative;
-  margin-left: 15px;
-  display: inline-block;
+.button-1 {
+  margin-left: 10%;
+  margin-top: 15px;
+  display: flex;
   flex-direction: column;
-  align-content: center;
+  align-items: center;
   padding: 6px 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   border-radius: 6px;
   border: none;
-
   color: #fff;
   background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
   background-origin: border-box;
@@ -61,11 +32,19 @@ mat-card-title{
   touch-action: manipulation;
 }
 
-.button:focus {
+.button-1:focus {
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
   outline: 0;
 }
-.buttons {
-  padding-bottom: 10%;
-  text-align: center;
+
+.mat-line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+}
+
+.paginator {
+  margin-right: 5%;
 }

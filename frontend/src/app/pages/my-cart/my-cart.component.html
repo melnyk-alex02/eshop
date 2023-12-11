@@ -1,0 +1,53 @@
+<ng-container *ngIf="this.loading">
+  <div class="spinner">
+    <mat-progress-spinner
+      class="example-margin"
+      color="primary"
+      mode="indeterminate"
+    >
+    </mat-progress-spinner>
+  </div>
+</ng-container>
+
+
+
+<ng-container *ngIf="!this.loading">
+  <div class="header">
+    <h1 style="color: black">Your cart</h1>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="itemName">
+          <th mat-header-cell *matHeaderCellDef> Item Name</th>
+          <td mat-cell *matCellDef="let cart"> {{cart.itemName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="itemPrice">
+          <th mat-header-cell *matHeaderCellDef>Item Price</th>
+          <td mat-cell *matCellDef="let cart"> {{cart.itemPrice}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="count">
+          <th mat-header-cell *matHeaderCellDef> Count</th>
+          <td mat-cell *matCellDef="let cart"> <input type="number" [(ngModel)]="cart.count" min="1" (blur)="changeCountOfItems(cart.itemId, cart.count)"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Count</th>
+          <td mat-cell *matCellDef=> </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="create-order">
+    <button (click)="createOrderFromCart()" >Confirm order</button>
+  </div>
+</ng-container>
