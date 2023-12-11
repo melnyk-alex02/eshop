@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public class OrderDTO {
-    private Long id;
     private String number;
     private String status;
     private ZonedDateTime createdDate;
@@ -14,14 +13,6 @@ public class OrderDTO {
     private List<OrderItemDTO> orderItemDTOList;
     private String userId;
     private ZonedDateTime purchasedDate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getNumber() {
         return number;

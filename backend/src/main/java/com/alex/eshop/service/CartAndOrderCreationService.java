@@ -36,12 +36,15 @@ public class CartAndOrderCreationService {
     }
 
     public List<CartDTO> getAllCarts(String userId) {
+        if(!cartRepository.existsAllByUserId(userId)){
+            throw new DataNotFoundException("There is no cart for current logged user");
+        }
         return cartMapper.toDto(cartRepository.findAllByUserId(userId));
     }
 
     public CartDTO addItemToCart(Long itemId, String userId) {
         if (cartRepository.existsByItemIdAndUserId(itemId, userId)) {
-            throw new InvalidDataException("Item with id" + itemId + "is already in your cart");
+            throw new InvalidDataException("This item is already in your cart");
         }
         CartDTO cartDTO = new CartDTO();
         cartDTO.setUserId(userId);
@@ -56,7 +59,7 @@ public class CartAndOrderCreationService {
         if (!cartRepository.existsByItemIdAndUserId(itemId, userId)) {
             throw new DataNotFoundException("There is no cart for user with id " + userId + " and items with id " + itemId);
         }
-        if (!(count > 1)) {
+        if (!(count >= 1)) {
             throw new InvalidDataException("Count can't be less than 1, please check input data");
         }
         CartDTO cartDTO = cartMapper.toDto(cartRepository.findCartByItemIdAndUserId(itemId, userId));
@@ -95,8 +98,13 @@ public class CartAndOrderCreationService {
 
             orderItemDTO.setOrderNumber(orderDTO.getNumber());
             orderItemDTO.setItemId(cartDTO.getItemId());
+            if(cartDTO.getCount() < 1){
+                throw new InvalidDataException("Please check count of items in your cart");
+            }
+            orderItemDTO.setCount(cartDTO.getCount());
 
             orderItemDTOList.add(orderItemDTO);
+
 
             price = price.add(cartDTO.getItemPrice()).multiply(BigDecimal.valueOf(cartDTO.getCount()));
             count += cartDTO.getCount();

@@ -15,6 +15,7 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
+    private Integer count;
 
     public Long getId() {
         return id;
@@ -40,4 +41,11 @@ public class OrderItem {
         this.item = item;
     }
 
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

@@ -47,6 +47,9 @@
             <column name="item_id" type="bigint">
                 <constraints foreignKeyName="fk_order_items_item" references="item(id)"/>
             </column>
+            <column name="count" type="int">
+                <constraints checkConstraint="count>=1"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
