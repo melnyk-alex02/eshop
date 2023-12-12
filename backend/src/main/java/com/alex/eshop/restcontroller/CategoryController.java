@@ -24,7 +24,7 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories")
-    public Page<CategoryDTO> allCategoryList(Pageable pageable) {
+    public Page<CategoryDTO> getAllCategories(Pageable pageable) {
         return categoryService.getAllCategories(pageable);
     }
 

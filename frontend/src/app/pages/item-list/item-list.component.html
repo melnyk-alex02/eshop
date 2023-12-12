@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.loading">
+<ng-container *ngIf="!this.dataSource.data">
   <div class="spinner">
     <mat-progress-spinner
       class="example-margin"
@@ -9,7 +9,7 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="!this.loading">
+<ng-container *ngIf="this.dataSource.data">
   <div class="header">
     <h1 style="color: black">Item table</h1>
   </div>

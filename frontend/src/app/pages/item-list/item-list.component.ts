@@ -256,7 +256,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this.filterHasImage,
         this.filterCategoryId
       ).pipe(
-        debounceTime(1000),
+        debounceTime(500),
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
