@@ -30,6 +30,12 @@ export class CartBackendService {
     )
   }
 
+  public deleteItemFromCart(id: number): Observable<void> {
+    return this.http.delete<void>(`${SERVER_API_URL}/cart/${id}`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
   public createOrderFromCart(): Observable<Order> {
     return this.http.post<Order>(`${SERVER_API_URL}/cart/create-order`, {}).pipe(
       catchError(this.handleError)

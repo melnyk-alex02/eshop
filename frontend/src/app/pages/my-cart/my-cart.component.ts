@@ -21,7 +21,7 @@ export class MyCartComponent implements OnInit, OnDestroy {
   cart: Cart[];
 
   dataSource = new MatTableDataSource<Cart>();
-  displayedColumns: string[] = ["itemName", "itemPrice", "count"];
+  displayedColumns: string[] = ["itemName", "itemPrice", "count", "actions"];
 
   @ViewChild(MatTable) table: any;
   private unsubscribe: Subject<void> = new Subject();
@@ -77,6 +77,23 @@ export class MyCartComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         this.loading = false;
+      }
+    })
+  }
+
+  deleteItemFromCart(itemId: number) {
+    this.loading = true;
+    this.cartService.deleteItemFromCart(itemId).pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe({
+      error:(error) => {
+        this.snackBarService.error(error.message);
+        this.loading = false;
+      },
+      complete: () => {
+        this.snackBarService.success("Item was successfully deleted from cart!")
+        this.loading = false;
+        this.getAllCartOfUser();
       }
     })
   }
