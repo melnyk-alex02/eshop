@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +28,12 @@ public class CurrentUserService {
                     }
                     return null; // When user is unauthenticated
                 });
+    }
+
+    public List<String> getCurrentUserAuthorities() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(authentication -> authentication.getAuthorities().stream().map(Object::toString).toList())
+                .orElse(List.of());
     }
 
 }
