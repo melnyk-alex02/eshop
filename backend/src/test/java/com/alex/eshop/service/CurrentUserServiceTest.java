@@ -1,7 +1,6 @@
 package com.alex.eshop.service;
 
 import com.alex.eshop.EshopApplication;
-import com.alex.eshop.restcontroller.BaseWebTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +11,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = EshopApplication.class)
-class CurrentUserServiceTest extends BaseWebTest {
+class CurrentUserServiceTest {
 
     @Autowired
     CurrentUserService currentUserService;

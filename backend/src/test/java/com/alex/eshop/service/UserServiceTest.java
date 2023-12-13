@@ -54,7 +54,7 @@ public class UserServiceTest {
         userRepresentation.setId(userUuid);
 
         UserDTO userDTO = new UserDTO();
-        userDTO.setUserUuid(userUuid);
+        userDTO.setUserId(userUuid);
 
         when(keycloakService.getUserByUserUuid(any(String.class))).thenReturn(userRepresentation);
         when(userMapper.toDto(any(UserRepresentation.class))).thenReturn(userDTO);
@@ -64,7 +64,7 @@ public class UserServiceTest {
         verify(keycloakService).getUserByUserUuid(any(String.class));
         verify(userMapper).toDto(any(UserRepresentation.class));
 
-        assertEquals(userDTO.getUserUuid(), result.getUserUuid());
+        assertEquals(userDTO.getUserId(), result.getUserId());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class UserServiceTest {
         userRepresentation.setRealmRoles(List.of(Role.USER));
 
         UserDTO expectedUserDTO = new UserDTO();
-        expectedUserDTO.setUserUuid("userUuid");
+        expectedUserDTO.setUserId("userUuid");
         expectedUserDTO.setUsername("Test");
         expectedUserDTO.setEmail("email");
         expectedUserDTO.setFirstName("First Name");
@@ -102,7 +102,7 @@ public class UserServiceTest {
         verify(keycloakService).createUser(any(UserRegisterDTO.class));
         verify(userMapper).toDto(any(UserRepresentation.class));
 
-        assertEquals(expectedUserDTO.getUserUuid(), result.getUserUuid());
+        assertEquals(expectedUserDTO.getUserId(), result.getUserId());
         assertEquals(expectedUserDTO.getUsername(), result.getUsername());
         assertEquals(expectedUserDTO.getEmail(), result.getEmail());
         assertEquals(expectedUserDTO.getFirstName(), result.getFirstName());
