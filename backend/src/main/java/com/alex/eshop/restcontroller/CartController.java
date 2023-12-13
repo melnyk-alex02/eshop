@@ -21,8 +21,8 @@ public class CartController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @PostMapping
-    public CartDTO addItemToCart(Long itemId, Principal principal) {
-        return cartService.addItemToCart(itemId, principal.getName());
+    public CartDTO addItemToCart(Long itemId) {
+        return cartService.addItemToCart(itemId);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")

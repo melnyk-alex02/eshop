@@ -26,13 +26,16 @@ public class CartAndOrderCreationService {
     private final CartMapper cartMapper;
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
+    private final CurrentUserService currentUserService;
 
     public CartAndOrderCreationService(CartRepository cartRepository, CartMapper cartMapper,
-                                       OrderMapper orderMapper, OrderRepository orderRepository) {
+                                       OrderMapper orderMapper, OrderRepository orderRepository,
+                                       CurrentUserService currentUserService) {
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
         this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
+        this.currentUserService = currentUserService;
     }
 
     public List<CartDTO> getAllCarts(String userId) {
@@ -42,7 +45,8 @@ public class CartAndOrderCreationService {
         return cartMapper.toDto(cartRepository.findAllByUserId(userId));
     }
 
-    public CartDTO addItemToCart(Long itemId, String userId) {
+    public CartDTO addItemToCart(Long itemId) {
+        String userId = currentUserService.getCurrentUserUuid();
         if (cartRepository.existsByItemIdAndUserId(itemId, userId)) {
             throw new InvalidDataException("This item is already in your cart");
         }
