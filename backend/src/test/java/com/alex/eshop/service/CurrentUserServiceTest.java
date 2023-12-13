@@ -33,7 +33,7 @@ class CurrentUserServiceTest {
     @WithMockUser(value = "customUserName")
     void whenCustomUserExist_thenReturnCustomUsername() {
         assertThat(currentUserService.getCurrentUserUuidOptional()).isEqualTo(Optional.of("customUserName"));
-        assertThat(currentUserService.getCurrentUserAuthorities()).contains(Role.USER); // Spring by default set ROLE_USER
+        assertThat(currentUserService.getCurrentUserAuthorities()).contains(Role.USER); // Spring by default set ROLE_USER in annotation @WithMockUser
     }
 
     @Test
