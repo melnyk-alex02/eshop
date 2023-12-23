@@ -45,8 +45,8 @@ public class ItemController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("items/{id}")
-    public ItemDTO getItem(@PathVariable Long id) {
-        return itemService.getItemWithCategoryInfo(id);
+    public ItemDTO getItemById(@PathVariable Long id) {
+        return itemService.getItemById(id);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")

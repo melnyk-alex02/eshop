@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping("/api")
 public class OrderController {
@@ -21,14 +19,14 @@ public class OrderController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("order/{orderNumber}")
-    public OrderDTO getOrderByUserId(Principal principal, @PathVariable String orderNumber) {
-        return orderService.getOrderByUserIdAndOrderNumber(principal.getName(), orderNumber);
+    public OrderDTO getOrderByUserId(@PathVariable String orderNumber) {
+        return orderService.getOrderByUserIdAndOrderNumber(orderNumber);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("orders")
-    public Page<OrderDTO> getAllOrdersByUserId(Principal principal, Pageable pageable) {
-        return orderService.getAllOrdersByUserId(principal.getName(), pageable);
+    public Page<OrderDTO> getAllOrdersByUserId(Pageable pageable) {
+        return orderService.getAllOrdersByUserId(pageable);
     }
 
     @PreAuthorize("hasRole('" + Role.ADMIN + "')")
@@ -39,13 +37,13 @@ public class OrderController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @DeleteMapping("order/{orderNumber}")
-    public void cancelOrder(@PathVariable String orderNumber, Principal principal) {
-        orderService.cancelOrder(principal.getName(), orderNumber);
+    public void cancelOrder(@PathVariable String orderNumber) {
+        orderService.cancelOrder(orderNumber);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @PutMapping("order/confirm/{orderNumber}")
-    public void confirmOrder(@PathVariable String orderNumber, Principal principal) {
-        orderService.confirmOrder(orderNumber, principal.getName());
+    public void confirmOrder(@PathVariable String orderNumber) {
+        orderService.confirmOrder(orderNumber);
     }
 }

@@ -17,27 +17,40 @@ import java.time.ZonedDateTime;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final CurrentUserService currentUserService;
 
-    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper) {
+    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper,
+                        CurrentUserService currentUserService) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
+        this.currentUserService = currentUserService;
     }
 
-    public OrderDTO getOrderByUserIdAndOrderNumber(String userId, String orderNumber) {
+    public OrderDTO getOrderByUserIdAndOrderNumber(String orderNumber) {
+        String userId = currentUserService.getCurrentUserUuid();
+
         if (!orderRepository.existsByNumberAndUserId(orderNumber, userId)) {
             throw new DataNotFoundException("There is no order with number " + orderNumber + " for current logged user");
         }
         return orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
     }
 
-    public Page<OrderDTO> getAllOrdersByUserId(String userId, Pageable pageable) {
+    public Page<OrderDTO> getAllOrdersByUserId(Pageable pageable) {
+        String userId = currentUserService.getCurrentUserUuid();
+
+        if(!orderRepository.existsAllByUserId(userId)){
+            throw new DataNotFoundException("There is no orders for current logged user");
+        }
         return orderRepository.findAllByUserId(userId, pageable).map(orderMapper::toDto);
     }
 
-    public void cancelOrder(String userId, String orderNumber) {
+    public void cancelOrder( String orderNumber) {
+        String userId = currentUserService.getCurrentUserUuid();
+
         if (!orderRepository.existsByNumberAndUserId(orderNumber, userId)) {
             throw new DataNotFoundException("There is no order with number " + orderNumber + " for current logged user");
         }
+
         OrderDTO orderDTO = orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
 
         orderDTO.setStatus(OrderStatus.CANCELLED);
@@ -45,7 +58,9 @@ public class OrderService {
         orderRepository.save(orderMapper.toEntity(orderDTO));
     }
 
-    public void confirmOrder(String orderNumber, String userId) {
+    public void confirmOrder(String orderNumber) {
+        String userId = currentUserService.getCurrentUserUuid();
+
         if (!orderRepository.existsByNumberAndUserId(orderNumber, userId)) {
             throw new DataNotFoundException("There is no order for current logged user with number " + orderNumber);
         }

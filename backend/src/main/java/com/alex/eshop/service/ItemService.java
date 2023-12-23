@@ -54,7 +54,7 @@ public class ItemService {
 
     }
 
-    public ItemDTO getItemWithCategoryInfo(Long id) {
+    public ItemDTO getItemById(Long id) {
         return itemMapper.toDto(itemRepository.findById(id).orElseThrow(() -> new DataNotFoundException("There is no item with id " + id)));
     }
 

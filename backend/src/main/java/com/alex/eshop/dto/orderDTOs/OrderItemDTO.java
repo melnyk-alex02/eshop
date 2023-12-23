@@ -1,11 +1,13 @@
 package com.alex.eshop.dto.orderDTOs;
 
+import java.math.BigDecimal;
+
 public class OrderItemDTO {
     private Long id;
     private String orderNumber;
     private Long itemId;
     private String itemName;
-    private String itemPrice;
+    private BigDecimal itemPrice;
     private Integer count;
 
     public Long getId() {
@@ -40,11 +42,11 @@ public class OrderItemDTO {
         this.itemName = itemName;
     }
 
-    public String getItemPrice() {
+    public BigDecimal getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(String itemPrice) {
+    public void setItemPrice(BigDecimal itemPrice) {
         this.itemPrice = itemPrice;
     }
 

@@ -47,7 +47,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDetUserByUuid() {
+    public void testGetUserByUuid() {
         String userUuid = "uuid";
 
         UserRepresentation userRepresentation = new UserRepresentation();

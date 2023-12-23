@@ -10,7 +10,6 @@ import com.alex.eshop.mapper.CartMapper;
 import com.alex.eshop.mapper.OrderMapper;
 import com.alex.eshop.repository.CartRepository;
 import com.alex.eshop.repository.OrderRepository;
-import com.alex.eshop.utils.OrderNumberGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +17,8 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.alex.eshop.utils.OrderNumberGenerator.generateOrderNumber;
 
 @Service
 @Transactional
@@ -38,8 +39,9 @@ public class CartAndOrderCreationService {
         this.currentUserService = currentUserService;
     }
 
-    public List<CartDTO> getAllCarts(String userId) {
-        if(!cartRepository.existsAllByUserId(userId)){
+    public List<CartDTO> getAllCarts() {
+        String userId = currentUserService.getCurrentUserUuid();
+        if (!cartRepository.existsAllByUserId(userId)) {
             throw new DataNotFoundException("There is no cart for current logged user");
         }
         return cartMapper.toDto(cartRepository.findAllByUserId(userId));
@@ -55,11 +57,11 @@ public class CartAndOrderCreationService {
         cartDTO.setItemId(itemId);
         cartDTO.setCount(1);
 
-
         return cartMapper.toDto(cartRepository.save(cartMapper.toEntity(cartDTO)));
     }
 
-    public CartDTO updateCountOfItem(Long itemId, Integer count, String userId) {
+    public CartDTO updateCountOfItem(Long itemId, Integer count) {
+        String userId = currentUserService.getCurrentUserUuid();
         if (!cartRepository.existsByItemIdAndUserId(itemId, userId)) {
             throw new DataNotFoundException("There is no cart for user with id " + userId + " and items with id " + itemId);
         }
@@ -73,15 +75,16 @@ public class CartAndOrderCreationService {
         return cartMapper.toDto(cartRepository.save(cartMapper.toEntity(cartDTO)));
     }
 
-    public void deleteCartByItemId(Long itemId, String userId) {
-        if (!cartRepository.existsByItemIdAndUserId(itemId, userId)) {
+    public void deleteItemFromCart(Long itemId) {
+        if (!cartRepository.existsByItemIdAndUserId(itemId, currentUserService.getCurrentUserUuid())) {
             throw new DataNotFoundException("There is no items in cart with id " + itemId + "for current logged user");
         }
         cartRepository.deleteCartByItemId(itemId);
     }
 
 
-    public OrderDTO createOrderFromCart(String userId) {
+    public OrderDTO createOrderFromCart() {
+        String userId = currentUserService.getCurrentUserUuid();
         if (!cartRepository.existsAllByUserId(userId)) {
             throw new DataNotFoundException("There is no cart for current logged user");
         }
@@ -89,12 +92,12 @@ public class CartAndOrderCreationService {
         Integer count = 0;
         BigDecimal price = BigDecimal.ZERO;
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setNumber(OrderNumberGenerator.generateOrderNumber());
+        orderDTO.setNumber(generateOrderNumber());
         orderDTO.setCreatedDate(ZonedDateTime.now());
         orderDTO.setStatus(OrderStatus.NEW);
         orderDTO.setUserId(userId);
 
-        List<CartDTO> cartDTOList = getAllCarts(userId);
+        List<CartDTO> cartDTOList = getAllCarts();
 
         List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
         for (CartDTO cartDTO : cartDTOList) {
@@ -102,13 +105,12 @@ public class CartAndOrderCreationService {
 
             orderItemDTO.setOrderNumber(orderDTO.getNumber());
             orderItemDTO.setItemId(cartDTO.getItemId());
-            if(cartDTO.getCount() < 1){
+            if (cartDTO.getCount() < 1) {
                 throw new InvalidDataException("Please check count of items in your cart");
             }
             orderItemDTO.setCount(cartDTO.getCount());
 
             orderItemDTOList.add(orderItemDTO);
-
 
             price = price.add(cartDTO.getItemPrice()).multiply(BigDecimal.valueOf(cartDTO.getCount()));
             count += cartDTO.getCount();
@@ -120,12 +122,12 @@ public class CartAndOrderCreationService {
 
         orderRepository.save(orderMapper.toEntity(orderDTO));
 
-        deleteCart(userId);
+        deleteCart();
 
         return orderDTO;
     }
 
-    public void deleteCart(String userId) {
-        cartRepository.deleteAllByUserId(userId);
+    public void deleteCart() {
+        cartRepository.deleteAllByUserId(currentUserService.getCurrentUserUuid());
     }
 }

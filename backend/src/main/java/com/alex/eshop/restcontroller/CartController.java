@@ -7,7 +7,6 @@ import com.alex.eshop.service.CartAndOrderCreationService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -15,7 +14,7 @@ import java.util.List;
 public class CartController {
     private final CartAndOrderCreationService cartService;
 
-    public CartController(CartAndOrderCreationService cartService){
+    public CartController(CartAndOrderCreationService cartService) {
         this.cartService = cartService;
     }
 
@@ -27,25 +26,25 @@ public class CartController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/all")
-    public List<CartDTO> getAllCarts(Principal principal) {
-        return cartService.getAllCarts(principal.getName());
+    public List<CartDTO> getAllCarts() {
+        return cartService.getAllCarts();
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @PutMapping
-    public CartDTO updateCountOfItem(Principal principal, Long itemId, Integer count){
-        return cartService.updateCountOfItem(itemId, count, principal.getName());
+    public CartDTO updateCountOfItem(Long itemId, Integer count) {
+        return cartService.updateCountOfItem(itemId, count);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @DeleteMapping("/{itemId}")
-    public void deleteCartByItemId(@PathVariable Long itemId, Principal principal) {
-        cartService.deleteCartByItemId(itemId, principal.getName());
+    public void deleteCartByItemId(@PathVariable Long itemId) {
+        cartService.deleteItemFromCart(itemId);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @PostMapping("/create-order")
-    public OrderDTO createOrderFromCart(Principal principal) {
-          return cartService.createOrderFromCart(principal.getName());
+    public OrderDTO createOrderFromCart() {
+        return cartService.createOrderFromCart();
     }
 }

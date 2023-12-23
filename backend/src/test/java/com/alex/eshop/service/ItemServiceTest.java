@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +71,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(0).getId(), result.getContent().get(0).getId());
         assertEquals(expectedItemDTOList.get(0).getName(), result.getContent().get(0).getName());
         assertEquals(expectedItemDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
+        assertEquals(expectedItemDTOList.get(0).getPrice(), result.getContent().get(0).getPrice());
         assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.getContent().get(0).getImageSrc());
         assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.getContent().get(0).getCategoryId());
         assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.getContent().get(0).getCategoryName());
@@ -77,6 +79,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(1).getId(), result.getContent().get(1).getId());
         assertEquals(expectedItemDTOList.get(1).getName(), result.getContent().get(1).getName());
         assertEquals(expectedItemDTOList.get(1).getDescription(), result.getContent().get(1).getDescription());
+        assertEquals(expectedItemDTOList.get(1).getPrice(), result.getContent().get(1).getPrice());
         assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.getContent().get(1).getImageSrc());
         assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.getContent().get(1).getCategoryId());
         assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.getContent().get(1).getCategoryName());
@@ -136,13 +139,14 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(0).getId(), result.getContent().get(0).getId());
         assertEquals(expectedItemDTOList.get(0).getName(), result.getContent().get(0).getName());
         assertEquals(expectedItemDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
+        assertEquals(expectedItemDTOList.get(0).getPrice(), result.getContent().get(0).getPrice());
         assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.getContent().get(0).getImageSrc());
         assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.getContent().get(0).getCategoryId());
         assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.getContent().get(0).getCategoryName());
     }
 
     @Test
-    public void testGetOneCategory() {
+    public void testGetItemById() {
         Category category = new Category();
         category.setId(1L);
         category.setName("Category");
@@ -166,7 +170,7 @@ public class ItemServiceTest {
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         when(itemMapper.toDto(item)).thenReturn(expectedDto);
 
-        ItemDTO result = itemService.getItemWithCategoryInfo(1L);
+        ItemDTO result = itemService.getItemById(1L);
 
         verify(itemRepository).findById(1L);
         verify(itemMapper).toDto(any(Item.class));
@@ -175,6 +179,7 @@ public class ItemServiceTest {
         assertEquals(expectedDto.getName(), result.getName());
         assertEquals(expectedDto.getDescription(), result.getDescription());
         assertEquals(expectedDto.getCategoryId(), result.getCategoryId());
+        assertEquals(expectedDto.getPrice(), result.getPrice());
         assertEquals(expectedDto.getImageSrc(), result.getImageSrc());
         assertEquals(expectedDto.getCategoryName(), result.getCategoryName());
     }
@@ -199,6 +204,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(0).getId(), result.get(0).getId());
         assertEquals(expectedItemDTOList.get(0).getName(), result.get(0).getName());
         assertEquals(expectedItemDTOList.get(0).getDescription(), result.get(0).getDescription());
+        assertEquals(expectedItemDTOList.get(0).getPrice(), result.get(0).getPrice());
         assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.get(0).getImageSrc());
         assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.get(0).getCategoryId());
         assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.get(0).getCategoryName());
@@ -206,6 +212,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(1).getId(), result.get(1).getId());
         assertEquals(expectedItemDTOList.get(1).getName(), result.get(1).getName());
         assertEquals(expectedItemDTOList.get(1).getDescription(), result.get(1).getDescription());
+        assertEquals(expectedItemDTOList.get(1).getPrice(), result.get(1).getPrice());
         assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.get(1).getImageSrc());
         assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.get(1).getCategoryId());
         assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.get(1).getCategoryName());
@@ -213,40 +220,41 @@ public class ItemServiceTest {
 
     @Test
     public void testGetItemWithCategoryInfo() {
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("Category 1");
-        category.setDescription("Description 1");
+        List<Item> itemList = createItemList();
+        List<ItemDTO> expectedItemDTOList = createItemDTOList();
 
-        Item item = new Item();
-        item.setId(1L);
-        item.setName("Item 1");
-        item.setDescription("Description 1");
-        item.setImageSrc("Img Src 1");
-        item.setCategory(category);
+        Page<Item> itemPage = new PageImpl<>(itemList);
 
-        ItemDTO expectedItemDTO = new ItemDTO();
-        expectedItemDTO.setId(1L);
-        expectedItemDTO.setName("Item 1");
-        expectedItemDTO.setDescription("Description 1");
-        expectedItemDTO.setCategoryId(1L);
-        expectedItemDTO.setCategoryName("Category 1");
-        expectedItemDTO.setImageSrc("Img Src 1");
+        when(itemRepository.findByCategoryId(1L, Pageable.unpaged())).thenReturn(itemPage);
+        when(itemMapper.toDto(any(Item.class))).thenAnswer(invocationOnMock -> {
+            Item item = invocationOnMock.getArgument(0);
+            Long id = item.getId();
+            return expectedItemDTOList.stream()
+                    .filter(dto -> dto.getId().equals(id))
+                    .findFirst()
+                    .orElse(null);
+        });
 
-        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
-        when(itemMapper.toDto(any(Item.class))).thenReturn(expectedItemDTO);
+        Page<ItemDTO> result = itemService.getItemsInCategory(1L, Pageable.unpaged());
 
-        ItemDTO result = itemService.getItemWithCategoryInfo(1L);
+        verify(itemRepository).findByCategoryId(1L, Pageable.unpaged());
+        verify(itemMapper, times(2)).toDto(any(Item.class));
 
-        verify(itemRepository).findById(item.getId());
-        verify(itemMapper).toDto(any(Item.class));
+        assertEquals(expectedItemDTOList.get(0).getId(), result.getContent().get(0).getId());
+        assertEquals(expectedItemDTOList.get(0).getName(), result.getContent().get(0).getName());
+        assertEquals(expectedItemDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
+        assertEquals(expectedItemDTOList.get(0).getPrice(), result.getContent().get(0).getPrice());
+        assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.getContent().get(0).getImageSrc());
+        assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.getContent().get(0).getCategoryId());
+        assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.getContent().get(0).getCategoryName());
 
-        assertEquals(expectedItemDTO.getId(), result.getId());
-        assertEquals(expectedItemDTO.getName(), result.getName());
-        assertEquals(expectedItemDTO.getDescription(), result.getDescription());
-        assertEquals(expectedItemDTO.getImageSrc(), result.getImageSrc());
-        assertEquals(expectedItemDTO.getCategoryId(), result.getCategoryId());
-        assertEquals(expectedItemDTO.getCategoryName(), result.getCategoryName());
+        assertEquals(expectedItemDTOList.get(1).getId(), result.getContent().get(1).getId());
+        assertEquals(expectedItemDTOList.get(1).getName(), result.getContent().get(1).getName());
+        assertEquals(expectedItemDTOList.get(1).getDescription(), result.getContent().get(1).getDescription());
+        assertEquals(expectedItemDTOList.get(1).getPrice(), result.getContent().get(1).getPrice());
+        assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.getContent().get(1).getImageSrc());
+        assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.getContent().get(1).getCategoryId());
+        assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.getContent().get(1).getCategoryName());
     }
 
     @Test
@@ -394,6 +402,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(0).getId(), result.get(0).getId());
         assertEquals(expectedItemDTOList.get(0).getName(), result.get(0).getName());
         assertEquals(expectedItemDTOList.get(0).getDescription(), result.get(0).getDescription());
+        assertEquals(expectedItemDTOList.get(0).getPrice(), result.get(0).getPrice());
         assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.get(0).getCategoryId());
         assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.get(0).getCategoryName());
         assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.get(0).getImageSrc());
@@ -401,6 +410,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(1).getId(), result.get(1).getId());
         assertEquals(expectedItemDTOList.get(1).getName(), result.get(1).getName());
         assertEquals(expectedItemDTOList.get(1).getDescription(), result.get(1).getDescription());
+        assertEquals(expectedItemDTOList.get(1).getPrice(), result.get(1).getPrice());
         assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.get(1).getCategoryId());
         assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.get(1).getCategoryName());
         assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.get(1).getImageSrc());
@@ -436,6 +446,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(0).getId(), result.getContent().get(0).getId());
         assertEquals(expectedItemDTOList.get(0).getName(), result.getContent().get(0).getName());
         assertEquals(expectedItemDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
+        assertEquals(expectedItemDTOList.get(0).getPrice(), result.getContent().get(0).getPrice());
         assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.getContent().get(0).getCategoryId());
         assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.getContent().get(0).getCategoryName());
         assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.getContent().get(0).getImageSrc());
@@ -443,6 +454,7 @@ public class ItemServiceTest {
         assertEquals(expectedItemDTOList.get(1).getId(), result.getContent().get(1).getId());
         assertEquals(expectedItemDTOList.get(1).getName(), result.getContent().get(1).getName());
         assertEquals(expectedItemDTOList.get(1).getDescription(), result.getContent().get(1).getDescription());
+        assertEquals(expectedItemDTOList.get(1).getPrice(), result.getContent().get(1).getPrice());
         assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.getContent().get(1).getCategoryId());
         assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.getContent().get(1).getCategoryName());
         assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.getContent().get(1).getImageSrc());
@@ -471,7 +483,7 @@ public class ItemServiceTest {
 
         when(itemRepository.findById(id)).thenThrow(new DataNotFoundException("There is no item with id 1"));
 
-        assertThrows(DataNotFoundException.class, () -> itemService.getItemWithCategoryInfo(id));
+        assertThrows(DataNotFoundException.class, () -> itemService.getItemById(id));
     }
 
     @Test
@@ -577,6 +589,7 @@ public class ItemServiceTest {
         item1.setId(1L);
         item1.setName("Item 1");
         item1.setDescription("Description 1");
+        item1.setPrice(BigDecimal.valueOf(100));
         item1.setCategory(category);
         item1.setImageSrc("Image src 1");
 
@@ -584,6 +597,7 @@ public class ItemServiceTest {
         item2.setId(2L);
         item2.setName("Item 2");
         item2.setDescription("Description 2");
+        item2.setPrice(BigDecimal.valueOf(100));
         item2.setCategory(category);
         item2.setImageSrc("Image src 2");
 
@@ -600,6 +614,7 @@ public class ItemServiceTest {
         itemDTO1.setId(1L);
         itemDTO1.setName("Item 1");
         itemDTO1.setDescription("Description 1");
+        itemDTO1.setPrice(BigDecimal.valueOf(100));
         itemDTO1.setCategoryId(1L);
         itemDTO1.setCategoryName("Category");
         itemDTO1.setImageSrc("Image src 1");
@@ -608,6 +623,7 @@ public class ItemServiceTest {
         itemDTO2.setId(2L);
         itemDTO2.setName("Item 2");
         itemDTO2.setDescription("Description");
+        itemDTO2.setPrice(BigDecimal.valueOf(100));
         itemDTO2.setCategoryId(1L);
         itemDTO2.setCategoryName("Category");
         itemDTO2.setImageSrc("Image src 2");
