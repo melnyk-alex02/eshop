@@ -1,3 +1,4 @@
+<br>
 <div class="title">
   <h1>Welcome to Admin Panel</h1>
 </div>
@@ -14,32 +15,33 @@
 </ng-container>
 
 <ng-container *ngIf="this.lastFiveItemsList && this.dataSource.data">
+  <br>
   <div class="text">
     <p>Last five added items: </p>
   </div>
 
-  <div class="cards">
-    <mat-card appearance="outlined" class="example-card" *ngFor="let item of lastFiveItemsList">
+  <div class="grid">
+    <mat-card appearance="outlined" *ngFor="let item of lastFiveItemsList">
       <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>{{item.name }}</mat-card-title>
+        <mat-card-title><p class="mat-line-clamp">{{item.name}}</p></mat-card-title>
       </mat-card-header>
-      <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item" style="width: 250px; height: 250px;">
+      <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item">
       <mat-card-content>
-        <p class="mat-line-clamp"> {{item.description}}</p>
+        <p class="mat-line-clamp">{{item.description}}</p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button routerLink="/admin/items/{{item.id}}/view" routerLinkActive="active">VIEW</button>
+        <button mat-button routerLink="admin/items/{{item.id}}/view" routerLinkActive="active">View</button>
       </mat-card-actions>
     </mat-card>
   </div>
 
-  <div class="row">
-    <div class="text">
-      <p>Category statistics</p>
-    </div>
+  <br>
+  <div class="text">
+    <p>Category statistics</p>
+  </div>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div class="table-responsive mat-elevation-z3">
+    <table mat-table [dataSource]="dataSource">
 
       <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef>Category Name</th>
@@ -55,11 +57,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
     </table>
-  </div>
 
-  <div class="paginator">
+
     <mat-paginator
-      class="paginator"
+      class="mat-elevation-z3"
       [length]="this.totalElements"
       [pageIndex]="currentPage"
       [pageSize]="currentSize"
@@ -68,8 +69,7 @@
       aria-label="Select page">>
     </mat-paginator>
   </div>
-
-
+  <br>
 </ng-container>
 <div class="buttons">
   <button class="button" routerLink="items">Items</button>

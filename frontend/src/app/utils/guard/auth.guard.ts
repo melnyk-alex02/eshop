@@ -38,9 +38,10 @@ export class AuthGuard extends KeycloakAuthGuard {
         return this.authenticated;
       }
     }
-    this.snackBar.open("Access denied", '', {
-      duration: 5000,
-    })
+    this.router.navigate(["/access-denied"])
+    // this.snackBar.open("Access denied", '', {
+    //   duration: 5000,
+    // })
     return false;
   }
 }

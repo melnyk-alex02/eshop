@@ -30,7 +30,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   loading: boolean;
 
   dataSource = new MatTableDataSource<Item>();
-  displayedColumns: string[] = ['id', "name", "description", "categoryName", "imageSrc", "actions"];
+  displayedColumns: string[] = ['id', "name", "description", "price", "categoryName", "imageSrc", "actions"];
 
   sorting$;
 
@@ -130,7 +130,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   deleteItem(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
-    dialogRef.afterClosed().subscribe({next: (res) => {
+    dialogRef.afterClosed().subscribe({
+      next: (res) => {
         switch (res.event) {
           case "confirm-option": {
             this.itemService.deleteItem(id)
@@ -228,6 +229,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.dataSource.data = data.content;
+          console.log(this.dataSource.data)
 
           this.totalElements = data.totalElements;
         },
@@ -272,7 +274,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
             this.snackBarService.error(error.message);
 
             this.dataSource.data = [];
-            this.loading=false;
+            this.loading = false;
           },
           complete: () => {
             this.loading = false;

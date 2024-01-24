@@ -2,18 +2,37 @@
   <mat-toolbar color="primary">
     <button mat-button routerLink="">ESHOP</button>
     <span class="example-spacer"></span>
+    <div class="mat-toolbar-buttons">
+      <button mat-button routerLink="all-items" routerLinkActive="active">All items</button>
+      <button mat-button routerLink="my-orders" routerLinkActive="active">My orders</button>
+      <button mat-button routerLink="my-cart" routerLinkActive="active">My Cart</button>
 
-    <button mat-button routerLink="all-items" routerLinkActive="active">All items</button>
-    <button mat-button routerLink="my-orders" routerLinkActive="active">My orders</button>
-    <button mat-button routerLink="my-cart" routerLinkActive="active">My Cart</button>
-
-    <div *ngIf="isAdmin">
-      <button mat-button routerLink="admin/orders" routerLinkActive="active">Orders</button>
-      <button mat-button routerLink="admin/items" routerLinkActive="active">Items</button>
-      <button mat-button routerLink="admin/categories" routerLinkActive="active">Categories</button>
+      <div *ngIf="isAdmin">
+        <button mat-button routerLink="admin/orders" routerLinkActive="active">Orders</button>
+        <button mat-button routerLink="admin/items" routerLinkActive="active">Items</button>
+        <button mat-button routerLink="admin/categories" routerLinkActive="active">Categories</button>
+      </div>
     </div>
 
+    <div class="mat-menu">
+      <button mat-button [matMenuTriggerFor]="menu">Menu</button>
+      <mat-menu #menu="matMenu">
+        <div class="buttons">
+          <button mat-button routerLink="all-items" routerLinkActive="active">All items</button>
+          <button mat-button routerLink="my-orders" routerLinkActive="active">My orders</button>
+          <button mat-button routerLink="my-cart" routerLinkActive="active">My Cart</button>
+
+          <div *ngIf="isAdmin" class="buttons">
+            <button mat-button routerLink="admin/orders" routerLinkActive="active">Orders</button>
+            <button mat-button routerLink="admin/items" routerLinkActive="active">Items</button>
+            <button mat-button routerLink="admin/categories" routerLinkActive="active">Categories</button>
+          </div>
+        </div>
+      </mat-menu>
+    </div>
   </mat-toolbar>
+
+
 </ng-container>
 
 <router-outlet></router-outlet>

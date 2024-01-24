@@ -1,7 +1,7 @@
 export interface OrderItem {
   id: number;
   itemId: number;
-  itemName:string;
+  itemName: string;
   itemPrice: number;
   count: number;
   orderNumber: string;

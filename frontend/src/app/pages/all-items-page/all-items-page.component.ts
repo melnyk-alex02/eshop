@@ -1,11 +1,11 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Item} from "../../models/item";
-import {Subject, takeUntil} from "rxjs";
-import {ItemBackendService} from "../../services/item-backend.service";
-import {MatTableDataSource} from "@angular/material/table";
-import {CartBackendService} from "../../services/cart-backend.service";
-import {SnackBarService} from "../../services/snack-bar.service";
-import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Item } from "../../models/item";
+import { Subject, takeUntil } from "rxjs";
+import { ItemBackendService } from "../../services/item-backend.service";
+import { MatTableDataSource } from "@angular/material/table";
+import { CartBackendService } from "../../services/cart-backend.service";
+import { SnackBarService } from "../../services/snack-bar.service";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
 
 @Component({
   selector: 'app-all-items-page',
@@ -30,7 +30,7 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getAllItems(0, 15);
+    this.getAllItems(0, 12);
   }
 
   ngOnDestroy() {
@@ -66,13 +66,13 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe)
     )
       .subscribe({
-      error: (error) => {
-        this.snackBarService.error(error.message)
-      },
-      complete: () => {
-        this.snackBarService.success("Item was successfully added to cart")
-      }
-    });
+        error: (error) => {
+          this.snackBarService.error(error.message)
+        },
+        complete: () => {
+          this.snackBarService.success("Item was successfully added to cart")
+        }
+      });
   }
 
   pageChanged(event: PageEvent) {

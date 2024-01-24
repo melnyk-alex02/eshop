@@ -1,13 +1,11 @@
 <div class="title">
-<h1>All items</h1>
+  <h1>All items</h1>
 </div>
 
-<mat-grid-list cols="5" gutterSize="5%" class="material-cards-grid">
-  <mat-grid-tile *ngFor="let item of items" class="material-card">
-<div class="cards">
-  <mat-card appearance="outlined" >
+<div class="grid">
+  <mat-card appearance="outlined" *ngFor="let item of items">
     <mat-card-header>
-      <mat-card-title> <p class="mat-line-clamp">{{item.name}}</p></mat-card-title>
+      <mat-card-title><p class="mat-line-clamp">{{item.name}}</p></mat-card-title>
     </mat-card-header>
     <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item">
     <mat-card-content>
@@ -18,8 +16,9 @@
       <button mat-button (click)="addItemToCart(item.id)">Add to cart</button>
     </mat-card-actions>
   </mat-card>
-</div></mat-grid-tile>
-</mat-grid-list>
+</div>
+
+
 <div class="paginator">
   <mat-paginator
     class="paginator"

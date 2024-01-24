@@ -1,12 +1,12 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatTable, MatTableDataSource} from "@angular/material/table";
-import {Cart} from "../../models/cart";
-import {Subject, takeUntil} from "rxjs";
-import {CartBackendService} from "../../services/cart-backend.service";
-import {SnackBarService} from "../../services/snack-bar.service";
-import {Order} from "../../models/order";
-import {Router} from "@angular/router";
-import {OrderBackendService} from "../../services/order-backend.service";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatTable, MatTableDataSource } from "@angular/material/table";
+import { Cart } from "../../models/cart";
+import { Subject, takeUntil } from "rxjs";
+import { CartBackendService } from "../../services/cart-backend.service";
+import { SnackBarService } from "../../services/snack-bar.service";
+import { Order } from "../../models/order";
+import { Router } from "@angular/router";
+import { OrderBackendService } from "../../services/order-backend.service";
 
 @Component({
   selector: 'app-my-cart',
@@ -47,24 +47,24 @@ export class MyCartComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe)
     )
       .subscribe(
-      {
-        next: (data) => {
-          this.cart = data;
-          console.log(data);
-          this.dataSource.data = data;
-        },
-        error: (error) => {
-          console.log(`${error.message}`)
-          this.snackBarService.error(`${error.message}`)
+        {
+          next: (data) => {
+            this.cart = data;
+            console.log(data);
+            this.dataSource.data = data;
+          },
+          error: (error) => {
+            console.log(`${error.message}`)
+            this.snackBarService.error(`${error.message}`)
 
-          this.dataSource.data = []
-          this.loading = false
-        },
-        complete: () => {
-          this.loading = false;
+            this.dataSource.data = []
+            this.loading = false
+          },
+          complete: () => {
+            this.loading = false;
+          }
         }
-      }
-    )
+      )
   }
 
   changeCountOfItems(id: number, count: number) {
@@ -86,7 +86,7 @@ export class MyCartComponent implements OnInit, OnDestroy {
     this.cartService.deleteItemFromCart(itemId).pipe(
       takeUntil(this.unsubscribe)
     ).subscribe({
-      error:(error) => {
+      error: (error) => {
         this.snackBarService.error(error.message);
         this.loading = false;
       },

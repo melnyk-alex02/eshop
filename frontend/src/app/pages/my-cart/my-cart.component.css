@@ -4,14 +4,12 @@
   place-items: center;
 }
 
-.header {
-  margin-top: 5%;
-  margin-left: 11.1%;
+button {
+  margin: 10px;
 }
 
 .button-1 {
-  margin-top: 5%;
-  margin-left: 5%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,4 +29,26 @@
 .button-1:focus {
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
   outline: 0;
+}
+
+.mat-line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+}
+
+mat-accordion {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  table, th, td {
+    display: none;
+  }
+
+  mat-accordion {
+    display: block;
+  }
 }

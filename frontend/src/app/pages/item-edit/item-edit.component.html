@@ -10,66 +10,68 @@
 </ng-container>
 
 <ng-container *ngIf="item">
+  <br>
   <div class="title">
     <h1>Editing {{item.name}}</h1>
   </div>
 
-  <div class="container">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-form-field appereance="fill">
-        <mat-label>Name</mat-label>
-        <input matInput maxlength="255"
-               placeholder="Type new name"
-               formControlName="name"
-               #nameInput>
-        <mat-error>Name is required</mat-error>
-        <mat-error *ngIf="form.controls['name'].errors?.['minlength']">
-          Please enter more than 5 character
-        </mat-error>
-        <mat-error *ngIf="form.controls['name'].errors?.['maxLength']">
-          Entered name is too long
-        </mat-error>
-      </mat-form-field>
-      <br>
-      <mat-form-field appereance="outline">
-        <mat-label>Description</mat-label>
-        <textarea matInput placeholder="Type new description"
-                  rows="6"
-                  type="description"
-                  formControlName="description"
-                  #descInput></textarea>
-        <mat-error>Description is required</mat-error>
-        <mat-error *ngIf="form.controls['description'].errors?.['minlength']">
-          Please enter more than 10 character
-        </mat-error>
-      </mat-form-field>
-      <br>
-      <mat-form-field appereance="outline">
-        <mat-label>Select Category ID</mat-label>
-        <mat-select value="selected" [formControlName]="'categoryId'">
-          <mat-option [value]="category.id" *ngFor="let category of categories">
-            {{category.id}}. {{category.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br>
-      <mat-form-field>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appereance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput maxlength="255"
+             placeholder="Type new name"
+             formControlName="name"
+             #nameInput>
+      <mat-error>Name is required</mat-error>
+      <mat-error *ngIf="form.controls['name'].errors?.['minlength']">
+        Please enter more than 5 character
+      </mat-error>
+      <mat-error *ngIf="form.controls['name'].errors?.['maxLength']">
+        Entered name is too long
+      </mat-error>
+    </mat-form-field>
+    <br>
+    <mat-form-field appereance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput placeholder="Type new description"
+                rows="6"
+                type="description"
+                formControlName="description"
+                #descInput></textarea>
+      <mat-error>Description is required</mat-error>
+      <mat-error *ngIf="form.controls['description'].errors?.['minlength']">
+        Please enter more than 10 character
+      </mat-error>
+    </mat-form-field>
+    <br>
+    <mat-form-field appereance="outline">
+      <mat-label>Select Category ID</mat-label>
+      <mat-select value="selected" [formControlName]="'categoryId'">
+        <mat-option [value]="category.id" *ngFor="let category of categories">
+          {{category.id}}. {{category.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Price</mat-label>
       <input matInput maxlength="255"
              placeholder="Type new price"
              formControlName="price"
              #priceInput>
       <mat-error>Price is required</mat-error>
-      </mat-form-field>
-        <br>
-      <mat-form-field appereance="outline">
-        <mat-label>ImageSrc</mat-label>
-        <input matInput maxlength="500"
-               type="imageSrc"
-               formControlName="imageSrc"
-               placeholder="Type new imageSrc" #imgInput>
-      </mat-form-field>
-    </form>
-  </div>
+    </mat-form-field>
+    <br>
+    <mat-form-field appereance="outline">
+      <mat-label>ImageSrc</mat-label>
+      <input matInput maxlength="500"
+             type="imageSrc"
+             formControlName="imageSrc"
+             placeholder="Type new imageSrc" #imgInput>
+    </mat-form-field>
+  </form>
+
+  <br>
   <div class="button">
     <button (click)="onSubmit()" [disabled]="form.invalid">Submit</button>
   </div>

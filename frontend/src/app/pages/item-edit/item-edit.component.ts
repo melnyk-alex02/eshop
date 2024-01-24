@@ -94,7 +94,8 @@ export class ItemEditComponent implements OnInit {
       .pipe(
         takeUntil(this.unsubscribe)
       )
-      .subscribe({ next: (res) => {
+      .subscribe({
+        next: (res) => {
           this.categories = res.content;
         }
       });

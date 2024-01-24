@@ -4,19 +4,6 @@
   place-items: center;
 }
 
-.header {
-  margin-top: 5%;
-  margin-left: 11.1%;
-}
-
-h3{
-  margin-left: 11.1%;
-}
-
-.after-table{
-  margin-top: 2%;
-}
-
 .button-1 {
   margin-left: 11.1%;
   margin-top: 15px;
@@ -39,6 +26,10 @@ h3{
 .button-1:focus {
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
   outline: 0;
+}
+
+.row {
+  max-width: 100%;
 }
 
 button[disabled] {

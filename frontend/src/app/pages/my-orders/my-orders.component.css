@@ -4,7 +4,20 @@
   place-items: center;
 }
 
-.header {
-  margin-top: 5%;
-  margin-left: 11.1%;
+button {
+  margin: 10px;
+}
+
+mat-accordion {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  table, th, td {
+    display: none;
+  }
+
+  mat-accordion {
+    display: block;
+  }
 }

@@ -9,53 +9,79 @@
   </div>
 </ng-container>
 
-
-
 <ng-container *ngIf="!this.loading">
+  <br>
   <div class="header">
     <h1 style="color: black">Your orders</h1>
   </div>
+  <div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-  <div class="container">
-    <div class="row">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="number">
+        <th mat-header-cell *matHeaderCellDef> Number</th>
+        <td mat-cell *matCellDef="let order"> {{order.number}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="number">
-          <th mat-header-cell *matHeaderCellDef> Number</th>
-          <td mat-cell *matCellDef="let order"> {{order.number}} </td>
-        </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let order"> {{order.status}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let order"> {{order.status}} </td>
-        </ng-container>
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef> Created at</th>
+        <td mat-cell *matCellDef="let order">{{order.createdDate}}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef> Created at</th>
-          <td mat-cell *matCellDef="let order">{{order.createdDate}}</td>
-        </ng-container>
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef> Price</th>
+        <td mat-cell *matCellDef="let order">{{order.price}}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef> Price</th>
-          <td mat-cell *matCellDef="let order">{{order.price}}</td>
-        </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions</th>
+        <td mat-cell *matCellDef="let order">
+          <button mat-raised-button routerLink="/my-order/{{order.number}}" routerLinkActive="active">
+            View
+          </button>
+          <button *ngIf="order.status=='NEW'" mat-raised-button (click)="cancelOrder(order.number)">Cancel</button>
+          <button *ngIf="order.status!='NEW'" mat-raised-button disabled>
+            Cancel
+          </button>
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef> Actions</th>
-          <td mat-cell *matCellDef="let order">
-            <button mat-raised-button routerLink="/my-order/{{order.number}}" routerLinkActive="active">
-              View
-            </button>
-            <button *ngIf="order.status=='NEW'" mat-raised-button (click)="cancelOrder(order.number)">Cancel</button>
-            <button *ngIf="order.status!='NEW'" mat-raised-button disabled>
-              Cancel
-            </button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
-      </table>
-    </div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
+    </table>
+    <mat-accordion *ngFor="let order of dataSource.data">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <a routerLink="/my-order/{{order.number}}" routerLinkActive="active">{{order.number}}</a>
+          </mat-panel-title>
+          <mat-panel-description>
+            {{order.price | currency : 'USD'}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <p>Created Date: {{order.createdDate}}</p>
+        <br *ngIf="order.purchasedDate">
+        <p *ngIf="order.purchasedDate"> Purchased Date: {{order.purchasedDate}}</p>
+        <br>
+        <p>Count: {{order.count}}</p>
+        <br>
+        <p>Status: {{order.status}}</p>
+        <br>
+        <mat-action-row>
+          <button mat-button color="primary" routerLink="/my-order/{{order.number}}" routerLinkActive="active">
+            View
+          </button>
+          <button *ngIf="order.status=='NEW'" mat-button color="primary" (click)="cancelOrder(order.number)">Cancel
+          </button>
+          <button *ngIf="order.status!='NEW'" mat-button disabled>
+            Cancel
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </ng-container>
