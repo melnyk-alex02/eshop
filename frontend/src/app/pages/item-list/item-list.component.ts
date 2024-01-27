@@ -229,7 +229,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.dataSource.data = data.content;
-          console.log(this.dataSource.data)
 
           this.totalElements = data.totalElements;
         },

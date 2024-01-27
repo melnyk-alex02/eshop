@@ -50,11 +50,9 @@ export class MyCartComponent implements OnInit, OnDestroy {
         {
           next: (data) => {
             this.cart = data;
-            console.log(data);
             this.dataSource.data = data;
           },
           error: (error) => {
-            console.log(`${error.message}`)
             this.snackBarService.error(`${error.message}`)
 
             this.dataSource.data = []

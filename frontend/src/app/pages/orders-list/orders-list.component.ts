@@ -46,7 +46,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.dataSource.data = data.content;
         this.totalElements = data.totalElements;
-        console.log(data.content)
       },
       error: (error) => {
         this.snackBarService.error(error.message);

@@ -50,9 +50,7 @@ export class MyOrderPageComponent implements OnInit, OnDestroy {
       ).subscribe({
       next: (data) => {
         this.dataSource.data = data.orderItemDTOList;
-        console.log(this.dataSource.data)
         this.order = data;
-        console.log(data.createdDate.toLocaleDateString)
       },
       error: () => {
 
@@ -70,7 +68,7 @@ export class MyOrderPageComponent implements OnInit, OnDestroy {
     )
       .subscribe({
         error: (error) => {
-          console.error(error.message)
+          this.snackBarServe.error(`${error.message}`)
         },
         complete: () => {
           this.snackBarServe.success("Your order was successfully confirmed!")

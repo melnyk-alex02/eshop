@@ -42,7 +42,6 @@ export class MyOrdersComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (data) => {
         this.dataSource.data = data.content;
-        console.log(data);
       },
       complete: () => {
         this.loading = false;
