@@ -6,4 +6,5 @@ export interface Item {
   price: number;
   categoryName: string;
   imageSrc: string;
+  inCart: boolean;
 }

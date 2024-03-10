@@ -5,14 +5,13 @@
 
     <button mat-button routerLink="all-items" routerLinkActive="active">All items</button>
     <button mat-button routerLink="my-orders" routerLinkActive="active">My orders</button>
-    <button mat-button routerLink="my-cart" routerLinkActive="active">My Cart</button>
+    <button mat-button routerLink="my-cart" routerLinkActive="active">{{getCountOfItemsInCart()===0 ? "My Cart" : "My Cart(" + getCountOfItemsInCart() + ")" }}</button>
 
     <div *ngIf="isAdmin">
       <button mat-button routerLink="admin/orders" routerLinkActive="active">Orders</button>
       <button mat-button routerLink="admin/items" routerLinkActive="active">Items</button>
       <button mat-button routerLink="admin/categories" routerLinkActive="active">Categories</button>
     </div>
-
   </mat-toolbar>
 </ng-container>
 

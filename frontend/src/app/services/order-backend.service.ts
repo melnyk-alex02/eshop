@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {SERVER_API_URL} from "../constants/app.constants";
-import {catchError, Observable, throwError} from "rxjs";
-import {Order} from "../models/order";
-import {Page} from "../models/page";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { SERVER_API_URL } from "../constants/app.constants";
+import { catchError, Observable, throwError } from "rxjs";
+import { Order } from "../models/order";
+import { Page } from "../models/page";
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +11,6 @@ import {Page} from "../models/page";
 export class OrderBackendService {
 
   constructor(private http: HttpClient) {
-  }
-
-  cancelUnconfirmedOrders(order: Order): void {
-    const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
-
-
-    const creationTime = order.createdDate.getTime();
-    const currentTime = new Date().getTime();
-
-    if (currentTime - creationTime > twentyFourHoursInMs && !(order.status =="DONE")) {
-      this.cancelOrder(order.number);
-    }
   }
 
   public getOrder(orderNumber: string): Observable<Order> {
@@ -42,7 +30,7 @@ export class OrderBackendService {
   }
 
   public getAllOrdersByUserId(): Observable<Page<Order>> {
-    let params= new HttpParams()
+    let params = new HttpParams()
       .set("page", 0)
       .set("size", 0)
       .set("sort", "status,desc")
@@ -58,15 +46,9 @@ export class OrderBackendService {
   }
 
   public confirmOrder(orderNumber: string): Observable<void> {
-     return this.http.put<void>(`${SERVER_API_URL}/order/confirm/` +  orderNumber, {}).pipe(
+    return this.http.put<void>(`${SERVER_API_URL}/order/confirm/` + orderNumber, {}).pipe(
       catchError(this.handleError)
     );
-  }
-
-  public startAutoCancelCheck(order: Order): void {
-    setInterval(() => {
-      this.cancelUnconfirmedOrders(order);
-    }, 3600000);
   }
 
   private handleError(error: HttpErrorResponse) {

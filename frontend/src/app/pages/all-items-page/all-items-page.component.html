@@ -1,24 +1,27 @@
 <div class="title">
-<h1>All items</h1>
+  <h1>All items</h1>
 </div>
 
 <mat-grid-list cols="5" gutterSize="5%" class="material-cards-grid">
-  <mat-grid-tile *ngFor="let item of items" class="material-card">
-<div class="cards">
-  <mat-card appearance="outlined" >
-    <mat-card-header>
-      <mat-card-title> <p class="mat-line-clamp">{{item.name}}</p></mat-card-title>
-    </mat-card-header>
-    <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item">
-    <mat-card-content>
-      <p class="mat-line-clamp">{{item.description}}</p>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button routerLink="{{item.id}}/view" routerLinkActive="active">View</button>
-      <button mat-button (click)="addItemToCart(item.id)">Add to cart</button>
-    </mat-card-actions>
-  </mat-card>
-</div></mat-grid-tile>
+  <mat-grid-tile *ngFor="let item of items;" class="material-card">
+    <div class="cards">
+      <mat-card appearance="outlined">
+        <mat-card-header>
+          <mat-card-title><p class="mat-line-clamp">{{ item.name }}</p></mat-card-title>
+        </mat-card-header>
+        <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item">
+        <mat-card-content>
+          <p class="mat-line-clamp">{{ item.description }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button routerLink="{{item.id}}/view" routerLinkActive="active">View</button>
+          <button mat-button (click)="isItemInCart(item) ? updateCartItems(item, true) : addItemToCart(item)">
+            {{ isItemInCart(item) ? 'In Cart' : 'Add to Cart' }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </mat-grid-tile>
 </mat-grid-list>
 <div class="paginator">
   <mat-paginator
