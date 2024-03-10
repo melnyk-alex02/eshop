@@ -5,6 +5,7 @@ import com.alex.eshop.dto.categoryDTOs.CategoryCreateDTO;
 import com.alex.eshop.dto.categoryDTOs.CategoryDTO;
 import com.alex.eshop.dto.categoryDTOs.CategoryUpdateDTO;
 import com.alex.eshop.service.CategoryService;
+import com.alex.eshop.wrapper.PageWrapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,15 +25,19 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories")
-    public Page<CategoryDTO> getAllCategories(Pageable pageable) {
-        return categoryService.getAllCategories(pageable);
+    public PageWrapper<CategoryDTO> getAllCategories(Pageable pageable) {
+        Page<CategoryDTO> categoryPage = categoryService.getAllCategories(pageable);
+
+        return new PageWrapper<>(categoryPage.getContent(), categoryPage.getTotalElements());
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories/search")
-    public Page<CategoryDTO> searchCategories(Pageable pageable,
-                                              @RequestParam("name") String name) {
-        return categoryService.searchCategories(pageable, name);
+    public PageWrapper<CategoryDTO> searchCategories(Pageable pageable,
+                                                     @RequestParam("name") String name) {
+        Page<CategoryDTO> categoryPage = categoryService.searchCategories(pageable, name);
+
+        return new PageWrapper<>(categoryPage.getContent(), categoryPage.getTotalElements());
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")

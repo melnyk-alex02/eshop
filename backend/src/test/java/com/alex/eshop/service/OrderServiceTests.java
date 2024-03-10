@@ -2,12 +2,7 @@ package com.alex.eshop.service;
 
 import com.alex.eshop.constants.OrderStatus;
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
-import com.alex.eshop.dto.orderDTOs.OrderItemDTO;
-import com.alex.eshop.entity.Category;
-import com.alex.eshop.entity.Item;
 import com.alex.eshop.entity.Order;
-import com.alex.eshop.entity.OrderItem;
-import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.OrderMapper;
 import com.alex.eshop.repository.OrderRepository;
 import org.junit.Test;
@@ -19,10 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,13 +51,13 @@ public class OrderServiceTests {
         verify(orderRepository).findOrderByUserIdAndNumber("userId", order.getNumber());
         verify(orderMapper).toDto(order);
 
-        assertEquals(expectedOrderDTO.getNumber(), result.getNumber());
-        assertEquals(expectedOrderDTO.getStatus(), result.getStatus());
-        assertEquals(expectedOrderDTO.getCreatedDate(), result.getCreatedDate());
-        assertEquals(expectedOrderDTO.getPrice(), result.getPrice());
-        assertEquals(expectedOrderDTO.getCount(), result.getCount());
-        assertEquals(expectedOrderDTO.getUserId(), result.getUserId());
-        assertEquals(expectedOrderDTO.getOrderItemDTOList().size(), result.getOrderItemDTOList().size());
+        assertEquals(expectedOrderDTO.number(), result.number());
+        assertEquals(expectedOrderDTO.status(), result.status());
+        assertEquals(expectedOrderDTO.createdDate(), result.createdDate());
+        assertEquals(expectedOrderDTO.price(), result.price());
+        assertEquals(expectedOrderDTO.count(), result.count());
+        assertEquals(expectedOrderDTO.userId(), result.userId());
+        assertEquals(expectedOrderDTO.orderItemDTOList().size(), result.orderItemDTOList().size());
     }
 
     @Test
@@ -85,7 +76,7 @@ public class OrderServiceTests {
             Order order = invocationOnMock.getArgument(0);
             String orderNumber = order.getNumber();
             return expectedOrderDTOList.stream()
-                    .filter(dto -> dto.getNumber().equals(orderNumber))
+                    .filter(dto -> dto.number().equals(orderNumber))
                     .findFirst()
                     .orElse(null);
         });
@@ -100,21 +91,21 @@ public class OrderServiceTests {
 
         assertEquals(expectedOrderDTOList.size(), result.getContent().size());
 
-        assertEquals(expectedOrderDTOList.get(0).getNumber(), result.getContent().get(0).getNumber());
-        assertEquals(expectedOrderDTOList.get(0).getStatus(), result.getContent().get(0).getStatus());
-        assertEquals(expectedOrderDTOList.get(0).getCreatedDate(), result.getContent().get(0).getCreatedDate());
-        assertEquals(expectedOrderDTOList.get(0).getPrice(), result.getContent().get(0).getPrice());
-        assertEquals(expectedOrderDTOList.get(0).getCount(), result.getContent().get(0).getCount());
-        assertEquals(expectedOrderDTOList.get(0).getUserId(), result.getContent().get(0).getUserId());
-        assertEquals(expectedOrderDTOList.get(0).getOrderItemDTOList().size(), result.getContent().get(0).getOrderItemDTOList().size());
+        assertEquals(expectedOrderDTOList.get(0).number(), result.getContent().get(0).number());
+        assertEquals(expectedOrderDTOList.get(0).status(), result.getContent().get(0).status());
+        assertEquals(expectedOrderDTOList.get(0).createdDate(), result.getContent().get(0).createdDate());
+        assertEquals(expectedOrderDTOList.get(0).price(), result.getContent().get(0).price());
+        assertEquals(expectedOrderDTOList.get(0).count(), result.getContent().get(0).count());
+        assertEquals(expectedOrderDTOList.get(0).userId(), result.getContent().get(0).userId());
+        assertEquals(expectedOrderDTOList.get(0).orderItemDTOList().size(), result.getContent().get(0).orderItemDTOList().size());
 
-        assertEquals(expectedOrderDTOList.get(1).getNumber(), result.getContent().get(1).getNumber());
-        assertEquals(expectedOrderDTOList.get(1).getStatus(), result.getContent().get(1).getStatus());
-        assertEquals(expectedOrderDTOList.get(1).getCreatedDate(), result.getContent().get(1).getCreatedDate());
-        assertEquals(expectedOrderDTOList.get(1).getPrice(), result.getContent().get(1).getPrice());
-        assertEquals(expectedOrderDTOList.get(1).getCount(), result.getContent().get(1).getCount());
-        assertEquals(expectedOrderDTOList.get(1).getUserId(), result.getContent().get(1).getUserId());
-        assertEquals(expectedOrderDTOList.get(1).getOrderItemDTOList().size(), result.getContent().get(1).getOrderItemDTOList().size());
+        assertEquals(expectedOrderDTOList.get(1).number(), result.getContent().get(1).number());
+        assertEquals(expectedOrderDTOList.get(1).status(), result.getContent().get(1).status());
+        assertEquals(expectedOrderDTOList.get(1).createdDate(), result.getContent().get(1).createdDate());
+        assertEquals(expectedOrderDTOList.get(1).price(), result.getContent().get(1).price());
+        assertEquals(expectedOrderDTOList.get(1).count(), result.getContent().get(1).count());
+        assertEquals(expectedOrderDTOList.get(1).userId(), result.getContent().get(1).userId());
+        assertEquals(expectedOrderDTOList.get(1).orderItemDTOList().size(), result.getContent().get(1).orderItemDTOList().size());
     }
 
     @Test
@@ -125,19 +116,19 @@ public class OrderServiceTests {
         String userId = "userId";
 
         OrderDTO expectedOrderDTO = createOrderDTOList().get(0);
-        expectedOrderDTO.setUserId(OrderStatus.CANCELLED);
+        expectedOrderDTO.withStatus(OrderStatus.CANCELLED);
 
         when(currentUserService.getCurrentUserUuid()).thenReturn(userId);
-        when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.getNumber(), userId)).thenReturn(true);
+        when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.number(), userId)).thenReturn(true);
         when(orderRepository.findOrderByUserIdAndNumber(userId, order.getNumber())).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(orderDTO);
         when(orderRepository.save(orderMapper.toEntity(expectedOrderDTO))).thenReturn(order);
 
         orderService.cancelOrder("number");
 
-        verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.getNumber(), userId);
+        verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.number(), userId);
         verify(currentUserService).getCurrentUserUuid();
-        verify(orderRepository).findOrderByUserIdAndNumber(userId, expectedOrderDTO.getNumber());
+        verify(orderRepository).findOrderByUserIdAndNumber(userId, expectedOrderDTO.number());
         verify(orderMapper).toDto(order);
         verify(orderRepository).save(orderMapper.toEntity(expectedOrderDTO));
     }
@@ -148,17 +139,17 @@ public class OrderServiceTests {
         OrderDTO orderDTO = createOrderDTOList().get(0);
 
         OrderDTO expectedOrderDTO = createOrderDTOList().get(0);
-        expectedOrderDTO.setUserId(OrderStatus.DONE);
+        expectedOrderDTO.withStatus(OrderStatus.DONE);
 
         when(currentUserService.getCurrentUserUuid()).thenReturn("userId");
-        when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.getNumber(), "userId")).thenReturn(true);
+        when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.number(), "userId")).thenReturn(true);
         when(orderRepository.findOrderByUserIdAndNumber("userId", order.getNumber())).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(orderDTO);
         when(orderRepository.save(orderMapper.toEntity(expectedOrderDTO))).thenReturn(order);
 
         orderService.confirmOrder("number");
 
-        verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.getNumber(), "userId");
+        verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.number(), "userId");
     }
 
     @Test

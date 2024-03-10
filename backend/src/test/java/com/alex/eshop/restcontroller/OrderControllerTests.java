@@ -1,6 +1,7 @@
 package com.alex.eshop.restcontroller;
 
 import com.alex.eshop.EshopApplication;
+import com.alex.eshop.constants.OrderStatus;
 import com.alex.eshop.constants.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,7 +9,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,19 +25,16 @@ public class OrderControllerTests extends BaseWebTest {
     @Test
     @WithMockUser(value = "userId", authorities = {Role.USER})
     public void testGetAllOrdersByUserId() throws Exception {
-        mockMvc.perform(get("/api/orders")
-                        .param("page", "0")
-                        .param("size", "10"))
+        mockMvc.perform(get("/api/orders"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
 
                 .andExpect(jsonPath("$.content[0].userId").value("userId"))
                 .andExpect(jsonPath("$.content[0].number").value("orderNumber"))
-                .andExpect(jsonPath("$.content[0].status").value("NEW"))
+                .andExpect(jsonPath("$.content[0].status").value(OrderStatus.NEW.name()))
                 .andExpect(jsonPath("$.content[0].price").value(100))
                 .andExpect(jsonPath("$.content[0].count").value(1))
-                .andExpect(jsonPath("$.content[0].orderItemDTOList").isArray())
-                .andDo(print());
+                .andExpect(jsonPath("$.content[0].orderItemDTOList").isArray());
     }
 
     @Test
@@ -47,7 +44,7 @@ public class OrderControllerTests extends BaseWebTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value("userId"))
                 .andExpect(jsonPath("$.number").value("orderNumber"))
-                .andExpect(jsonPath("$.status").value("NEW"))
+                .andExpect(jsonPath("$.status").value(OrderStatus.NEW.name()))
                 .andExpect(jsonPath("$.price").value(100))
                 .andExpect(jsonPath("$.count").value(1))
                 .andExpect(jsonPath("$.orderItemDTOList").isArray());
@@ -78,7 +75,7 @@ public class OrderControllerTests extends BaseWebTest {
 
                 .andExpect(jsonPath("$.content[0].userId").value("userId"))
                 .andExpect(jsonPath("$.content[0].number").value("orderNumber"))
-                .andExpect(jsonPath("$.content[0].status").value("NEW"))
+                .andExpect(jsonPath("$.content[0].status").value(OrderStatus.NEW.name()))
                 .andExpect(jsonPath("$.content[0].price").value(100))
                 .andExpect(jsonPath("$.content[0].count").value(1));
     }

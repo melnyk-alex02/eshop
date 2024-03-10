@@ -55,7 +55,7 @@ public class CategoryServiceTest {
             Category category = invocationOnMock.getArgument(0);
             Long id = category.getId();
             return expectedCategoryDTOList.stream()
-                    .filter(dto -> dto.getId().equals(id))
+                    .filter(dto -> dto.id().equals(id))
                     .findFirst()
                     .orElse(null);
         });
@@ -66,13 +66,13 @@ public class CategoryServiceTest {
         verify(categoryMapper, times(2)).toDto(any(Category.class));
 
         assertEquals(2, result.getTotalElements());
-        assertEquals(expectedCategoryDTOList.get(0).getId(), result.getContent().get(0).getId());
-        assertEquals(expectedCategoryDTOList.get(0).getName(), result.getContent().get(0).getName());
-        assertEquals(expectedCategoryDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
+        assertEquals(expectedCategoryDTOList.get(0).id(), result.getContent().get(0).id());
+        assertEquals(expectedCategoryDTOList.get(0).name(), result.getContent().get(0).name());
+        assertEquals(expectedCategoryDTOList.get(0).description(), result.getContent().get(0).description());
 
-        assertEquals(expectedCategoryDTOList.get(1).getId(), result.getContent().get(1).getId());
-        assertEquals(expectedCategoryDTOList.get(1).getName(), result.getContent().get(1).getName());
-        assertEquals(expectedCategoryDTOList.get(1).getDescription(), result.getContent().get(1).getDescription());
+        assertEquals(expectedCategoryDTOList.get(1).id(), result.getContent().get(1).id());
+        assertEquals(expectedCategoryDTOList.get(1).name(), result.getContent().get(1).name());
+        assertEquals(expectedCategoryDTOList.get(1).description(), result.getContent().get(1).description());
     }
 
     @Test
@@ -91,7 +91,7 @@ public class CategoryServiceTest {
             Category category1 = invocationOnMock.getArgument(0);
             Long id = category1.getId();
             return expectedCategoryDTOList.stream()
-                    .filter(dto -> dto.getId().equals(id))
+                    .filter(dto -> dto.id().equals(id))
                     .findFirst()
                     .orElse(null);
         });
@@ -103,9 +103,9 @@ public class CategoryServiceTest {
 
         assertEquals(1, result.getTotalElements());
 
-        assertEquals(expectedCategoryDTOList.get(0).getId(), result.getContent().get(0).getId());
-        assertEquals(expectedCategoryDTOList.get(0).getName(), result.getContent().get(0).getName());
-        assertEquals(expectedCategoryDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
+        assertEquals(expectedCategoryDTOList.get(0).id(), result.getContent().get(0).id());
+        assertEquals(expectedCategoryDTOList.get(0).name(), result.getContent().get(0).name());
+        assertEquals(expectedCategoryDTOList.get(0).description(), result.getContent().get(0).description());
     }
 
     @Test
@@ -115,10 +115,7 @@ public class CategoryServiceTest {
         category.setName("Category 1");
         category.setDescription("Description 2");
 
-        CategoryDTO expectedDto = new CategoryDTO();
-        expectedDto.setId(1L);
-        expectedDto.setName("Category 1");
-        expectedDto.setDescription("Description 1");
+        CategoryDTO expectedDto = new CategoryDTO(1L, "Category 1", "Description 1");
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(any(Category.class))).thenReturn(expectedDto);
@@ -130,16 +127,14 @@ public class CategoryServiceTest {
 
         assertNotNull(result);
 
-        assertEquals(expectedDto.getId(), result.getId());
-        assertEquals(expectedDto.getName(), result.getName());
-        assertEquals(expectedDto.getDescription(), result.getDescription());
+        assertEquals(expectedDto.id(), result.id());
+        assertEquals(expectedDto.name(), result.name());
+        assertEquals(expectedDto.description(), result.description());
     }
 
     @Test
     public void testCreateCategory() {
-        CategoryCreateDTO categoryCreateDTO = new CategoryCreateDTO();
-        categoryCreateDTO.setName("Category 1");
-        categoryCreateDTO.setDescription("Description 1");
+        CategoryCreateDTO categoryCreateDTO = new CategoryCreateDTO("Category 1", "Description 1");
 
         Category categoryToSave = new Category();
         categoryToSave.setId(null);
@@ -151,10 +146,7 @@ public class CategoryServiceTest {
         savedCategory.setName("Category 1");
         savedCategory.setDescription("Description 1");
 
-        CategoryDTO expectedCategoryDTO = new CategoryDTO();
-        expectedCategoryDTO.setId(1L);
-        expectedCategoryDTO.setName("Category 1");
-        expectedCategoryDTO.setDescription("Description 1");
+        CategoryDTO expectedCategoryDTO = new CategoryDTO(1L, "Category 1", "Description 1");
 
         when(categoryMapper.toEntity(categoryCreateDTO)).thenReturn(categoryToSave);
         when(categoryRepository.save(categoryToSave)).thenReturn(savedCategory);
@@ -166,9 +158,9 @@ public class CategoryServiceTest {
         verify(categoryRepository).save(categoryToSave);
         verify(categoryMapper).toDto(savedCategory);
 
-        assertEquals(expectedCategoryDTO.getId(), result.getId());
-        assertEquals(expectedCategoryDTO.getName(), result.getName());
-        assertEquals(expectedCategoryDTO.getDescription(), result.getDescription());
+        assertEquals(expectedCategoryDTO.id(), result.id());
+        assertEquals(expectedCategoryDTO.name(), result.name());
+        assertEquals(expectedCategoryDTO.description(), result.description());
     }
 
     @Test
@@ -198,48 +190,43 @@ public class CategoryServiceTest {
 
         assertEquals(expectedCategoryDTOList.size(), result.size());
 
-        assertEquals(expectedCategoryDTOList.get(0).getId(), result.get(0).getId());
-        assertEquals(expectedCategoryDTOList.get(0).getName(), result.get(0).getName());
-        assertEquals(expectedCategoryDTOList.get(0).getDescription(), result.get(0).getDescription());
+        assertEquals(expectedCategoryDTOList.get(0).id(), result.get(0).id());
+        assertEquals(expectedCategoryDTOList.get(0).name(), result.get(0).name());
+        assertEquals(expectedCategoryDTOList.get(0).description(), result.get(0).description());
 
-        assertEquals(expectedCategoryDTOList.get(1).getId(), result.get(1).getId());
-        assertEquals(expectedCategoryDTOList.get(1).getName(), result.get(1).getName());
-        assertEquals(expectedCategoryDTOList.get(1).getDescription(), result.get(1).getDescription());
+        assertEquals(expectedCategoryDTOList.get(1).id(), result.get(1).id());
+        assertEquals(expectedCategoryDTOList.get(1).name(), result.get(1).name());
+        assertEquals(expectedCategoryDTOList.get(1).description(), result.get(1).description());
     }
 
     @Test
     public void testUpdateCategory() {
-        CategoryUpdateDTO categoryUpdateDTO = new CategoryUpdateDTO();
-        categoryUpdateDTO.setId(1L);
-        categoryUpdateDTO.setName("Updated Category 1");
-        categoryUpdateDTO.setDescription("Update Category Description 1");
+        CategoryUpdateDTO categoryUpdateDTO = new CategoryUpdateDTO(1L, "Updated Category 1", "Updated Description 1");
 
         Category updatedCategory = new Category();
         updatedCategory.setId(1L);
         updatedCategory.setName("Updated Category 1");
         updatedCategory.setDescription("Updated Description 1");
 
-        CategoryDTO expectedCategoryDTO = new CategoryDTO();
-        expectedCategoryDTO.setId(1L);
-        expectedCategoryDTO.setName("Updated Category 1");
-        expectedCategoryDTO.setDescription("Updated Description 1");
+        CategoryDTO expectedCategoryDTO = new CategoryDTO(1L, "Updated Category 1", "Updated Description 1");
 
-        when(categoryRepository.existsById(categoryUpdateDTO.getId())).thenReturn(true);
+
+        when(categoryRepository.existsById(categoryUpdateDTO.id())).thenReturn(true);
         when(categoryRepository.save(any())).thenReturn(updatedCategory);
         when(categoryMapper.toEntity(categoryUpdateDTO)).thenReturn(updatedCategory);
         when(categoryMapper.toDto(updatedCategory)).thenReturn(expectedCategoryDTO);
 
         CategoryDTO result = categoryService.updateCategory(categoryUpdateDTO);
 
-        verify(categoryRepository).existsById(categoryUpdateDTO.getId());
+        verify(categoryRepository).existsById(categoryUpdateDTO.id());
         verify(categoryRepository).save(any());
         verify(categoryMapper).toEntity(categoryUpdateDTO);
         verify(categoryMapper).toDto(updatedCategory);
 
         assertNotNull(result);
-        assertEquals(expectedCategoryDTO.getId(), result.getId());
-        assertEquals(expectedCategoryDTO.getName(), result.getName());
-        assertEquals(expectedCategoryDTO.getDescription(), result.getDescription());
+        assertEquals(expectedCategoryDTO.id(), result.id());
+        assertEquals(expectedCategoryDTO.name(), result.name());
+        assertEquals(expectedCategoryDTO.description(), result.description());
     }
 
     @Test
@@ -305,14 +292,13 @@ public class CategoryServiceTest {
 
     @Test
     public void testUpdateCategory_WhenCategoryDoesNotExist_ShouldThrowException() {
-        CategoryUpdateDTO categoryUpdateDTO = new CategoryUpdateDTO();
-        categoryUpdateDTO.setId(123L);
+        CategoryUpdateDTO categoryUpdateDTO = new CategoryUpdateDTO(123L, null, null);
 
-        when(categoryRepository.existsById(categoryUpdateDTO.getId())).thenReturn(false);
+        when(categoryRepository.existsById(categoryUpdateDTO.id())).thenReturn(false);
 
         assertThrows(DataNotFoundException.class, () -> categoryService.updateCategory(categoryUpdateDTO));
 
-        verify(categoryRepository).existsById(categoryUpdateDTO.getId());
+        verify(categoryRepository).existsById(categoryUpdateDTO.id());
     }
 
     @Test
@@ -377,15 +363,14 @@ public class CategoryServiceTest {
     private List<CategoryDTO> createCategoryDTOList() {
         List<CategoryDTO> categoryDTOList = new ArrayList<>();
 
-        CategoryDTO categoryDTO1 = new CategoryDTO();
-        categoryDTO1.setId(1L);
-        categoryDTO1.setName("Category 1");
-        categoryDTO1.setDescription("Description");
+        CategoryDTO categoryDTO1 = new CategoryDTO(1L,
+                "Category 1",
+                "Description 1");
 
-        CategoryDTO categoryDTO2 = new CategoryDTO();
-        categoryDTO2.setId(2L);
-        categoryDTO2.setName("Category 2");
-        categoryDTO2.setDescription("Description 2");
+        CategoryDTO categoryDTO2 = new CategoryDTO(2L,
+                "Category 2",
+                "Description 2");
+
 
         categoryDTOList.add(categoryDTO1);
         categoryDTOList.add(categoryDTO2);

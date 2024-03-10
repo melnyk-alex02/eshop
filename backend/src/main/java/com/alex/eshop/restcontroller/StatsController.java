@@ -3,6 +3,7 @@ package com.alex.eshop.restcontroller;
 import com.alex.eshop.constants.Role;
 import com.alex.eshop.dto.statsDTOs.StatsDTO;
 import com.alex.eshop.service.StatsService;
+import com.alex.eshop.wrapper.PageWrapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,9 @@ public class StatsController {
 
     @PreAuthorize("hasRole('" + Role.ADMIN + "')")
     @GetMapping("/stats")
-    public Page<StatsDTO> getStats(Pageable pageable) {
-        return statsService.getStats(pageable);
+    public PageWrapper<StatsDTO> getStats(Pageable pageable) {
+        Page<StatsDTO> statsPage = statsService.getStats(pageable);
+
+        return new PageWrapper<>(statsPage.getContent(), statsPage.getTotalElements());
     }
 }

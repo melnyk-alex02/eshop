@@ -1,5 +1,6 @@
 package com.alex.eshop.entity;
 
+import com.alex.eshop.constants.OrderStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -11,7 +12,8 @@ import java.util.List;
 public class Order {
     @Id
     private String number;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     private ZonedDateTime createdDate;
     private BigDecimal price;
     private Integer count;
@@ -36,11 +38,11 @@ public class Order {
         this.number = number;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

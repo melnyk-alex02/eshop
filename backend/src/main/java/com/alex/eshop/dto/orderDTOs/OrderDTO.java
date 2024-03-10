@@ -1,80 +1,51 @@
 package com.alex.eshop.dto.orderDTOs;
 
+import com.alex.eshop.constants.OrderStatus;
+
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public class OrderDTO {
-    private String number;
-    private String status;
-    private ZonedDateTime createdDate;
-    private BigDecimal price;
-    private Integer count;
-    private List<OrderItemDTO> orderItemDTOList;
-    private String userId;
-    private ZonedDateTime purchasedDate;
+public record OrderDTO(
+        String number,
+        OrderStatus status,
+        ZonedDateTime createdDate,
+        BigDecimal price,
+        Integer count,
+        List<OrderItemDTO> orderItemDTOList,
+        String userId,
+        ZonedDateTime purchasedDate
+) {
 
-    public String getNumber() {
-        return number;
+    public OrderDTO withNumber(String number) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public OrderDTO withStatus(OrderStatus status) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 
-    public String getStatus() {
-        return status;
+    public OrderDTO withCreatedDate(ZonedDateTime createdDate) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public OrderDTO withPrice(BigDecimal price) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 
-    public ZonedDateTime getCreatedDate() {
-        return createdDate;
+    public OrderDTO withCount(Integer count) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 
-    public void setCreatedDate(ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
+    public OrderDTO withOrderItemDTOList(List<OrderItemDTO> orderItemDTOList) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 
-    public ZonedDateTime getPurchasedDate() {
-        return purchasedDate;
+    public OrderDTO withUserId(String userId) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 
-    public void setPurchasedDate(ZonedDateTime purchasedDate) {
-        this.purchasedDate = purchasedDate;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public List<OrderItemDTO> getOrderItemDTOList() {
-        return orderItemDTOList;
-    }
-
-    public void setOrderItemDTOList(List<OrderItemDTO> orderItemDTOList) {
-        this.orderItemDTOList = orderItemDTOList;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public OrderDTO withPurchasedDate(ZonedDateTime purchasedDate) {
+        return new OrderDTO(number, status, createdDate, price, count, orderItemDTOList, userId, purchasedDate);
     }
 }

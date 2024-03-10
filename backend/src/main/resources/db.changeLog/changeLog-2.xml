@@ -5,10 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet author="bestuser" id="4">
-        <createTable tableName="cart">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
+        <createTable tableName="cart_item">
             <column name="user_id" type="varchar(255)">
             </column>
             <column name="item_id" type="bigint">
@@ -19,13 +16,10 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="5" author="bestuser">
+    <changeSet id="6" author="bestuser">
         <createTable tableName="orders">
-            <column name="number" type="VARCHAR(30)">
-                <constraints unique="true" primaryKey="true"/>
-            </column>
-            <column name="status" type="VARCHAR(20)">
-                <constraints checkConstraint="status IN ('NEW', 'DONE')"/>
+            <column name="number" type="VARCHAR(100)">
+                <constraints primaryKey="true"/>
             </column>
             <column name="count" type="INT">
                 <constraints checkConstraint="count >= 1"/>
@@ -36,12 +30,14 @@
             <column name="purchased_date" type="TIMESTAMP"/>
         </createTable>
     </changeSet>
-    <changeSet id="6" author="bestuser">
+
+    <changeSet id="7" author="bestuser">
+        <sql>ALTER TABLE orders
+            ADD COLUMN status ENUM('NEW', 'DONE', 'CANCELLED', 'EXPIRED') NOT NULL</sql>
+    </changeSet>
+    <changeSet id="8" author="bestuser">
         <createTable tableName="order_item">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="order_number" type="varchar(30)">
+            <column name="order_number" type="varchar(100)">
                 <constraints foreignKeyName="order_number" references="orders(number)"/>
             </column>
             <column name="item_id" type="bigint">

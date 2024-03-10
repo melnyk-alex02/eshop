@@ -1,6 +1,3 @@
-delete from cart where id = 1;
-delete from cart where id = 2;
-delete from cart where id = 3;
-delete from cart where id = 11;
+delete from cart_item where user_id = 'userId';
 
-alter table category auto_increment = 0;
+alter table cart_item auto_increment = 0;

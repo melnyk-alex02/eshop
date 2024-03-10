@@ -58,7 +58,7 @@
                     ('Logitech G Pro X Gaming Headset', 'This premium gaming headset features advanced audio drivers, customizable EQ, and comfortable memory foam ear pads.', (SELECT id FROM category where name ='Gaming'), 99.99, ''),
                     ('Nest Hello Video Doorbell', 'This smart doorbell features HD video, two-way audio, and facial recognition to keep your home secure.', (SELECT id FROM category where name ='Smart Home'), 229.99, ''),
                     ('Philips Hue Starter Kit', 'This smart lighting kit includes three color-changing bulbs and a hub, allowing you to control your lights with voice commands or a smartphone app.', (SELECT id FROM category where name ='Smart Home'), 129.99, ''),
-                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), 199.99, '');
+                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), 199.99, 'https://imgur.com/V3mJOUn');
         </sql>
     </changeSet>
 </databaseChangeLog>

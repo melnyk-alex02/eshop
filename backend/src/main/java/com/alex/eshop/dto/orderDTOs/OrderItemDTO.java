@@ -1,60 +1,38 @@
 package com.alex.eshop.dto.orderDTOs;
 
+import com.alex.eshop.entity.compositeIds.OrderItemId;
+
 import java.math.BigDecimal;
 
-public class OrderItemDTO {
-    private Long id;
-    private String orderNumber;
-    private Long itemId;
-    private String itemName;
-    private BigDecimal itemPrice;
-    private Integer count;
-
-    public Long getId() {
-        return id;
+public record OrderItemDTO(
+        OrderItemId orderItemId,
+        String orderNumber,
+        Long itemId,
+        String itemName,
+        BigDecimal itemPrice,
+        Integer count
+) {
+    public OrderItemDTO withOrderItemId(OrderItemId orderItemId) {
+        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public OrderItemDTO withOrderNumber(String orderNumber) {
+        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
     }
 
-    public String getOrderNumber() {
-        return orderNumber;
+    public OrderItemDTO withItemId(Long itemId) {
+        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
     }
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
+    public OrderItemDTO withItemName(String itemName) {
+        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
     }
 
-    public Long getItemId() {
-        return itemId;
+    public OrderItemDTO withItemPrice(BigDecimal itemPrice) {
+        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
     }
 
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public BigDecimal getItemPrice() {
-        return itemPrice;
-    }
-
-    public void setItemPrice(BigDecimal itemPrice) {
-        this.itemPrice = itemPrice;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
+    public OrderItemDTO withCount(Integer count) {
+        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
     }
 }
