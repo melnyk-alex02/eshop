@@ -2,9 +2,16 @@ package com.alex.eshop.service;
 
 import com.alex.eshop.constants.OrderStatus;
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
+import com.alex.eshop.dto.orderDTOs.OrderItemDTO;
+import com.alex.eshop.entity.Category;
+import com.alex.eshop.entity.Item;
 import com.alex.eshop.entity.Order;
+import com.alex.eshop.entity.OrderItem;
+import com.alex.eshop.entity.compositeIds.OrderItemId;
+import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.OrderMapper;
 import com.alex.eshop.repository.OrderRepository;
+import org.aspectj.weaver.ast.Or;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,6 +21,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,14 +51,16 @@ public class OrderServiceTests {
         OrderDTO expectedOrderDTO = createOrderDTOList().get(0);
 
         when(currentUserService.getCurrentUserUuid()).thenReturn("userId");
-        when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.getNumber(), "userId")).thenReturn(true);
+        when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.number(), "userId")).thenReturn(true);
+        when(orderRepository.getReferenceById("number")).thenReturn(order);
         when(orderRepository.findOrderByUserIdAndNumber("userId", order.getNumber())).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(expectedOrderDTO);
 
         OrderDTO result = orderService.getOrderByUserIdAndOrderNumber(order.getNumber());
 
         verify(currentUserService).getCurrentUserUuid();
-        verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.getNumber(), "userId");
+        verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.number(), "userId");
+        verify(orderRepository).getReferenceById("number");
         verify(orderRepository).findOrderByUserIdAndNumber("userId", order.getNumber());
         verify(orderMapper).toDto(order);
 
@@ -70,7 +83,6 @@ public class OrderServiceTests {
         Page<Order> orderPage = new PageImpl<>(orderList);
 
         when(currentUserService.getCurrentUserUuid()).thenReturn(userId);
-        when(orderRepository.existsAllByUserId(userId)).thenReturn(true);
         when(orderRepository.findAllByUserId(userId, Pageable.unpaged())).thenReturn(orderPage);
         when(orderMapper.toDto(any(Order.class))).thenAnswer(invocationOnMock -> {
             Order order = invocationOnMock.getArgument(0);
@@ -85,7 +97,6 @@ public class OrderServiceTests {
         Page<OrderDTO> result = orderService.getAllOrdersByUserId(Pageable.unpaged());
 
         verify(currentUserService).getCurrentUserUuid();
-        verify(orderRepository).existsAllByUserId(userId);
         verify(orderRepository).findAllByUserId(userId, Pageable.unpaged());
         verify(orderMapper, times(2)).toDto(any(Order.class));
 
@@ -164,7 +175,7 @@ public class OrderServiceTests {
             Order order = invocationOnMock.getArgument(0);
             String orderNumber = order.getNumber();
             return expectedOrderDTOList.stream()
-                    .filter(dto -> dto.getNumber().equals(orderNumber))
+                    .filter(dto -> dto.number().equals(orderNumber))
                     .findFirst()
                     .orElse(null);
         });
@@ -175,21 +186,21 @@ public class OrderServiceTests {
 
         assertEquals(expectedOrderDTOList.size(), result.getContent().size());
 
-        assertEquals(expectedOrderDTOList.get(0).getNumber(), result.getContent().get(0).getNumber());
-        assertEquals(expectedOrderDTOList.get(0).getStatus(), result.getContent().get(0).getStatus());
-        assertEquals(expectedOrderDTOList.get(0).getCreatedDate(), result.getContent().get(0).getCreatedDate());
-        assertEquals(expectedOrderDTOList.get(0).getPrice(), result.getContent().get(0).getPrice());
-        assertEquals(expectedOrderDTOList.get(0).getCount(), result.getContent().get(0).getCount());
-        assertEquals(expectedOrderDTOList.get(0).getUserId(), result.getContent().get(0).getUserId());
-        assertEquals(expectedOrderDTOList.get(0).getOrderItemDTOList().size(), result.getContent().get(0).getOrderItemDTOList().size());
+        assertEquals(expectedOrderDTOList.get(0).number(), result.getContent().get(0).number());
+        assertEquals(expectedOrderDTOList.get(0).status(), result.getContent().get(0).status());
+        assertEquals(expectedOrderDTOList.get(0).createdDate(), result.getContent().get(0).createdDate());
+        assertEquals(expectedOrderDTOList.get(0).price(), result.getContent().get(0).price());
+        assertEquals(expectedOrderDTOList.get(0).count(), result.getContent().get(0).count());
+        assertEquals(expectedOrderDTOList.get(0).userId(), result.getContent().get(0).userId());
+        assertEquals(expectedOrderDTOList.get(0).orderItemDTOList().size(), result.getContent().get(0).orderItemDTOList().size());
 
-        assertEquals(expectedOrderDTOList.get(1).getNumber(), result.getContent().get(1).getNumber());
-        assertEquals(expectedOrderDTOList.get(1).getStatus(), result.getContent().get(1).getStatus());
-        assertEquals(expectedOrderDTOList.get(1).getCreatedDate(), result.getContent().get(1).getCreatedDate());
-        assertEquals(expectedOrderDTOList.get(1).getPrice(), result.getContent().get(1).getPrice());
-        assertEquals(expectedOrderDTOList.get(1).getCount(), result.getContent().get(1).getCount());
-        assertEquals(expectedOrderDTOList.get(1).getUserId(), result.getContent().get(1).getUserId());
-        assertEquals(expectedOrderDTOList.get(1).getOrderItemDTOList().size(), result.getContent().get(1).getOrderItemDTOList().size());
+        assertEquals(expectedOrderDTOList.get(1).number(), result.getContent().get(1).number());
+        assertEquals(expectedOrderDTOList.get(1).status(), result.getContent().get(1).status());
+        assertEquals(expectedOrderDTOList.get(1).createdDate(), result.getContent().get(1).createdDate());
+        assertEquals(expectedOrderDTOList.get(1).price(), result.getContent().get(1).price());
+        assertEquals(expectedOrderDTOList.get(1).count(), result.getContent().get(1).count());
+        assertEquals(expectedOrderDTOList.get(1).userId(), result.getContent().get(1).userId());
+        assertEquals(expectedOrderDTOList.get(1).orderItemDTOList().size(), result.getContent().get(1).orderItemDTOList().size());
     }
 
     @Test
@@ -205,15 +216,15 @@ public class OrderServiceTests {
     }
 
     @Test
-    public void testGetAllOrdersByUserId_WhenNoOrdersFoundForUser_ShouldThrowException() {
+    public void testGetAllOrdersByUserId_WhenNoOrdersFoundForUser_ShouldReturnEmptyArray() {
         String userId = "userId";
 
         when(currentUserService.getCurrentUserUuid()).thenReturn(userId);
-        when(orderRepository.existsAllByUserId(userId)).thenThrow(
-                new DataNotFoundException("There is no orders for current logged user")
-        );
+        when(orderRepository.findAllByUserId(userId, Pageable.unpaged())).thenReturn(Page.empty());
 
-        assertThrows(DataNotFoundException.class, () -> orderService.getAllOrdersByUserId(Pageable.unpaged()));
+        Page<OrderDTO> result = orderService.getAllOrdersByUserId(Pageable.unpaged());
+
+        assertEquals(Page.empty(), result);
     }
 
     @Test
@@ -264,7 +275,7 @@ public class OrderServiceTests {
 
         Order order1 = new Order();
         order1.setNumber("number");
-        order1.setStatus("NEW");
+        order1.setStatus(OrderStatus.NEW);
         order1.setCreatedDate(ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0),
                 ZoneId.of("UTC")));
         order1.setPrice(BigDecimal.valueOf(199, 99));
@@ -274,20 +285,18 @@ public class OrderServiceTests {
         OrderItem orderItem1 = new OrderItem();
         orderItem1.setCount(1);
         orderItem1.setItem(item1);
-        orderItem1.setId(1L);
         orderItem1.setOrder(order1);
 
         OrderItem orderItem2 = new OrderItem();
         orderItem2.setCount(1);
         orderItem2.setItem(item2);
-        orderItem2.setId(1L);
         orderItem2.setOrder(order1);
 
         order1.setOrderItemList(List.of(orderItem1, orderItem2));
 
         Order order2 = new Order();
         order2.setNumber("number1");
-        order2.setStatus("NEW");
+        order2.setStatus(OrderStatus.NEW);
         order2.setCreatedDate(ZonedDateTime.of(LocalDateTime.of(2023, 11, 23, 1, 0),
                 ZoneId.of("UTC")));
         order2.setPrice(BigDecimal.valueOf(199, 99));
@@ -297,13 +306,11 @@ public class OrderServiceTests {
         OrderItem orderItem3 = new OrderItem();
         orderItem3.setCount(1);
         orderItem3.setItem(item1);
-        orderItem3.setId(1L);
         orderItem3.setOrder(order2);
 
         OrderItem orderItem4 = new OrderItem();
         orderItem4.setCount(1);
         orderItem4.setItem(item2);
-        orderItem4.setId(1L);
         orderItem4.setOrder(order2);
 
         order2.setOrderItemList(List.of(orderItem3, orderItem4));
@@ -312,55 +319,33 @@ public class OrderServiceTests {
     }
 
     private List<OrderDTO> createOrderDTOList() {
-        OrderDTO orderDTO1 = new OrderDTO();
-        orderDTO1.setNumber("number");
-        orderDTO1.setStatus("NEW");
-        orderDTO1.setCreatedDate(ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0),
-                ZoneId.of("UTC")));
-        orderDTO1.setPrice(BigDecimal.valueOf(199, 99));
-        orderDTO1.setCount(2);
-        orderDTO1.setUserId("userId");
+        OrderItemDTO orderItemDTO1 = new OrderItemDTO(new OrderItemId("number", 1L),
+                "number",
+                1L,
+                "Item 1",
+                BigDecimal.valueOf(100.99),
+                1);
 
-        OrderItemDTO orderItemDTO1 = new OrderItemDTO();
-        orderItemDTO1.setCount(1);
-        orderItemDTO1.setItemId(1L);
-        orderItemDTO1.setId(1L);
-        orderItemDTO1.setOrderNumber(orderDTO1.getNumber());
+        OrderItemDTO orderItemDTO2 = new OrderItemDTO(new OrderItemId("number", 2L), "number",
+                2L,
+                "Item 2",
+                BigDecimal.valueOf(99.00),
+                1);
 
-        OrderItemDTO orderItemDTO2 = new OrderItemDTO();
-        orderItemDTO2.setCount(1);
-        orderItemDTO2.setItemId(2L);
-        orderItemDTO2.setId(1L);
-        orderItemDTO2.setOrderNumber(orderDTO1.getNumber());
+        OrderDTO orderDTO1 = new OrderDTO("number",
+                OrderStatus.NEW,
+                ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
+                BigDecimal.valueOf(199),
+                2,
+                List.of(orderItemDTO1, orderItemDTO2),
+                "userId",
+                null
+                );
 
-        orderDTO1.setOrderItemDTOList(List.of(orderItemDTO1, orderItemDTO2));
-
-        OrderDTO orderDTO2 = new OrderDTO();
-        orderDTO2.setNumber("number1");
-        orderDTO2.setStatus("NEW");
-        orderDTO2.setCreatedDate(ZonedDateTime.of(LocalDateTime.of(2023, 11, 23, 1, 0),
-                ZoneId.of("UTC")));
-        orderDTO2.setPrice(BigDecimal.valueOf(199, 99));
-        orderDTO2.setCount(2);
-        orderDTO2.setUserId("userId");
-
-        OrderItemDTO orderItemDTO3 = new OrderItemDTO();
-        orderItemDTO3.setCount(1);
-        orderItemDTO3.setItemId(1L);
-        orderItemDTO3.setItemPrice(BigDecimal.valueOf(100.99));
-        orderItemDTO3.setItemName("Item 1");
-        orderItemDTO3.setId(1L);
-        orderItemDTO3.setOrderNumber("number1");
-
-        OrderItemDTO orderItemDTO4 = new OrderItemDTO();
-        orderItemDTO4.setCount(1);
-        orderItemDTO4.setItemId(2L);
-        orderItemDTO4.setItemName("Item 2");
-        orderItemDTO4.setItemPrice(BigDecimal.valueOf(99.00));
-        orderItemDTO4.setId(1L);
-        orderItemDTO4.setOrderNumber("number1");
-
-        orderDTO2.setOrderItemDTOList(List.of(orderItemDTO3, orderItemDTO4));
+        OrderDTO orderDTO2 = orderDTO1
+                .withNumber("number1")
+                .withOrderItemDTOList(List.of(orderItemDTO1.withOrderItemId(new OrderItemId("number1", 1L)),
+                        orderItemDTO2.withOrderItemId(new OrderItemId("number1", 2L))));
 
         return List.of(orderDTO1, orderDTO2);
     }
