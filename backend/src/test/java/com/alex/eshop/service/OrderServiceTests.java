@@ -11,7 +11,6 @@ import com.alex.eshop.entity.compositeIds.OrderItemId;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.mapper.OrderMapper;
 import com.alex.eshop.repository.OrderRepository;
-import org.aspectj.weaver.ast.Or;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -340,7 +339,7 @@ public class OrderServiceTests {
                 List.of(orderItemDTO1, orderItemDTO2),
                 "userId",
                 null
-                );
+        );
 
         OrderDTO orderDTO2 = orderDTO1
                 .withNumber("number1")
