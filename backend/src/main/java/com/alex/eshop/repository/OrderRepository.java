@@ -27,5 +27,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
     Page<Order> findAll(Pageable pageable);
 
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
     List<Order> findByStatusAndCreatedDateBefore(OrderStatus status, ZonedDateTime createdDate);
 }

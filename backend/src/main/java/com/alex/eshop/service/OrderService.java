@@ -57,9 +57,6 @@ public class OrderService {
 
         OrderDTO orderDTO = orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
 
-
-        OrderDTO orderDTO1 = orderDTO.withStatus(OrderStatus.CANCELLED);
-
         orderRepository.save(orderMapper.toEntity(orderDTO.withStatus(OrderStatus.CANCELLED)));
     }
 
@@ -71,10 +68,10 @@ public class OrderService {
         }
 
         OrderDTO orderDTO = orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
-//        orderDTO.(OrderStatus.DONE);
-//        orderDTO.setPurchasedDate(ZonedDateTime.now());
 
-        orderMapper.toDto(orderRepository.save(orderMapper.toEntity(orderDTO)));
+        orderRepository.save(orderMapper.toEntity(orderDTO
+                .withStatus(OrderStatus.DONE)
+                .withPurchasedDate(ZonedDateTime.now())));
     }
 
     public Page<OrderDTO> getAllOrders(Pageable pageable) {
