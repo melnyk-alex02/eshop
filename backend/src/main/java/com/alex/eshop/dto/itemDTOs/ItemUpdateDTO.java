@@ -2,59 +2,36 @@ package com.alex.eshop.dto.itemDTOs;
 
 import java.math.BigDecimal;
 
-public class ItemUpdateDTO {
-    private Long id;
-    private String name;
-    private String description;
-    private String imageSrc;
-    private BigDecimal price;
-    private Long categoryId;
+public record ItemUpdateDTO(
+        Long id,
+        String name,
+        String description,
+        String imageSrc,
+        BigDecimal price,
+        Long categoryId
 
-    public Long getId() {
-        return id;
+) {
+    public ItemUpdateDTO withId(Long id) {
+        return new ItemUpdateDTO(id, name, description, imageSrc, price, categoryId);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public ItemUpdateDTO withName(String name) {
+        return new ItemUpdateDTO(id, name, description, imageSrc, price, categoryId);
     }
 
-    public String getName() {
-        return name;
+    public ItemUpdateDTO withDescription(String description) {
+        return new ItemUpdateDTO(id, name, description, imageSrc, price, categoryId);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public ItemUpdateDTO withImageSrc(String imageSrc) {
+        return new ItemUpdateDTO(id, name, description, imageSrc, price, categoryId);
     }
 
-    public String getDescription() {
-        return description;
+    public ItemUpdateDTO withPrice(BigDecimal price) {
+        return new ItemUpdateDTO(id, name, description, imageSrc, price, categoryId);
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getImageSrc() {
-        return imageSrc;
-    }
-
-    public void setImageSrc(String imageSrc) {
-        this.imageSrc = imageSrc;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public ItemUpdateDTO withCategoryId(Long categoryId) {
+        return new ItemUpdateDTO(id, name, description, imageSrc, price, categoryId);
     }
 }

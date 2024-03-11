@@ -1,5 +1,5 @@
 <div class="title">
-  <h1>All items</h1>
+<h1>All items</h1>
 </div>
 
 <div class="grid">
@@ -13,8 +13,9 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-button routerLink="{{item.id}}/view" routerLinkActive="active">View</button>
-      <button mat-button (click)="addItemToCart(item.id)">Add to cart</button>
-    </mat-card-actions>
+      <button mat-button (click)="isItemInCart(item) ? updateCartItems(item, true) : addItemToCart(item)">
+        {{ isItemInCart(item) ? 'In Cart' : 'Add to Cart' }}
+      </button>    </mat-card-actions>
   </mat-card>
 </div>
 

@@ -1,18 +1,28 @@
 package com.alex.eshop.entity;
 
+import com.alex.eshop.entity.compositeIds.CartItemId;
 import jakarta.persistence.*;
 
 @Entity
-public class Cart {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CartItem {
+    @EmbeddedId
+    private CartItemId cartItemId;
 
+    @Column(insertable = false, updatable = false)
     private String userId;
 
     @ManyToOne
+    @JoinColumn(insertable = false, updatable = false)
     private Item item;
     private Integer count;
+
+    public CartItemId getCartItemId() {
+        return cartItemId;
+    }
+
+    public void setCartItemId(CartItemId cartItemId) {
+        this.cartItemId = cartItemId;
+    }
 
     public String getUserId() {
         return userId;
@@ -36,13 +46,5 @@ public class Cart {
 
     public void setCount(Integer count) {
         this.count = count;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 }

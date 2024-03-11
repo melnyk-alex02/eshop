@@ -102,7 +102,7 @@ public class ItemControllerTests extends BaseWebTest {
     @Test
     @WithMockUser(value = "testuser", authorities = {Role.ADMIN})
     public void testUploadItemsFromCsv() throws Exception {
-        String content = "name,description,categoryId,imageSrc\nitem,desc 1,1,img 1";
+        String content = "name,description,categoryId,imageSrc,price\nitem,desc 1,1,img 1,123";
 
         MockMultipartFile file = new MockMultipartFile(
                 "file",

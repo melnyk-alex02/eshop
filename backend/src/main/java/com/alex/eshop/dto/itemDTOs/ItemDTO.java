@@ -2,68 +2,40 @@ package com.alex.eshop.dto.itemDTOs;
 
 import java.math.BigDecimal;
 
-public class ItemDTO {
-    private Long id;
-    private String name;
-    private Long categoryId;
-    private String categoryName;
-    private String description;
-    private BigDecimal price;
-    private String imageSrc;
-
-    public Long getId() {
-        return id;
+public record ItemDTO(
+        Long id,
+        String name,
+        Long categoryId,
+        String categoryName,
+        String description,
+        BigDecimal price,
+        String imageSrc
+) {
+    public ItemDTO withId(Long id) {
+        return new ItemDTO(id, name, categoryId, categoryName, description, price, imageSrc);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public ItemDTO withName(String name) {
+        return new ItemDTO(id, name, categoryId, categoryName, description, price, imageSrc);
     }
 
-    public String getName() {
-        return name;
+    public ItemDTO withCategoryId(Long categoryId) {
+        return new ItemDTO(id, name, categoryId, categoryName, description, price, imageSrc);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public ItemDTO withCategoryName(String categoryName) {
+        return new ItemDTO(id, name, categoryId, categoryName, description, price, imageSrc);
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public ItemDTO withDescription(String description) {
+        return new ItemDTO(id, name, categoryId, categoryName, description, price, imageSrc);
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public ItemDTO withPrice(BigDecimal price) {
+        return new ItemDTO(id, name, categoryId, categoryName, description, price, imageSrc);
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getImageSrc() {
-        return imageSrc;
-    }
-
-    public void setImageSrc(String imageSrc) {
-        this.imageSrc = imageSrc;
+    public ItemDTO withImageSrc(String imageSrc) {
+        return new ItemDTO(id, name, categoryId, categoryName, description, price, imageSrc);
     }
 }

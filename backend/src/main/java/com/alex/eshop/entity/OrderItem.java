@@ -1,28 +1,29 @@
 package com.alex.eshop.entity;
 
-import jakarta.persistence.*;
+import com.alex.eshop.entity.compositeIds.OrderItemId;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class OrderItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @EmbeddedId
+    private OrderItemId orderItemId;
     @ManyToOne
-    @JoinColumn(name = "order_number")
+    @JoinColumn(insertable = false, updatable = false)
     private Order order;
-
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(insertable = false, updatable = false)
     private Item item;
     private Integer count;
 
-    public Long getId() {
-        return id;
+    public OrderItemId getOrderItemId() {
+        return orderItemId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrderItemId(OrderItemId orderItemId) {
+        this.orderItemId = orderItemId;
     }
 
     public Order getOrder() {

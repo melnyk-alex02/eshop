@@ -1,31 +1,20 @@
 package com.alex.eshop.dto.categoryDTOs;
 
-public class CategoryDTO {
-    private Long id;
-    private String name;
-    private String description;
+public record CategoryDTO(
+        Long id,
+        String name,
+        String description
+) {
 
-    public Long getId() {
-        return id;
+    public CategoryDTO withId(Long id) {
+        return new CategoryDTO(id, name, description);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public CategoryDTO withName(String name) {
+        return new CategoryDTO(id, name, description);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public CategoryDTO withDescription(String description) {
+        return new CategoryDTO(id, name, description);
     }
 }

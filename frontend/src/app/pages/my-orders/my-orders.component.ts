@@ -42,14 +42,17 @@ export class MyOrdersComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (data) => {
         this.dataSource.data = data.content;
+        console.log(data);
+      }, error: (error) => {
+        this.loading = false;
+        this.dataSource.data = [];
+        this.snackBarService.error("There is no order for current user :(");
       },
       complete: () => {
         this.loading = false;
       }
     });
-
   }
-
 
   cancelOrder(orderNumber: string) {
     const dialogRef = this.dialog.open(DialogWindowComponent);

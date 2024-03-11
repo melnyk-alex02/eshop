@@ -25,16 +25,12 @@ public interface OrderMapper {
 
     List<OrderItemDTO> toOrderItemDTOList(List<OrderItem> orderItems);
 
-    List<OrderItem> toOrderItemList(List<OrderItemDTO> orderItemDTOList);
-
-
-    @Mapping(target = "item.id", source = "itemId")
-    @Mapping(target = "order.number", source = "orderNumber")
-    OrderItem toOrderItem(OrderItemDTO orderItemDTO);
-
     @Mapping(target = "orderNumber", source = "order.number")
-    @Mapping(target = "itemId", source = "item.id")
-    @Mapping(target = "itemName", source = "item.name")
-    @Mapping(target = "itemPrice", source = "item.price")
+    @Mapping(source = "item.id", target = "itemId")
+    @Mapping(source = "item.name", target = "itemName")
+    @Mapping(source = "item.price", target = "itemPrice")
     OrderItemDTO toOrderItemDTO(OrderItem orderItem);
+
+    List<OrderItem> toOrderItemList(List<OrderItemDTO> orderItemList);
+
 }

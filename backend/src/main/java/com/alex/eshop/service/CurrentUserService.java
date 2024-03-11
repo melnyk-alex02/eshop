@@ -35,5 +35,4 @@ public class CurrentUserService {
                 .map(authentication -> authentication.getAuthorities().stream().map(Object::toString).toList())
                 .orElse(List.of());
     }
-
 }

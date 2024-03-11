@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,6 @@ import java.util.List;
 @Transactional
 public class ItemService {
     private final ItemRepository itemRepository;
-
     private final ItemMapper itemMapper;
 
     public ItemService(ItemRepository itemRepository, ItemMapper itemMapper) {
@@ -67,8 +67,8 @@ public class ItemService {
     }
 
     public ItemDTO createItem(ItemCreateDTO itemCreateDTO) {
-        if (!itemRepository.existsByCategoryId(itemCreateDTO.getCategoryId())) {
-            throw new DataNotFoundException("There is no category with id " + itemCreateDTO.getCategoryId());
+        if (!itemRepository.existsByCategoryId(itemCreateDTO.categoryId())) {
+            throw new DataNotFoundException("There is no category with id " + itemCreateDTO.categoryId());
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemCreateDTO)));
     }
@@ -76,7 +76,7 @@ public class ItemService {
     public List<ItemDTO> uploadItemsFromCsv(MultipartFile file) {
         FormatChecker.isCsv(file);
 
-        String[] headers = {"name", "description", "categoryId", "imageSrc"};
+        String[] headers = {"name", "description", "categoryId", "imageSrc", "price"};
 
         CsvHeaderChecker.checkHeaders(file, headers);
 
@@ -96,13 +96,13 @@ public class ItemService {
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
             for (CSVRecord csvRecord : csvRecords) {
-                ItemCreateDTO itemCreateDTO = new ItemCreateDTO();
-
-                itemCreateDTO.setName(csvRecord.get("name"));
-                itemCreateDTO.setDescription(csvRecord.get("description"));
-                itemCreateDTO.setCategoryId(Long.parseLong(csvRecord.get("categoryId")));
-                itemCreateDTO.setImageSrc(csvRecord.get("imageSrc"));
-
+                ItemCreateDTO itemCreateDTO = new ItemCreateDTO(
+                        csvRecord.get("name"),
+                        csvRecord.get("description"),
+                        csvRecord.get("imageSrc"),
+                        new BigDecimal(csvRecord.get("price")),
+                        Long.parseLong(csvRecord.get("categoryId"))
+                );
                 itemCreateDTOList.add(itemCreateDTO);
             }
             return itemMapper.toDto(itemRepository.saveAll(itemMapper.toEntity(itemCreateDTOList)));
@@ -112,11 +112,11 @@ public class ItemService {
     }
 
     public ItemDTO updateItem(ItemUpdateDTO itemUpdateDTO) {
-        if (!itemRepository.existsById(itemUpdateDTO.getId())) {
-            throw new DataNotFoundException("There is no item with id " + itemUpdateDTO.getId());
+        if (!itemRepository.existsById(itemUpdateDTO.id())) {
+            throw new DataNotFoundException("There is no item with id " + itemUpdateDTO.id());
         }
-        if (!itemRepository.existsByCategoryId(itemUpdateDTO.getCategoryId())) {
-            throw new DataNotFoundException("There is no category with id " + itemUpdateDTO.getCategoryId());
+        if (!itemRepository.existsByCategoryId(itemUpdateDTO.categoryId())) {
+            throw new DataNotFoundException("There is no category with id " + itemUpdateDTO.categoryId());
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));
     }

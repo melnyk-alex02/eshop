@@ -1,5 +1,6 @@
 package com.alex.eshop.utils;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 public class OrderNumberGenerator {
@@ -9,6 +10,8 @@ public class OrderNumberGenerator {
     public static String generateOrderNumber() {
         StringBuilder orderNumber = new StringBuilder(ORDER_NUMBER_LENGTH);
         Random random = new Random();
+
+        orderNumber.append(LocalDateTime.now()).append("-");
 
         for (int i = 0; i < ORDER_NUMBER_LENGTH; i++) {
             int randomIndex = random.nextInt(CHARACTERS.length());

@@ -5,6 +5,7 @@ import com.alex.eshop.dto.itemDTOs.ItemCreateDTO;
 import com.alex.eshop.dto.itemDTOs.ItemDTO;
 import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
 import com.alex.eshop.service.ItemService;
+import com.alex.eshop.wrapper.PageWrapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,17 +31,21 @@ public class ItemController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items")
-    public Page<ItemDTO> getAllItems(Pageable pageable) {
-        return itemService.getAllItems(pageable);
+    public PageWrapper<ItemDTO> getAllItems(Pageable pageable) {
+        Page<ItemDTO> itemPage = itemService.getAllItems(pageable);
+
+        return new PageWrapper<>(itemPage.getContent(), itemPage.getTotalElements());
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items/search")
-    public Page<ItemDTO> searchItems(Pageable pageable,
-                                     @RequestParam("name") String name,
-                                     @RequestParam(value = "hasImage", required = false) Boolean hasImage,
-                                     @RequestParam(value = "categoryId", required = false) Long categoryId) {
-        return itemService.searchItems(pageable, name, hasImage, categoryId);
+    public PageWrapper<ItemDTO> searchItems(Pageable pageable,
+                                            @RequestParam("name") String name,
+                                            @RequestParam(value = "hasImage", required = false) Boolean hasImage,
+                                            @RequestParam(value = "categoryId", required = false) Long categoryId) {
+        Page<ItemDTO> itemPage = itemService.searchItems(pageable, name, hasImage, categoryId);
+
+        return new PageWrapper<>(itemPage.getContent(), itemPage.getTotalElements());
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
@@ -51,8 +56,10 @@ public class ItemController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/item")
-    public Page<ItemDTO> getItemInCategory(Long categoryId, Pageable pageable) {
-        return itemService.getItemsInCategory(categoryId, pageable);
+    public PageWrapper<ItemDTO> getItemInCategory(Long categoryId, Pageable pageable) {
+        Page<ItemDTO> itemPage = itemService.getItemsInCategory(categoryId, pageable);
+
+        return new PageWrapper<>(itemPage.getContent(), itemPage.getTotalElements());
     }
 
     @PreAuthorize("hasRole('" + Role.ADMIN + "')")

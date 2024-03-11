@@ -80,10 +80,8 @@ public class CategoryService {
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
             for (CSVRecord csvRecord : csvRecords) {
-                CategoryCreateDTO categoryCreateDTO = new CategoryCreateDTO();
-
-                categoryCreateDTO.setName(csvRecord.get("name"));
-                categoryCreateDTO.setDescription(csvRecord.get("description"));
+                CategoryCreateDTO categoryCreateDTO = new CategoryCreateDTO(csvRecord.get("name"),
+                        csvRecord.get("description"));
 
                 categoryCreateDTOList.add(categoryCreateDTO);
             }
@@ -94,8 +92,8 @@ public class CategoryService {
     }
 
     public CategoryDTO updateCategory(CategoryUpdateDTO categoryUpdateDTO) {
-        if (!categoryRepository.existsById(categoryUpdateDTO.getId())) {
-            throw new DataNotFoundException("There is no category with id " + categoryUpdateDTO.getId());
+        if (!categoryRepository.existsById(categoryUpdateDTO.id())) {
+            throw new DataNotFoundException("There is no category with id " + categoryUpdateDTO.id());
         }
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toEntity(categoryUpdateDTO)));
     }

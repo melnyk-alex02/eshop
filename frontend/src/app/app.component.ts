@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
-import {KeycloakService} from "keycloak-angular";
-import {Role} from "./models/role";
+import { Component } from '@angular/core';
+import { KeycloakService } from "keycloak-angular";
+import { Role } from "./models/role";
+import { Subject } from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -10,9 +11,16 @@ import {Role} from "./models/role";
 export class AppComponent {
   title = 'eshop-ui';
 
+  countOfItemsInCart: number;
+
   isAdmin = this.keycloakService.isUserInRole(Role.Admin);
 
-  constructor(private keycloakService: KeycloakService,
-  ) {
+  private unsubscribe: Subject<void> = new Subject();
+
+  constructor(private keycloakService: KeycloakService) {
+  }
+
+  getCountOfItemsInCart() {
+    return this.countOfItemsInCart = Number(localStorage.getItem("countOfItemsInCart"));
   }
 }
