@@ -1,34 +1,35 @@
+<br>
 <div class="title">
   <h1>Creating new category</h1>
 </div>
 
-<div class="container">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field appereance="fill">
-      <mat-label>Name</mat-label>
-      <input matInput maxlength="255"
-             placeholder="Type new name"
-             formControlName="name" #nameInput>
-      <mat-hint>Min character 5: {{ nameInput.value.length }}/5</mat-hint>
-      <mat-error>Name is required</mat-error>
-    </mat-form-field>
-    <br>
-    <mat-form-field appereance="outline">
-      <mat-label>Description</mat-label>
-      <textarea matInput placeholder="Type new description"
-                rows="6"
-                type="description"
-                formControlName="description"
-                #descInput></textarea>
-      <mat-hint>Min character 10: {{ descInput.value.length }}/10</mat-hint>
-      <mat-error>Description is required</mat-error>
-    </mat-form-field>
-    <br>
-  </form>
-</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-form-field appereance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput maxlength="255"
+           placeholder="Type new name"
+           formControlName="name" #nameInput>
+    <mat-hint>Min character 5: {{ nameInput.value.length }}/5</mat-hint>
+    <mat-error>Name is required</mat-error>
+  </mat-form-field>
+  <br>
+  <mat-form-field appereance="outline">
+    <mat-label>Description</mat-label>
+    <textarea matInput placeholder="Type new description"
+              rows="6"
+              type="description"
+              formControlName="description"
+              #descInput></textarea>
+    <mat-hint>Min character 10: {{ descInput.value.length }}/10</mat-hint>
+    <mat-error>Description is required</mat-error>
+  </mat-form-field>
+  <br>
+</form>
+
 <div class="button">
   <button (click)="onSubmit()" [disabled]="form.invalid">Submit</button>
 </div>
+<br>
 <div class="text">
   <h4>Or use csv file to load Items: </h4>
 </div>
@@ -36,11 +37,8 @@
   <input type="file" class="file-input"
          (change)="onFileSelected($event)" #fileUpload>
 </div>
-
 <div class="file-upload">
-
   {{fileName || "No file uploaded yet."}}
-
   <button mat-mini-fab color="primary" class="upload-btn"
           (click)="fileUpload.click()">
     <mat-icon>attach_file</mat-icon>

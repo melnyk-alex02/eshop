@@ -4,6 +4,14 @@
   place-items: center;
 }
 
+.grid {
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  max-width: 1080px;
+}
+
 .title {
   margin-top: 80px;
   text-align: center;
@@ -14,25 +22,11 @@ img {
   width: 200px;
 }
 
-
-mat-grid-tile {
-  height: 100%;
-  width: 100%;
-}
-
-
-
-.cards {
-  height: 100%;
-  width: 100%;
-}
-
-
-mat-card-title{
+mat-card-title {
   font-size: 14px;
 }
 
-.paginator{
+.paginator {
   margin-top: 7%;
 }
 

@@ -10,10 +10,11 @@
 </ng-container>
 
 <ng-container *ngIf="this.dataSource.data">
+  <br>
   <div class="header">
     <h1 style="color: black">Item table</h1>
   </div>
-  <div class="filter-section row-cols-sm-5">
+  <div class="filter-section">
     <mat-form-field>
       <input matInput (keyup)="searchItems(filterPage)" placeholder="Search" [(ngModel)]="filterName">
       <mat-icon matPrefix class="my-icon">search</mat-icon>
@@ -41,69 +42,99 @@
       </button>
     </div>
   </div>
+  <br>
+  <div class="table-responsive mat-elevation-z3">
+    <table mat-table [dataSource]="dataSource" matSort
+           (matSortChange)="sortChanged($event)"
+           [matSortActive]="currentSortField"
+           [matSortDirection]="currentDirection"
+           matSortDisableClear>
 
-  <div class="container">
-    <div class="row">
-    </div>
-    <div class="row">
-    <div class="table-responsive-sm">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort
-             (matSortChange)="sortChanged($event)"
-             [matSortActive]="currentSortField"
-             [matSortDirection]="currentDirection"
-             matSortDisableClear>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header='id'>#</th>
+        <td mat-cell *matCellDef="let item"> {{item.id}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header='id'>#</th>
-          <td mat-cell *matCellDef="let item"> {{item.id}} </td>
-        </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header='name'>Name</th>
+        <td mat-cell *matCellDef="let item"> {{item.name}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="name">
-          <th  mat-header-cell *matHeaderCellDef mat-sort-header='name'>Name</th>
-          <td mat-cell *matCellDef="let item"> {{item.name}} </td>
-        </ng-container>
+      <ng-container matColumnDef="description">
+        <th style="width: 25%" mat-header-cell *matHeaderCellDef mat-sort-header='description'> Description</th>
+        <td mat-cell *matCellDef="let item"><p class="mat-line-clamp"> {{item.description}} </p></td>
+      </ng-container>
 
-        <ng-container matColumnDef="description">
-          <th style="width: 25%" mat-header-cell *matHeaderCellDef mat-sort-header='description'> Description</th>
-          <td mat-cell *matCellDef="let item"><p class="mat-line-clamp"> {{item.description}} </p></td>
-        </ng-container>
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header='price'>Price</th>
+        <td mat-cell *matCellDef="let item">{{item.price | currency:"USD"}}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="categoryName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header='categoryName'> Category Name</th>
-          <td mat-cell *matCellDef="let item"> {{item.categoryName}} </td>
-        </ng-container>
+      <ng-container matColumnDef="categoryName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header='categoryName'> Category Name</th>
+        <td mat-cell *matCellDef="let item"> {{item.categoryName}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="imageSrc">
-          <th  mat-header-cell *matHeaderCellDef> ImageSrc</th>
-          <td mat-cell *matCellDef="let item">
-            <ng-container *ngIf="item.imageSrc">
-              PRESENT
-            </ng-container>
-            <ng-container *ngIf="!item.imageSrc">
-              ABSENT
-            </ng-container>
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="imageSrc">
+        <th mat-header-cell *matHeaderCellDef>Image</th>
+        <td mat-cell *matCellDef="let item">
+          <ng-container *ngIf="item.imageSrc">
+            PRESENT
+          </ng-container>
+          <ng-container *ngIf="!item.imageSrc">
+            ABSENT
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Action</th>
+        <td mat-cell *matCellDef="let item">
+          <button mat-raised-button routerLink="/admin/items/{{item.id}}/view" routerLinkActive="active">View</button>
+          <button mat-raised-button routerLink="/admin/items/{{item.id}}/edit" routerLinkActive="active">Update
+          </button>
+          <button mat-raised-button (click)="deleteItem(item.id)">Delete</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-accordion *ngFor="let item of dataSource.data">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title class="mat-line-clamp">
+            {{item.id}}. {{item.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{item.price | currency:'USD'}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <p class="mat-line-clamp">Description: {{item.description}}</p>
+        <p>Category name: {{item.categoryName}}</p>
+        <p>Image:
+          <ng-container *ngIf="item.imageSrc">
+            PRESENT
+          </ng-container>
+          <ng-container *ngIf="!item.imageSrc">
+            ABSENT
+          </ng-container>
+        </p>
+        <mat-action-row>
+          <button mat-button color="primary" routerLink="/admin/items/{{item.id}}/view" routerLinkActive="active">View
+          </button>
+          <button mat-button color="primary" routerLink="/admin/items/{{item.id}}/edit" routerLinkActive="active">
+            Update
+          </button>
+          <button mat-button color="primary" (click)="deleteItem(item.id)">Delete</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
 
 
-        <ng-container class="col-sm" matColumnDef="actions">
-          <th class="col-sm-4"  mat-header-cell *matHeaderCellDef> Action</th>
-          <td class="col-sm-4" mat-cell *matCellDef="let item">
-            <button mat-raised-button routerLink="/admin/items/{{item.id}}/view" routerLinkActive="active">View</button>
-            <button mat-raised-button routerLink="/admin/items/{{item.id}}/edit" routerLinkActive="active">Update
-            </button>
-            <button mat-raised-button (click)="deleteItem(item.id)">Delete</button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
-      </table>
-    </div>
-  </div>
-  <div class="paginator">
     <mat-paginator
-      class="paginator"
+      class="mat-elevation-z3"
       [length]="this.totalElements"
       [pageIndex]="currentPage"
       [pageSize]="currentSize"
@@ -113,9 +144,9 @@
     </mat-paginator>
   </div>
 
+  <br>
   <div>
     <button class="button-1" routerLink="/admin/items/create" routerLinkActive="active">Create item</button>
   </div>
-  </div>
+  <br>
 </ng-container>
-

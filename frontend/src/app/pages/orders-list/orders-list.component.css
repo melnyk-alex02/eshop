@@ -3,14 +3,13 @@
   display: grid;
   place-items: center;
 }
-.header {
-  margin-top: 5%;
-  margin-left: 11.1%;
-}
-
 
 button {
   margin: 10px;
+}
+
+mat-accordion {
+  display: none;
 }
 
 .button-1 {
@@ -45,6 +44,12 @@ button {
   -webkit-line-clamp: 1;
 }
 
-.paginator {
-  margin-right: 5%;
+@media screen and (max-width: 767px) {
+  mat-accordion {
+    display: block;
+  }
+
+  table, th, td {
+    display: none;
+  }
 }

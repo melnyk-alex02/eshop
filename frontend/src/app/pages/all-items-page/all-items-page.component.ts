@@ -55,9 +55,8 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.getAllItems(this.currentPage, this.currentSize);
-
     this.getAllCart();
+    this.getAllItems(this.currentPage, this.currentSize);
   }
 
   ngOnDestroy() {

@@ -4,24 +4,16 @@
   place-items: center;
 }
 
-.header {
-  margin-top: 5%;
-  margin-left: 11.1%;
-}
-
 button {
   margin: 10px;
 }
 
-.filter-section{
-  margin-left: 11.1%;
+.filter-section {
   display: flex;
   flex-direction: row;
 }
 
-
 .button-1 {
-  margin-left: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,8 +43,14 @@ button {
   -webkit-line-clamp: 1;
 }
 
+mat-accordion {
+  display: none;
+}
+
 
 .clear-button {
+  margin: 10px 10px;
+
   background-color: #f0f0f0;
   color: #333;
   border: none;
@@ -70,4 +68,25 @@ button {
 .clear-button:hover {
   background-color: #ddd;
   color: #000;
+}
+
+@media screen and (max-width: 767px) {
+  table, th, td {
+    display: none;
+  }
+
+  .mat-accordion {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 932px) {
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .clear-button {
+    margin: 0;
+  }
 }

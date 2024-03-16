@@ -1,4 +1,4 @@
-mat-toolbar{
+mat-toolbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -6,10 +6,35 @@ mat-toolbar{
   width: 100% !important;
 }
 
-.h1{
-  text-align:center;
+.h1 {
+  text-align: center;
 }
 
 .example-spacer {
   flex: 1 1 auto;
+}
+
+.mat-menu {
+  display: none;
+}
+
+.mat-toolbar-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+
+@media screen and (max-width: 767px) {
+  .mat-toolbar-buttons {
+    display: none;
+  }
+
+  .mat-menu {
+    display: block;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+  }
 }

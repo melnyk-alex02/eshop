@@ -4,28 +4,39 @@
   place-items: center;
 }
 
-.header{
-  text-align: center;
-  margin-top: 80px;
-}
-
 .image {
   margin-left: 15%;
   height: 200px;
 }
 
 .body {
- margin-top: 5%;
+  margin-top: 5%;
   width: 29%;
   height: 200px;
   float: left;
 }
 
 
-h1{
+h1 {
   text-align: center;
 }
 
-h4{
+h4 {
   width: 50%;
 }
+
+@media screen and (max-width: 800px) {
+  .body {
+    width: 100%;
+  }
+
+  .image {
+    margin-left: 0%;
+    width: 100%;
+  }
+
+  h4 {
+    width: 100%;
+  }
+}
+

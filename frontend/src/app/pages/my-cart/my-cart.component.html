@@ -10,44 +10,62 @@
 </ng-container>
 
 
-
 <ng-container *ngIf="!this.loading">
+  <br>
   <div class="header">
     <h1 style="color: black">Your cart</h1>
   </div>
 
-  <div class="container">
-    <div class="row">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-        <ng-container matColumnDef="itemName">
-          <th mat-header-cell *matHeaderCellDef> Item Name</th>
-          <td mat-cell *matCellDef="let cart"> {{cart.itemName}} </td>
-        </ng-container>
+      <ng-container matColumnDef="itemName">
+        <th mat-header-cell *matHeaderCellDef> Item Name</th>
+        <td mat-cell *matCellDef="let cart"> {{cart.itemName}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="itemPrice">
-          <th mat-header-cell *matHeaderCellDef>Item Price</th>
-          <td mat-cell *matCellDef="let cart"> {{cart.itemPrice}} </td>
-        </ng-container>
+      <ng-container matColumnDef="itemPrice">
+        <th mat-header-cell *matHeaderCellDef>Item Price</th>
+        <td mat-cell *matCellDef="let cart"> {{cart.itemPrice}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="count">
-          <th mat-header-cell *matHeaderCellDef> Count</th>
-          <td mat-cell *matCellDef="let cart"> <input type="number" [(ngModel)]="cart.count" min="1" (blur)="changeCountOfItems(cart.itemId, cart.count)"></td>
-        </ng-container>
+      <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef> Count</th>
+        <td mat-cell *matCellDef="let cart"><input type="number" [(ngModel)]="cart.count" min="1"
+                                                   (blur)="changeCountOfItems(cart.itemId, cart.count)"></td>
+      </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef> Count</th>
-          <td mat-cell *matCellDef="let cart"><button mat-raised-button (click)="deleteItemFromCart(cart.itemId)">DELETE</button> </td>
-        </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Count</th>
+        <td mat-cell *matCellDef="let cart">
+          <button mat-raised-button (click)="deleteItemFromCart(cart.itemId)">DELETE</button>
+        </td>
+      </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
-      </table>
-    </div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
+    </table>
+    <mat-accordion *ngFor="let cart of dataSource.data">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title class="mat-line-clamp">
+            {{cart.itemName}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{cart.itemPrice | currency:'USD'}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <p>Full name: {{cart.itemName}}</p>
+        <input type="number" [(ngModel)]="cart.count" min="1" (blur)="changeCountOfItems(cart.itemId, cart.count)">
+        <mat-action-row>
+          <button mat-button color="primary" (click)="deleteItemFromCart(cart.itemId)">Delete</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 
-
+  <br>
   <div class="create-order">
-    <button class="button-1" (click)="createOrderFromCart()" >Confirm order</button>
+    <button class="button-1" (click)="createOrderFromCart()">Confirm order</button>
   </div>
 </ng-container>

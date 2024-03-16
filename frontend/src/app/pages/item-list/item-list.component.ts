@@ -30,7 +30,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   loading: boolean;
 
   dataSource = new MatTableDataSource<Item>();
-  displayedColumns: string[] = ['id', "name", "description", "categoryName", "imageSrc", "actions"];
+  displayedColumns: string[] = ['id', "name", "description", "price", "categoryName", "imageSrc", "actions"];
 
   sorting$;
 
