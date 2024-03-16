@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="bestuser" id="4">
+        <createTable tableName="cart_item">
+            <column name="user_id" type="varchar(255)">
+            </column>
+            <column name="item_id" type="bigint">
+                <constraints foreignKeyName="item_id" references="item(id)"/>
+            </column>
+            <column name="count" type="int">
+                <constraints checkConstraint="count>=1"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="bestuser">
+        <createTable tableName="orders">
+            <column name="number" type="VARCHAR(100)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="count" type="INT">
+                <constraints checkConstraint="count >= 1"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP"/>
+            <column name="price" type="DECIMAL(12, 2)"/>
+            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="purchased_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="bestuser">
+        <sql>ALTER TABLE orders
+            ADD COLUMN status ENUM('NEW', 'DONE', 'CANCELLED', 'EXPIRED') NOT NULL</sql>
+    </changeSet>
+    <changeSet id="8" author="bestuser">
+        <createTable tableName="order_item">
+            <column name="order_number" type="varchar(100)">
+                <constraints foreignKeyName="order_number" references="orders(number)"/>
+            </column>
+            <column name="item_id" type="bigint">
+                <constraints foreignKeyName="fk_order_items_item" references="item(id)"/>
+            </column>
+            <column name="count" type="int">
+                <constraints checkConstraint="count>=1"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

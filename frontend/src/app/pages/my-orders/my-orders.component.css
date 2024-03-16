@@ -1,0 +1,10 @@
+.spinner {
+  margin-top: 250px;
+  display: grid;
+  place-items: center;
+}
+
+.header {
+  margin-top: 5%;
+  margin-left: 11.1%;
+}

@@ -1,40 +1,32 @@
 package com.alex.eshop.dto.itemDTOs;
 
-public class ItemCreateDTO {
-    private String name;
-    private String description;
-    private String imageSrc;
-    private Long categoryId;
+import java.math.BigDecimal;
 
-    public Long getCategoryId() {
-        return categoryId;
+public record ItemCreateDTO(
+        String name,
+        String description,
+        String imageSrc,
+        BigDecimal price,
+        Long categoryId
+
+) {
+    public ItemCreateDTO withName(String name) {
+        return new ItemCreateDTO(name, description, imageSrc, price, categoryId);
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public ItemCreateDTO withDescription(String description) {
+        return new ItemCreateDTO(name, description, imageSrc, price, categoryId);
     }
 
-    public String getName() {
-        return name;
+    public ItemCreateDTO withImageSrc(String imageSrc) {
+        return new ItemCreateDTO(name, description, imageSrc, price, categoryId);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public ItemCreateDTO withPrice(BigDecimal price) {
+        return new ItemCreateDTO(name, description, imageSrc, price, categoryId);
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getImageSrc() {
-        return imageSrc;
-    }
-
-    public void setImageSrc(String imageSrc) {
-        this.imageSrc = imageSrc;
+    public ItemCreateDTO withCategoryId(Long categoryId) {
+        return new ItemCreateDTO(name, description, imageSrc, price, categoryId);
     }
 }

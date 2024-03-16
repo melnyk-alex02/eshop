@@ -14,14 +14,12 @@
 }
 
 .cards {
-  max-width: 400px;
+  height: 100%;
+  width: 100%;
   display: flex;
-  margin-right: 63%;
+  margin-left: 11.1%
 }
 
-mat-card{
-  max-width: 400px;
-}
 
 .text{
   margin-top: 5%;
@@ -29,8 +27,8 @@ mat-card{
   font-size: 20px
 }
 
+
 mat-card-title{
-  text-align: left;
   font-size: 14px;
 }
 

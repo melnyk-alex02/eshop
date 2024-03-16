@@ -1,9 +1,18 @@
-<ng-container *ngIf="isAdmin">
+<ng-container>
   <mat-toolbar color="primary">
-    <button mat-button routerLink="admin">ESHOP</button>
+    <button mat-button routerLink="">ESHOP</button>
     <span class="example-spacer"></span>
-    <button mat-button routerLink="admin/items">Items</button>
-    <button mat-button routerLink="admin/categories">Categories</button>
+
+    <button mat-button routerLink="all-items" routerLinkActive="active">All items</button>
+    <button mat-button routerLink="my-orders" routerLinkActive="active">My orders</button>
+    <button mat-button routerLink="my-cart" routerLinkActive="active">{{getCountOfItemsInCart()===0 ? "My Cart" : "My Cart(" + getCountOfItemsInCart() + ")" }}</button>
+
+    <div *ngIf="isAdmin">
+      <button mat-button routerLink="admin/orders" routerLinkActive="active">Orders</button>
+      <button mat-button routerLink="admin/items" routerLinkActive="active">Items</button>
+      <button mat-button routerLink="admin/categories" routerLinkActive="active">Categories</button>
+    </div>
   </mat-toolbar>
 </ng-container>
+
 <router-outlet></router-outlet>

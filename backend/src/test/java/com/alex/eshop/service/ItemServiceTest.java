@@ -19,14 +19,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -56,7 +55,7 @@ public class ItemServiceTest {
             Item item = invocationOnMock.getArgument(0);
             Long itemId = item.getId();
             return expectedItemDTOList.stream()
-                    .filter(dto -> dto.getId().equals(itemId))
+                    .filter(dto -> dto.id().equals(itemId))
                     .findFirst()
                     .orElse(null);
         });
@@ -69,19 +68,21 @@ public class ItemServiceTest {
 
         assertEquals(expectedItemDTOList.size(), result.getTotalElements());
 
-        assertEquals(expectedItemDTOList.get(0).getId(), result.getContent().get(0).getId());
-        assertEquals(expectedItemDTOList.get(0).getName(), result.getContent().get(0).getName());
-        assertEquals(expectedItemDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
-        assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.getContent().get(0).getImageSrc());
-        assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.getContent().get(0).getCategoryId());
-        assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.getContent().get(0).getCategoryName());
+        assertEquals(expectedItemDTOList.get(0).id(), result.getContent().get(0).id());
+        assertEquals(expectedItemDTOList.get(0).name(), result.getContent().get(0).name());
+        assertEquals(expectedItemDTOList.get(0).description(), result.getContent().get(0).description());
+        assertEquals(expectedItemDTOList.get(0).price(), result.getContent().get(0).price());
+        assertEquals(expectedItemDTOList.get(0).imageSrc(), result.getContent().get(0).imageSrc());
+        assertEquals(expectedItemDTOList.get(0).categoryId(), result.getContent().get(0).categoryId());
+        assertEquals(expectedItemDTOList.get(0).categoryName(), result.getContent().get(0).categoryName());
 
-        assertEquals(expectedItemDTOList.get(1).getId(), result.getContent().get(1).getId());
-        assertEquals(expectedItemDTOList.get(1).getName(), result.getContent().get(1).getName());
-        assertEquals(expectedItemDTOList.get(1).getDescription(), result.getContent().get(1).getDescription());
-        assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.getContent().get(1).getImageSrc());
-        assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.getContent().get(1).getCategoryId());
-        assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.getContent().get(1).getCategoryName());
+        assertEquals(expectedItemDTOList.get(1).id(), result.getContent().get(1).id());
+        assertEquals(expectedItemDTOList.get(1).name(), result.getContent().get(1).name());
+        assertEquals(expectedItemDTOList.get(1).description(), result.getContent().get(1).description());
+        assertEquals(expectedItemDTOList.get(1).price(), result.getContent().get(1).price());
+        assertEquals(expectedItemDTOList.get(1).imageSrc(), result.getContent().get(1).imageSrc());
+        assertEquals(expectedItemDTOList.get(1).categoryId(), result.getContent().get(1).categoryId());
+        assertEquals(expectedItemDTOList.get(1).categoryName(), result.getContent().get(1).categoryName());
     }
 
     @Test
@@ -107,13 +108,13 @@ public class ItemServiceTest {
         itemList.add(item);
 
         List<ItemDTO> expectedItemDTOList = new ArrayList<>();
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setId(1L);
-        itemDTO.setName("test");
-        itemDTO.setDescription("Description");
-        itemDTO.setCategoryId(1L);
-        itemDTO.setCategoryName("Category");
-        itemDTO.setImageSrc("ImgSrc");
+        ItemDTO itemDTO = new ItemDTO(1L,
+                "test",
+                1L,
+                "Category",
+                "Description",
+                BigDecimal.valueOf(123),
+                "ImgSrc");
 
         expectedItemDTOList.add(itemDTO);
 
@@ -124,7 +125,7 @@ public class ItemServiceTest {
             Item item1 = invocationOnMock.getArgument(0);
             Long id = item1.getId();
             return expectedItemDTOList.stream()
-                    .filter(dto -> dto.getId().equals(id))
+                    .filter(dto -> dto.id().equals(id))
                     .findFirst()
                     .orElse(null);
         });
@@ -135,16 +136,17 @@ public class ItemServiceTest {
         verify(itemMapper).toDto(any(Item.class));
 
         assertEquals(expectedItemDTOList.size(), result.getTotalElements());
-        assertEquals(expectedItemDTOList.get(0).getId(), result.getContent().get(0).getId());
-        assertEquals(expectedItemDTOList.get(0).getName(), result.getContent().get(0).getName());
-        assertEquals(expectedItemDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
-        assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.getContent().get(0).getImageSrc());
-        assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.getContent().get(0).getCategoryId());
-        assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.getContent().get(0).getCategoryName());
+        assertEquals(expectedItemDTOList.get(0).id(), result.getContent().get(0).id());
+        assertEquals(expectedItemDTOList.get(0).name(), result.getContent().get(0).name());
+        assertEquals(expectedItemDTOList.get(0).description(), result.getContent().get(0).description());
+        assertEquals(expectedItemDTOList.get(0).price(), result.getContent().get(0).price());
+        assertEquals(expectedItemDTOList.get(0).imageSrc(), result.getContent().get(0).imageSrc());
+        assertEquals(expectedItemDTOList.get(0).categoryId(), result.getContent().get(0).categoryId());
+        assertEquals(expectedItemDTOList.get(0).categoryName(), result.getContent().get(0).categoryName());
     }
 
     @Test
-    public void testGetOneCategory() {
+    public void testGetItemById() {
         Category category = new Category();
         category.setId(1L);
         category.setName("Category");
@@ -157,28 +159,23 @@ public class ItemServiceTest {
         item.setImageSrc("Image src 1");
         item.setCategory(category);
 
-        ItemDTO expectedDto = new ItemDTO();
-        expectedDto.setId(1L);
-        expectedDto.setName("Item 1");
-        expectedDto.setDescription("Description 1");
-        expectedDto.setImageSrc("Image src 1");
-        expectedDto.setCategoryId(1L);
-        expectedDto.setCategoryName("Category");
+        ItemDTO expectedDto = new ItemDTO(1L, "Item 1", 1L, "Category", "Description 1", BigDecimal.valueOf(123), "Image src 1");
 
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         when(itemMapper.toDto(item)).thenReturn(expectedDto);
 
-        ItemDTO result = itemService.getItemWithCategoryInfo(1L);
+        ItemDTO result = itemService.getItemById(1L);
 
         verify(itemRepository).findById(1L);
         verify(itemMapper).toDto(any(Item.class));
 
-        assertEquals(expectedDto.getId(), result.getId());
-        assertEquals(expectedDto.getName(), result.getName());
-        assertEquals(expectedDto.getDescription(), result.getDescription());
-        assertEquals(expectedDto.getCategoryId(), result.getCategoryId());
-        assertEquals(expectedDto.getImageSrc(), result.getImageSrc());
-        assertEquals(expectedDto.getCategoryName(), result.getCategoryName());
+        assertEquals(expectedDto.id(), result.id());
+        assertEquals(expectedDto.name(), result.name());
+        assertEquals(expectedDto.description(), result.description());
+        assertEquals(expectedDto.categoryId(), result.categoryId());
+        assertEquals(expectedDto.price(), result.price());
+        assertEquals(expectedDto.imageSrc(), result.imageSrc());
+        assertEquals(expectedDto.categoryName(), result.categoryName());
     }
 
     @Test
@@ -198,66 +195,69 @@ public class ItemServiceTest {
         verify(itemRepository).findAll(any(Pageable.class));
         verify(itemMapper).toDto(itemList);
 
-        assertEquals(expectedItemDTOList.get(0).getId(), result.get(0).getId());
-        assertEquals(expectedItemDTOList.get(0).getName(), result.get(0).getName());
-        assertEquals(expectedItemDTOList.get(0).getDescription(), result.get(0).getDescription());
-        assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.get(0).getImageSrc());
-        assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.get(0).getCategoryId());
-        assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.get(0).getCategoryName());
+        assertEquals(expectedItemDTOList.get(0).id(), result.get(0).id());
+        assertEquals(expectedItemDTOList.get(0).name(), result.get(0).name());
+        assertEquals(expectedItemDTOList.get(0).description(), result.get(0).description());
+        assertEquals(expectedItemDTOList.get(0).price(), result.get(0).price());
+        assertEquals(expectedItemDTOList.get(0).imageSrc(), result.get(0).imageSrc());
+        assertEquals(expectedItemDTOList.get(0).categoryId(), result.get(0).categoryId());
+        assertEquals(expectedItemDTOList.get(0).categoryName(), result.get(0).categoryName());
 
-        assertEquals(expectedItemDTOList.get(1).getId(), result.get(1).getId());
-        assertEquals(expectedItemDTOList.get(1).getName(), result.get(1).getName());
-        assertEquals(expectedItemDTOList.get(1).getDescription(), result.get(1).getDescription());
-        assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.get(1).getImageSrc());
-        assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.get(1).getCategoryId());
-        assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.get(1).getCategoryName());
+        assertEquals(expectedItemDTOList.get(1).id(), result.get(1).id());
+        assertEquals(expectedItemDTOList.get(1).name(), result.get(1).name());
+        assertEquals(expectedItemDTOList.get(1).description(), result.get(1).description());
+        assertEquals(expectedItemDTOList.get(1).price(), result.get(1).price());
+        assertEquals(expectedItemDTOList.get(1).imageSrc(), result.get(1).imageSrc());
+        assertEquals(expectedItemDTOList.get(1).categoryId(), result.get(1).categoryId());
+        assertEquals(expectedItemDTOList.get(1).categoryName(), result.get(1).categoryName());
     }
 
     @Test
     public void testGetItemWithCategoryInfo() {
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("Category 1");
-        category.setDescription("Description 1");
+        List<Item> itemList = createItemList();
+        List<ItemDTO> expectedItemDTOList = createItemDTOList();
 
-        Item item = new Item();
-        item.setId(1L);
-        item.setName("Item 1");
-        item.setDescription("Description 1");
-        item.setImageSrc("Img Src 1");
-        item.setCategory(category);
+        Page<Item> itemPage = new PageImpl<>(itemList);
 
-        ItemDTO expectedItemDTO = new ItemDTO();
-        expectedItemDTO.setId(1L);
-        expectedItemDTO.setName("Item 1");
-        expectedItemDTO.setDescription("Description 1");
-        expectedItemDTO.setCategoryId(1L);
-        expectedItemDTO.setCategoryName("Category 1");
-        expectedItemDTO.setImageSrc("Img Src 1");
+        when(itemRepository.findByCategoryId(1L, Pageable.unpaged())).thenReturn(itemPage);
+        when(itemMapper.toDto(any(Item.class))).thenAnswer(invocationOnMock -> {
+            Item item = invocationOnMock.getArgument(0);
+            Long id = item.getId();
+            return expectedItemDTOList.stream()
+                    .filter(dto -> dto.id().equals(id))
+                    .findFirst()
+                    .orElse(null);
+        });
 
-        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
-        when(itemMapper.toDto(any(Item.class))).thenReturn(expectedItemDTO);
+        Page<ItemDTO> result = itemService.getItemsInCategory(1L, Pageable.unpaged());
 
-        ItemDTO result = itemService.getItemWithCategoryInfo(1L);
+        verify(itemRepository).findByCategoryId(1L, Pageable.unpaged());
+        verify(itemMapper, times(2)).toDto(any(Item.class));
 
-        verify(itemRepository).findById(item.getId());
-        verify(itemMapper).toDto(any(Item.class));
+        assertEquals(expectedItemDTOList.get(0).id(), result.getContent().get(0).id());
+        assertEquals(expectedItemDTOList.get(0).name(), result.getContent().get(0).name());
+        assertEquals(expectedItemDTOList.get(0).description(), result.getContent().get(0).description());
+        assertEquals(expectedItemDTOList.get(0).price(), result.getContent().get(0).price());
+        assertEquals(expectedItemDTOList.get(0).imageSrc(), result.getContent().get(0).imageSrc());
+        assertEquals(expectedItemDTOList.get(0).categoryId(), result.getContent().get(0).categoryId());
+        assertEquals(expectedItemDTOList.get(0).categoryName(), result.getContent().get(0).categoryName());
 
-        assertEquals(expectedItemDTO.getId(), result.getId());
-        assertEquals(expectedItemDTO.getName(), result.getName());
-        assertEquals(expectedItemDTO.getDescription(), result.getDescription());
-        assertEquals(expectedItemDTO.getImageSrc(), result.getImageSrc());
-        assertEquals(expectedItemDTO.getCategoryId(), result.getCategoryId());
-        assertEquals(expectedItemDTO.getCategoryName(), result.getCategoryName());
+        assertEquals(expectedItemDTOList.get(1).id(), result.getContent().get(1).id());
+        assertEquals(expectedItemDTOList.get(1).name(), result.getContent().get(1).name());
+        assertEquals(expectedItemDTOList.get(1).description(), result.getContent().get(1).description());
+        assertEquals(expectedItemDTOList.get(1).price(), result.getContent().get(1).price());
+        assertEquals(expectedItemDTOList.get(1).imageSrc(), result.getContent().get(1).imageSrc());
+        assertEquals(expectedItemDTOList.get(1).categoryId(), result.getContent().get(1).categoryId());
+        assertEquals(expectedItemDTOList.get(1).categoryName(), result.getContent().get(1).categoryName());
     }
 
     @Test
     public void testCreateItem() {
-        ItemCreateDTO itemCreateDTO = new ItemCreateDTO();
-        itemCreateDTO.setName("Item 1");
-        itemCreateDTO.setDescription("Description 1");
-        itemCreateDTO.setImageSrc("Img Src 1");
-        itemCreateDTO.setCategoryId(1L);
+        ItemCreateDTO itemCreateDTO = new ItemCreateDTO("Item 1",
+                "Description 1",
+                "Img Src 1",
+                BigDecimal.valueOf(123),
+                1L);
 
         Category category = new Category();
         category.setId(1L);
@@ -270,6 +270,7 @@ public class ItemServiceTest {
         itemToSave.setDescription("Description 1");
         itemToSave.setCategory(category);
         itemToSave.setImageSrc("Img Src 1");
+        itemToSave.setPrice(BigDecimal.valueOf(123));
 
         Item savedItem = new Item();
         savedItem.setId(1L);
@@ -277,14 +278,15 @@ public class ItemServiceTest {
         savedItem.setDescription("Description 1");
         savedItem.setCategory(category);
         savedItem.setImageSrc("Image src 1");
+        savedItem.setPrice(BigDecimal.valueOf(123));
 
-        ItemDTO expectedItemDTO = new ItemDTO();
-        expectedItemDTO.setId(1L);
-        expectedItemDTO.setName("Item 1");
-        expectedItemDTO.setDescription("Description 1");
-        expectedItemDTO.setCategoryId(1L);
-        expectedItemDTO.setCategoryName("Category 1");
-        expectedItemDTO.setImageSrc("Img src 1");
+        ItemDTO expectedItemDTO = new ItemDTO(1L,
+                "Item 1",
+                1L,
+                "Category",
+                "Description 1",
+                BigDecimal.valueOf(123),
+                "Img src 1");
 
         when(itemMapper.toEntity(itemCreateDTO)).thenReturn(itemToSave);
         when(itemRepository.existsByCategoryId(category.getId())).thenReturn(true);
@@ -298,22 +300,22 @@ public class ItemServiceTest {
         verify(itemRepository).save(itemToSave);
         verify(itemMapper).toDto(savedItem);
 
-        assertEquals(expectedItemDTO.getId(), result.getId());
-        assertEquals(expectedItemDTO.getName(), result.getName());
-        assertEquals(expectedItemDTO.getDescription(), result.getDescription());
-        assertEquals(expectedItemDTO.getCategoryId(), result.getCategoryId());
-        assertEquals(expectedItemDTO.getCategoryName(), result.getCategoryName());
-        assertEquals(expectedItemDTO.getImageSrc(), result.getImageSrc());
+        assertEquals(expectedItemDTO.id(), result.id());
+        assertEquals(expectedItemDTO.name(), result.name());
+        assertEquals(expectedItemDTO.description(), result.description());
+        assertEquals(expectedItemDTO.categoryId(), result.categoryId());
+        assertEquals(expectedItemDTO.categoryName(), result.categoryName());
+        assertEquals(expectedItemDTO.imageSrc(), result.imageSrc());
     }
 
     @Test
     public void testUpdateItem() {
-        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO();
-        itemUpdateDTO.setId(1L);
-        itemUpdateDTO.setName("Updated Item");
-        itemUpdateDTO.setDescription("Updated Description");
-        itemUpdateDTO.setImageSrc("Updated ImgSrc");
-        itemUpdateDTO.setCategoryId(1L);
+        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(1L,
+                "Updated Item",
+                "Updated Description",
+                "Updated ImgSrc",
+                BigDecimal.valueOf(123),
+                1L);
 
         Category category = new Category();
         category.setId(1L);
@@ -325,17 +327,18 @@ public class ItemServiceTest {
         updatedItem.setName("Updated Item");
         updatedItem.setDescription("Updated Description");
         updatedItem.setImageSrc("Updated ImgSrc");
+        updatedItem.setPrice(BigDecimal.valueOf(123));
         updatedItem.setCategory(category);
 
-        ItemDTO expectedItemDTO = new ItemDTO();
-        expectedItemDTO.setId(1L);
-        expectedItemDTO.setName("Updated Item");
-        expectedItemDTO.setDescription("Updated Description");
-        expectedItemDTO.setCategoryId(1L);
-        expectedItemDTO.setCategoryName("Category");
-        expectedItemDTO.setImageSrc("Updated ImgSrc");
+        ItemDTO expectedItemDTO = new ItemDTO(1L,
+                "Updated item",
+                1L,
+                "Category",
+                "Updated Description",
+                BigDecimal.valueOf(123),
+                "Updated ImgSrc");
 
-        when(itemRepository.existsById(itemUpdateDTO.getId())).thenReturn(true);
+        when(itemRepository.existsById(itemUpdateDTO.id())).thenReturn(true);
         when(itemRepository.existsByCategoryId(category.getId())).thenReturn(true);
         when(itemRepository.save(any())).thenReturn(updatedItem);
         when(itemMapper.toEntity(itemUpdateDTO)).thenReturn(updatedItem);
@@ -343,18 +346,19 @@ public class ItemServiceTest {
 
         ItemDTO result = itemService.updateItem(itemUpdateDTO);
 
-        verify(itemRepository).existsById(itemUpdateDTO.getId());
+        verify(itemRepository).existsById(itemUpdateDTO.id());
         verify(itemRepository).existsByCategoryId(category.getId());
         verify(itemRepository).save(any());
         verify(itemMapper).toEntity(itemUpdateDTO);
         verify(itemMapper).toDto(updatedItem);
 
-        assertEquals(expectedItemDTO.getId(), result.getId());
-        assertEquals(expectedItemDTO.getName(), result.getName());
-        assertEquals(expectedItemDTO.getDescription(), result.getDescription());
-        assertEquals(expectedItemDTO.getCategoryId(), result.getCategoryId());
-        assertEquals(expectedItemDTO.getCategoryName(), result.getCategoryName());
-        assertEquals(expectedItemDTO.getImageSrc(), result.getImageSrc());
+        assertEquals(expectedItemDTO.id(), result.id());
+        assertEquals(expectedItemDTO.name(), result.name());
+        assertEquals(expectedItemDTO.description(), result.description());
+        assertEquals(expectedItemDTO.categoryId(), result.categoryId());
+        assertEquals(expectedItemDTO.categoryName(), result.categoryName());
+        assertEquals(expectedItemDTO.imageSrc(), result.imageSrc());
+        assertEquals(expectedItemDTO.price(), result.price());
     }
 
     @Test
@@ -371,9 +375,9 @@ public class ItemServiceTest {
     @Test
     public void testUploadItemsFromCsv() {
         String csvContent = """
-                name,description,categoryId,imageSrc
-                Item1,Description1,1,Image src 1
-                Item2,Description2,1,Image src 2
+                name,description,categoryId,imageSrc,price
+                Item1,Description1,1,Image src 1,123
+                Item2,Description2,1,Image src 2,123
                 """;
 
         MultipartFile csvFile = new MockMultipartFile("csvFile",
@@ -393,19 +397,23 @@ public class ItemServiceTest {
         verify(itemRepository).saveAll(any());
         verify(itemMapper).toDto(itemList);
 
-        assertEquals(expectedItemDTOList.get(0).getId(), result.get(0).getId());
-        assertEquals(expectedItemDTOList.get(0).getName(), result.get(0).getName());
-        assertEquals(expectedItemDTOList.get(0).getDescription(), result.get(0).getDescription());
-        assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.get(0).getCategoryId());
-        assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.get(0).getCategoryName());
-        assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.get(0).getImageSrc());
+        assertEquals(expectedItemDTOList.get(0).id(), result.get(0).id());
+        assertEquals(expectedItemDTOList.get(0).name(), result.get(0).name());
+        assertEquals(expectedItemDTOList.get(0).description(), result.get(0).description());
+        assertEquals(expectedItemDTOList.get(0).price(), result.get(0).price());
+        assertEquals(expectedItemDTOList.get(0).categoryId(), result.get(0).categoryId());
+        assertEquals(expectedItemDTOList.get(0).categoryName(), result.get(0).categoryName());
+        assertEquals(expectedItemDTOList.get(0).imageSrc(), result.get(0).imageSrc());
+        assertEquals(expectedItemDTOList.get(0).price(), result.get(0).price());
 
-        assertEquals(expectedItemDTOList.get(1).getId(), result.get(1).getId());
-        assertEquals(expectedItemDTOList.get(1).getName(), result.get(1).getName());
-        assertEquals(expectedItemDTOList.get(1).getDescription(), result.get(1).getDescription());
-        assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.get(1).getCategoryId());
-        assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.get(1).getCategoryName());
-        assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.get(1).getImageSrc());
+        assertEquals(expectedItemDTOList.get(1).id(), result.get(1).id());
+        assertEquals(expectedItemDTOList.get(1).name(), result.get(1).name());
+        assertEquals(expectedItemDTOList.get(1).description(), result.get(1).description());
+        assertEquals(expectedItemDTOList.get(1).price(), result.get(1).price());
+        assertEquals(expectedItemDTOList.get(1).categoryId(), result.get(1).categoryId());
+        assertEquals(expectedItemDTOList.get(1).categoryName(), result.get(1).categoryName());
+        assertEquals(expectedItemDTOList.get(1).imageSrc(), result.get(1).imageSrc());
+        assertEquals(expectedItemDTOList.get(1).price(), result.get(1).price());
     }
 
     @Test
@@ -423,7 +431,7 @@ public class ItemServiceTest {
             Item item = invocationOnMock.getArgument(0);
             Long id = item.getId();
             return expectedItemDTOList.stream()
-                    .filter(dto -> dto.getId().equals(id))
+                    .filter(dto -> dto.id().equals(id))
                     .findFirst()
                     .orElse(null);
         });
@@ -435,19 +443,21 @@ public class ItemServiceTest {
 
         assertEquals(2, result.getTotalElements());
 
-        assertEquals(expectedItemDTOList.get(0).getId(), result.getContent().get(0).getId());
-        assertEquals(expectedItemDTOList.get(0).getName(), result.getContent().get(0).getName());
-        assertEquals(expectedItemDTOList.get(0).getDescription(), result.getContent().get(0).getDescription());
-        assertEquals(expectedItemDTOList.get(0).getCategoryId(), result.getContent().get(0).getCategoryId());
-        assertEquals(expectedItemDTOList.get(0).getCategoryName(), result.getContent().get(0).getCategoryName());
-        assertEquals(expectedItemDTOList.get(0).getImageSrc(), result.getContent().get(0).getImageSrc());
+        assertEquals(expectedItemDTOList.get(0).id(), result.getContent().get(0).id());
+        assertEquals(expectedItemDTOList.get(0).name(), result.getContent().get(0).name());
+        assertEquals(expectedItemDTOList.get(0).description(), result.getContent().get(0).description());
+        assertEquals(expectedItemDTOList.get(0).price(), result.getContent().get(0).price());
+        assertEquals(expectedItemDTOList.get(0).categoryId(), result.getContent().get(0).categoryId());
+        assertEquals(expectedItemDTOList.get(0).categoryName(), result.getContent().get(0).categoryName());
+        assertEquals(expectedItemDTOList.get(0).imageSrc(), result.getContent().get(0).imageSrc());
 
-        assertEquals(expectedItemDTOList.get(1).getId(), result.getContent().get(1).getId());
-        assertEquals(expectedItemDTOList.get(1).getName(), result.getContent().get(1).getName());
-        assertEquals(expectedItemDTOList.get(1).getDescription(), result.getContent().get(1).getDescription());
-        assertEquals(expectedItemDTOList.get(1).getCategoryId(), result.getContent().get(1).getCategoryId());
-        assertEquals(expectedItemDTOList.get(1).getCategoryName(), result.getContent().get(1).getCategoryName());
-        assertEquals(expectedItemDTOList.get(1).getImageSrc(), result.getContent().get(1).getImageSrc());
+        assertEquals(expectedItemDTOList.get(1).id(), result.getContent().get(1).id());
+        assertEquals(expectedItemDTOList.get(1).name(), result.getContent().get(1).name());
+        assertEquals(expectedItemDTOList.get(1).description(), result.getContent().get(1).description());
+        assertEquals(expectedItemDTOList.get(1).price(), result.getContent().get(1).price());
+        assertEquals(expectedItemDTOList.get(1).categoryId(), result.getContent().get(1).categoryId());
+        assertEquals(expectedItemDTOList.get(1).categoryName(), result.getContent().get(1).categoryName());
+        assertEquals(expectedItemDTOList.get(1).imageSrc(), result.getContent().get(1).imageSrc());
     }
 
     @Test
@@ -473,7 +483,7 @@ public class ItemServiceTest {
 
         when(itemRepository.findById(id)).thenThrow(new DataNotFoundException("There is no item with id 1"));
 
-        assertThrows(DataNotFoundException.class, () -> itemService.getItemWithCategoryInfo(id));
+        assertThrows(DataNotFoundException.class, () -> itemService.getItemById(id));
     }
 
     @Test
@@ -517,43 +527,47 @@ public class ItemServiceTest {
 
     @Test
     public void testCreateItem_WhenCategoryIdDoesNotExist_ShouldThrowException() {
-        ItemCreateDTO itemCreateDTO = new ItemCreateDTO();
-        itemCreateDTO.setCategoryId(123L);
+        ItemCreateDTO itemCreateDTO = new ItemCreateDTO("", "", "", null, 123L);
 
-        when(itemRepository.existsByCategoryId(itemCreateDTO.getCategoryId())).thenReturn(false);
+
+        when(itemRepository.existsByCategoryId(itemCreateDTO.categoryId())).thenReturn(false);
 
         assertThrows(DataNotFoundException.class, () -> itemService.createItem(itemCreateDTO));
 
-        verify(itemRepository).existsByCategoryId(itemCreateDTO.getCategoryId());
+        verify(itemRepository).existsByCategoryId(itemCreateDTO.categoryId());
     }
 
 
     @Test
     public void testUpdateItem_WhenItemDoesNotExist_ShouldThrowException() {
-        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO();
-        itemUpdateDTO.setId(123L);
-        itemUpdateDTO.setCategoryId(123L);
+        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(123L,
+                null,
+                null,
+                null,
+                null, 123L);
 
-        when(itemRepository.existsById(itemUpdateDTO.getId())).thenReturn(false);
+        when(itemRepository.existsById(itemUpdateDTO.id())).thenReturn(false);
 
         assertThrows(DataNotFoundException.class, () -> itemService.updateItem(itemUpdateDTO));
 
-        verify(itemRepository).existsById(itemUpdateDTO.getId());
+        verify(itemRepository).existsById(itemUpdateDTO.id());
     }
 
     @Test
     public void testUpdateItem_WhenCategoryDoesNotExist_ShouldThrowException() {
-        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO();
-        itemUpdateDTO.setId(123L);
-        itemUpdateDTO.setCategoryId(123L);
+        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(123L,
+                null,
+                null,
+                null,
+                null, 123L);
 
-        when(itemRepository.existsById(itemUpdateDTO.getId())).thenReturn(true);
-        when(itemRepository.existsByCategoryId(itemUpdateDTO.getCategoryId())).thenReturn(false);
+        when(itemRepository.existsById(itemUpdateDTO.id())).thenReturn(true);
+        when(itemRepository.existsByCategoryId(itemUpdateDTO.categoryId())).thenReturn(false);
 
         assertThrows(DataNotFoundException.class, () -> itemService.updateItem(itemUpdateDTO));
 
-        verify(itemRepository).existsById(itemUpdateDTO.getId());
-        verify(itemRepository).existsByCategoryId(itemUpdateDTO.getCategoryId());
+        verify(itemRepository).existsById(itemUpdateDTO.id());
+        verify(itemRepository).existsByCategoryId(itemUpdateDTO.categoryId());
     }
 
     @Test
@@ -579,6 +593,7 @@ public class ItemServiceTest {
         item1.setId(1L);
         item1.setName("Item 1");
         item1.setDescription("Description 1");
+        item1.setPrice(BigDecimal.valueOf(123));
         item1.setCategory(category);
         item1.setImageSrc("Image src 1");
 
@@ -586,6 +601,7 @@ public class ItemServiceTest {
         item2.setId(2L);
         item2.setName("Item 2");
         item2.setDescription("Description 2");
+        item2.setPrice(BigDecimal.valueOf(123));
         item2.setCategory(category);
         item2.setImageSrc("Image src 2");
 
@@ -598,21 +614,21 @@ public class ItemServiceTest {
     private List<ItemDTO> createItemDTOList() {
         List<ItemDTO> itemDTOList = new ArrayList<>();
 
-        ItemDTO itemDTO1 = new ItemDTO();
-        itemDTO1.setId(1L);
-        itemDTO1.setName("Item 1");
-        itemDTO1.setDescription("Description 1");
-        itemDTO1.setCategoryId(1L);
-        itemDTO1.setCategoryName("Category");
-        itemDTO1.setImageSrc("Image src 1");
+        ItemDTO itemDTO1 = new ItemDTO(1L,
+                "Item 1",
+                1L,
+                "Category",
+                "Description 1",
+                BigDecimal.valueOf(123),
+                "Image Src 1");
 
-        ItemDTO itemDTO2 = new ItemDTO();
-        itemDTO2.setId(2L);
-        itemDTO2.setName("Item 2");
-        itemDTO2.setDescription("Description");
-        itemDTO2.setCategoryId(1L);
-        itemDTO2.setCategoryName("Category");
-        itemDTO2.setImageSrc("Image src 2");
+        ItemDTO itemDTO2 = new ItemDTO(2L,
+                "Item 2",
+                1L,
+                "Category",
+                "Description 2",
+                BigDecimal.valueOf(123),
+                "Image Src 2");
 
         itemDTOList.add(itemDTO1);
         itemDTOList.add(itemDTO2);

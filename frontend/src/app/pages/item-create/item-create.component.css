@@ -46,7 +46,7 @@ button:focus {
   outline: 0;
 }
 
-td.mat-header-cell, td.mat-cell {
+td.mat-mdc-header-cell, td.mat-mdc-cell {
   border-bottom-width: 0px;
   width: 100%;
 }

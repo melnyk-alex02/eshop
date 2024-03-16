@@ -84,20 +84,20 @@ public class KeycloakService {
     }
 
     public UserRepresentation createUser(UserRegisterDTO userRegisterDTO) {
-        if (!Objects.equals(userRegisterDTO.getPassword(), userRegisterDTO.getConfirmPassword())) {
+        if (!Objects.equals(userRegisterDTO.password(), userRegisterDTO.confirmPassword())) {
             throw new InvalidDataException("Password and Confirm Password does not match");
         }
 
         UserRepresentation userRepresentation = new UserRepresentation();
 
-        userRepresentation.setUsername(userRegisterDTO.getUsername());
-        userRepresentation.setEmail(userRegisterDTO.getEmail());
-        userRepresentation.setFirstName(userRegisterDTO.getFirstName());
-        userRepresentation.setLastName(userRegisterDTO.getLastName());
-        userRepresentation.setCredentials(List.of(createPasswordCredentials(userRegisterDTO.getPassword())));
+        userRepresentation.setUsername(userRegisterDTO.username());
+        userRepresentation.setEmail(userRegisterDTO.email());
+        userRepresentation.setFirstName(userRegisterDTO.firstName());
+        userRepresentation.setLastName(userRegisterDTO.lastName());
+        userRepresentation.setCredentials(List.of(createPasswordCredentials(userRegisterDTO.password())));
         userRepresentation.setEnabled(true);
 
-        if (!ObjectUtils.isEmpty(userRegisterDTO.getEmail())) {
+        if (!ObjectUtils.isEmpty(userRegisterDTO.email())) {
             userRepresentation.setEmailVerified(true);
         }
 
@@ -115,7 +115,7 @@ public class KeycloakService {
 //        String path = response.getLocation().getPath();
 //        String userUuid = path.substring(path.lastIndexOf('/') + 1);
 
-        UserRepresentation users = usersResource().search(userRegisterDTO.getUsername(), true).get(0);
+        UserRepresentation users = usersResource().search(userRegisterDTO.username(), true).get(0);
         userRepresentation.setId(users.getId());
         userRepresentation.setCreatedTimestamp(users.getCreatedTimestamp());
         addRolesToUser(List.of(getRole(Role.USER)), users.getId());

@@ -29,9 +29,7 @@ public class StatServiceTest {
 
     @Test
     public void testGetStats() {
-        StatsDTO statsDTO = new StatsDTO();
-        statsDTO.setItemsCount(5L);
-        statsDTO.setCategory("category");
+        StatsDTO statsDTO = new StatsDTO("Category", 5L);
 
         Pageable pageable = PageRequest.of(0, 5);
 

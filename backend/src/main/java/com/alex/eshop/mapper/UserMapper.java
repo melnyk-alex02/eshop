@@ -14,7 +14,7 @@ import java.util.TimeZone;
 @Mapper
 public interface UserMapper {
     @Mapping(source = "createdTimestamp", target = "registerDate")
-    @Mapping(source = "id", target = "userUuid")
+    @Mapping(source = "id", target = "userId")
     @Mapping(source = "realmRoles", target ="roles")
     UserDTO toDto(UserRepresentation userRepresentation);
 

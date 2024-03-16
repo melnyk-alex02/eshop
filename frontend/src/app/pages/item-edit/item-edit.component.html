@@ -53,6 +53,14 @@
         </mat-select>
       </mat-form-field>
       <br>
+      <mat-form-field>
+      <input matInput maxlength="255"
+             placeholder="Type new price"
+             formControlName="price"
+             #priceInput>
+      <mat-error>Price is required</mat-error>
+      </mat-form-field>
+        <br>
       <mat-form-field appereance="outline">
         <mat-label>ImageSrc</mat-label>
         <input matInput maxlength="500"

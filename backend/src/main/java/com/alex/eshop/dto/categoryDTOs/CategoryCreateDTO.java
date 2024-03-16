@@ -1,23 +1,15 @@
 package com.alex.eshop.dto.categoryDTOs;
 
-public class CategoryCreateDTO {
-    private String name;
+public record CategoryCreateDTO(
+        String name,
 
-    private String description;
-
-    public String getName() {
-        return name;
+        String description
+) {
+    public CategoryCreateDTO withName(String name) {
+        return new CategoryCreateDTO(name, description);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public CategoryCreateDTO withDescription(String description) {
+        return new CategoryCreateDTO(name, description);
     }
 }

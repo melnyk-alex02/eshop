@@ -4,17 +4,16 @@ h1{
 }
 
 .button-1{
-  margin-left: 800px;
-  display: flex;
-  text-align: center;
+  position: relative;
+  margin-left: 15px;
+  display: inline-block;
   flex-direction: column;
-  align-items: center;
-  margin-top:60px;
-
+  align-content: center;
   padding: 6px 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   border-radius: 6px;
   border: none;
+
   color: #fff;
   background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
   background-origin: border-box;
@@ -28,3 +27,9 @@ h1{
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
   outline: 0;
 }
+.buttons {
+  padding-bottom: 10%;
+  text-align: center;
+}
+
+

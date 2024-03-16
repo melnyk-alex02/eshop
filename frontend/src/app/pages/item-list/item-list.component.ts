@@ -130,7 +130,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   deleteItem(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
-    dialogRef.afterClosed().subscribe({next: (res) => {
+    dialogRef.afterClosed().subscribe({
+      next: (res) => {
         switch (res.event) {
           case "confirm-option": {
             this.itemService.deleteItem(id)
@@ -228,7 +229,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.dataSource.data = data.content;
-
           this.totalElements = data.totalElements;
         },
         error: (error) => {
@@ -268,11 +268,13 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
             this.matPaginator.length = data.totalElements;
           },
-          complete: () => {
-            if(this.dataSource.data.length == 0){
-              this.snackBarService.error("There are no items by your search preferences");
-            }
+          error: (error) => {
+            this.snackBarService.error(error.message);
 
+            this.dataSource.data = [];
+            this.loading = false;
+          },
+          complete: () => {
             this.loading = false;
           }
         });

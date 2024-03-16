@@ -47,14 +47,19 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDetUserByUuid() {
+    public void testGetUserByUuid() {
         String userUuid = "uuid";
 
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setId(userUuid);
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUserUuid(userUuid);
+        UserDTO userDTO = new UserDTO(userUuid,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
 
         when(keycloakService.getUserByUserUuid(any(String.class))).thenReturn(userRepresentation);
         when(userMapper.toDto(any(UserRepresentation.class))).thenReturn(userDTO);
@@ -64,18 +69,17 @@ public class UserServiceTest {
         verify(keycloakService).getUserByUserUuid(any(String.class));
         verify(userMapper).toDto(any(UserRepresentation.class));
 
-        assertEquals(userDTO.getUserUuid(), result.getUserUuid());
+        assertEquals(userDTO.userId(), result.userId());
     }
 
     @Test
     public void testCreateUser() {
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
-        userRegisterDTO.setUsername("Test");
-        userRegisterDTO.setEmail("email");
-        userRegisterDTO.setPassword("superpass");
-        userRegisterDTO.setConfirmPassword("superpass");
-        userRegisterDTO.setFirstName("First Name");
-        userRegisterDTO.setLastName("Last name");
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO("Test",
+                "email",
+                "superpass",
+                "superpass",
+                "First Name",
+                "Last Name");
 
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setId("userUuid");
@@ -85,14 +89,13 @@ public class UserServiceTest {
         userRepresentation.setLastName("Last Name");
         userRepresentation.setRealmRoles(List.of(Role.USER));
 
-        UserDTO expectedUserDTO = new UserDTO();
-        expectedUserDTO.setUserUuid("userUuid");
-        expectedUserDTO.setUsername("Test");
-        expectedUserDTO.setEmail("email");
-        expectedUserDTO.setFirstName("First Name");
-        expectedUserDTO.setLastName("Last Name");
-        expectedUserDTO.setRegisterDate(LocalDateTime.now());
-        expectedUserDTO.setRoles(List.of(Role.USER));
+        UserDTO expectedUserDTO = new UserDTO("userUuid",
+                "email",
+                "Test",
+                "First Name",
+                "Last Name",
+                LocalDateTime.now(),
+                List.of(Role.USER));
 
         when(keycloakService.createUser(any(UserRegisterDTO.class))).thenReturn(userRepresentation);
         when(userMapper.toDto(any(UserRepresentation.class))).thenReturn(expectedUserDTO);
@@ -102,24 +105,23 @@ public class UserServiceTest {
         verify(keycloakService).createUser(any(UserRegisterDTO.class));
         verify(userMapper).toDto(any(UserRepresentation.class));
 
-        assertEquals(expectedUserDTO.getUserUuid(), result.getUserUuid());
-        assertEquals(expectedUserDTO.getUsername(), result.getUsername());
-        assertEquals(expectedUserDTO.getEmail(), result.getEmail());
-        assertEquals(expectedUserDTO.getFirstName(), result.getFirstName());
-        assertEquals(expectedUserDTO.getLastName(), result.getLastName());
-        assertEquals(expectedUserDTO.getRegisterDate(), result.getRegisterDate());
-        assertEquals(expectedUserDTO.getRoles(), result.getRoles());
+        assertEquals(expectedUserDTO.userId(), result.userId());
+        assertEquals(expectedUserDTO.username(), result.username());
+        assertEquals(expectedUserDTO.email(), result.email());
+        assertEquals(expectedUserDTO.firstName(), result.firstName());
+        assertEquals(expectedUserDTO.lastName(), result.lastName());
+        assertEquals(expectedUserDTO.registerDate(), result.registerDate());
+        assertEquals(expectedUserDTO.roles(), result.roles());
     }
 
     @Test
     public void testCreateUser_WhenPasswordsDoesNotMatch_ShouldThrowException() {
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
-        userRegisterDTO.setUsername("Test");
-        userRegisterDTO.setEmail("email");
-        userRegisterDTO.setPassword("superpass");
-        userRegisterDTO.setConfirmPassword("notsuperpass");
-        userRegisterDTO.setFirstName("First Name");
-        userRegisterDTO.setLastName("Last name");
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO("Test",
+                "email",
+                "superpass",
+                "notsuperpass",
+                "First Name",
+                "Last Name");
 
         when(keycloakService.createUser(userRegisterDTO)).thenThrow(InvalidDataException.class);
 

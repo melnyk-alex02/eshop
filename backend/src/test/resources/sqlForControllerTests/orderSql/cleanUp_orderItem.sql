@@ -1,0 +1,1 @@
+delete from `eshop-test`.order_item where order_number = 'orderNumber';

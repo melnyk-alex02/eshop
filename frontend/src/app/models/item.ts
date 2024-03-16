@@ -3,6 +3,8 @@ export interface Item {
   name: string;
   description: string;
   categoryId: number;
+  price: number;
   categoryName: string;
   imageSrc: string;
+  inCart: boolean;
 }

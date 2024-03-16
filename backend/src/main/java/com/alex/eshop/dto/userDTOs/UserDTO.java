@@ -3,68 +3,40 @@ package com.alex.eshop.dto.userDTOs;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class UserDTO {
-    private String userUuid;
-    private String email;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private LocalDateTime registerDate;
-    private List<String> roles;
-
-    public String getUserUuid() {
-        return userUuid;
+public record UserDTO(
+        String userId,
+        String email,
+        String username,
+        String firstName,
+        String lastName,
+        LocalDateTime registerDate,
+        List<String> roles
+) {
+    public UserDTO withUserId(String userId) {
+        return new UserDTO(userId, email, username, firstName, lastName, registerDate, roles);
     }
 
-    public void setUserUuid(String userUuid) {
-        this.userUuid = userUuid;
+    public UserDTO withEmail(String email) {
+        return new UserDTO(userId, email, username, firstName, lastName, registerDate, roles);
     }
 
-    public String getEmail() {
-        return email;
+    public UserDTO withUsername(String username) {
+        return new UserDTO(userId, email, username, firstName, lastName, registerDate, roles);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public UserDTO withFirstName(String firstName) {
+        return new UserDTO(userId, email, username, firstName, lastName, registerDate, roles);
     }
 
-    public String getUsername() {
-        return username;
+    public UserDTO withLastName(String lastName) {
+        return new UserDTO(userId, email, username, firstName, lastName, registerDate, roles);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public UserDTO withRegisterDate(LocalDateTime registerDate) {
+        return new UserDTO(userId, email, username, firstName, lastName, registerDate, roles);
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public LocalDateTime getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(LocalDateTime registerDate) {
-        this.registerDate = registerDate;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public UserDTO withRoles(List<String> roles) {
+        return new UserDTO(userId, email, username, firstName, lastName, registerDate, roles);
     }
 }
