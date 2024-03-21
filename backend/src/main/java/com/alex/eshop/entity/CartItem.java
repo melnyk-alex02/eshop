@@ -11,7 +11,7 @@ public class CartItem {
     @EmbeddedId
     private CartItemId cartItemId;
 
-    @Column(name = "user_id", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private String userId;
 
     @MapsId("itemId")
