@@ -39,7 +39,7 @@ public class OrderService {
 
 
     public OrderDTO createOrder(List<CartItemDTO> cartItemDTOList, String userId) {
-        Integer count = 0;
+        int count = 0;
         BigDecimal price = BigDecimal.ZERO;
         Order order = new Order();
         order.setNumber(generateOrderNumber());
@@ -47,11 +47,12 @@ public class OrderService {
         order.setCreatedDate(ZonedDateTime.now());
         order.setStatus(OrderStatus.NEW);
         order.setUserId(userId);
+        orderRepository.save(order);
 
         List<OrderItem> orderItemList = new ArrayList<>();
         for (CartItemDTO cartItemDTO : cartItemDTOList) {
             OrderItem orderItem = new OrderItem();
-            orderItem.setOrderItemId(new OrderItemId(order.getNumber(), cartItemDTO.itemId()));
+            orderItem.setOrderItemId(new OrderItemId(order.getId(), cartItemDTO.itemId()));
             orderItem.setOrder(order);
             orderItem.setItem(itemRepository.getReferenceById(cartItemDTO.itemId()));
 
@@ -69,7 +70,6 @@ public class OrderService {
         order.setCount(count);
         order.setPrice(price);
         order.setOrderItemList(orderItemList);
-
         orderRepository.save(order);
 
         return orderMapper.toDto(order);
@@ -82,13 +82,15 @@ public class OrderService {
             throw new DataNotFoundException("There is no order with number " + orderNumber + " for current logged user");
         }
 
-//    user    if (orderRepository.getReferenceByNumber(orderNumber).getStatus().equals(OrderStatus.EXPIRED)) {
+//    user    if (orderRepository.findByNumber(orderNumber).getStatus().equals(OrderStatus.EXPIRED)) {
 //            throw new DataNotFoundException("Order with number " + orderNumber + " is expired");
 //        }
 
-        logger.info(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber).toString());
+        Order order = orderRepository.findOrderByUserIdAndNumber(userId, orderNumber);
 
-        return orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
+        logger.info(order.toString());
+
+        return orderMapper.toDto(order);
     }
 
     public Page<OrderDTO> getAllOrdersByUserId(Pageable pageable) {

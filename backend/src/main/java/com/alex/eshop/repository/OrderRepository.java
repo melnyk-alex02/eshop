@@ -13,20 +13,20 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
+    @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     Order findOrderByUserIdAndNumber(String userId, String number);
 
     boolean existsByNumberAndUserId(String number, String userId);
 
-    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
-    Order getReferenceByNumber(String number);
+    @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
+    Order findByNumber(String number);
 
-    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
+    @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     Page<Order> findAllByUserId(String userId, Pageable pageable);
 
-    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
+    @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     Page<Order> findAll(Pageable pageable);
 
-    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
+    @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     List<Order> findByStatusAndCreatedDateBefore(OrderStatus status, ZonedDateTime createdDate);
 }

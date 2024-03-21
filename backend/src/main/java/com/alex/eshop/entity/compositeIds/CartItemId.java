@@ -1,23 +1,23 @@
 package com.alex.eshop.entity.compositeIds;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-@Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItemId implements Serializable {
+    @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "item_id", insertable = false, updatable = false)
+    @Column(name = "item_id")
     private Long itemId;
 
     @Override

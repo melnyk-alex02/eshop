@@ -2,7 +2,7 @@ package com.alex.eshop.entity;
 
 import com.alex.eshop.constants.OrderStatus;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import java.math.BigDecimal;
@@ -11,7 +11,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"orderItemList"})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

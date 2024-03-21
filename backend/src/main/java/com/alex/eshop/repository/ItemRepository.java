@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificationExecutor<Item> {
     Page<Item> findByCategoryId(Long categoryId, Pageable pageable);
 
-    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = "category")
+    @EntityGraph(attributePaths = "category")
     Page<Item> findAll(Pageable pageable);
 
     boolean existsByCategoryId(Long categoryId);

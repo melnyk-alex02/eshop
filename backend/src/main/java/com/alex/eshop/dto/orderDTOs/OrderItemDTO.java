@@ -1,11 +1,9 @@
 package com.alex.eshop.dto.orderDTOs;
 
-import com.alex.eshop.entity.compositeIds.OrderItemId;
-
 import java.math.BigDecimal;
 
 public record OrderItemDTO(
-        OrderItemId orderItemId,
+        Long orderId,
         String orderNumber,
         Long itemId,
         String itemName,

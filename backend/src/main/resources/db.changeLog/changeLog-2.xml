@@ -41,11 +41,11 @@
 
     <changeSet id="9" author="bestuser">
         <createTable tableName="order_item">
-            <column name="order_number" type="varchar(100)">
-                <constraints foreignKeyName="order_number" references="orders(number)"/>
+            <column name="order_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_order_items_order" references="orders(id)"/>
             </column>
             <column name="item_id" type="bigint">
-                <constraints foreignKeyName="fk_order_items_item" references="item(id)"/>
+                <constraints primaryKey="true" foreignKeyName="fk_order_items_item" references="item(id)"/>
             </column>
             <column name="count" type="int">
                 <constraints checkConstraint="count>=1"/>

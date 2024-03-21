@@ -9,7 +9,6 @@ import com.alex.eshop.entity.CartItem;
 import com.alex.eshop.entity.Category;
 import com.alex.eshop.entity.Item;
 import com.alex.eshop.entity.compositeIds.CartItemId;
-import com.alex.eshop.entity.compositeIds.OrderItemId;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.mapper.CartMapper;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -163,7 +161,7 @@ public class CartItemAndOrderCreationServiceTests {
                 2,
                 List.of(
                         new OrderItemDTO(
-                                new OrderItemId("number", 1L),
+                                1L,
                                 "number",
                                 1L,
                                 "Item 1",
@@ -171,7 +169,7 @@ public class CartItemAndOrderCreationServiceTests {
                                 1
                         ),
                         new OrderItemDTO(
-                                new OrderItemId("number", 2L),
+                                1L,
                                 "number",
                                 2L,
                                 "Item 2",
@@ -267,7 +265,6 @@ public class CartItemAndOrderCreationServiceTests {
         String userId = "userId";
 
         CartItemDTO cartItemDTO1 = new CartItemDTO(
-                new CartItemId(userId, 1L),
                 userId,
                 1L,
                 itemDTOList.get(0).name(),
@@ -275,7 +272,6 @@ public class CartItemAndOrderCreationServiceTests {
                 1);
 
         CartItemDTO cartItemDTO2 = new CartItemDTO(
-                new CartItemId(userId, 2L),
                 userId,
                 2L,
                 itemDTOList.get(1).name(),

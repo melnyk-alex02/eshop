@@ -2,19 +2,21 @@ package com.alex.eshop.entity;
 
 import com.alex.eshop.entity.compositeIds.CartItemId;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class CartItem {
     @EmbeddedId
     private CartItemId cartItemId;
 
-    @Column(insertable = false, updatable = false)
+    @Column(name = "user_id", insertable = false, updatable = false)
     private String userId;
 
+    @MapsId("itemId")
     @ManyToOne
-    @JoinColumn(insertable = false, updatable = false)
     private Item item;
+
     private Integer count;
 }
