@@ -7,9 +7,10 @@
     <changeSet author="bestuser" id="4">
         <createTable tableName="cart_item">
             <column name="user_id" type="varchar(255)">
+                <constraints primaryKey="true"/>
             </column>
             <column name="item_id" type="bigint">
-                <constraints foreignKeyName="item_id" references="item(id)"/>
+                <constraints primaryKey="true" foreignKeyName="item_id" references="item(id)"/>
             </column>
             <column name="count" type="int">
                 <constraints checkConstraint="count>=1"/>
