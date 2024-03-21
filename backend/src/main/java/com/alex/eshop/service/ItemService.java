@@ -10,6 +10,7 @@ import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
 import com.alex.eshop.utils.CsvHeaderChecker;
 import com.alex.eshop.utils.FormatChecker;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -32,14 +33,10 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
-
-    public ItemService(ItemRepository itemRepository, ItemMapper itemMapper) {
-        this.itemRepository = itemRepository;
-        this.itemMapper = itemMapper;
-    }
 
     public Page<ItemDTO> getAllItems(Pageable pageable) {
         return itemRepository.findAll(pageable).map(itemMapper::toDto);

@@ -3,7 +3,8 @@ package com.alex.eshop.restcontroller;
 import com.alex.eshop.constants.Role;
 import com.alex.eshop.dto.cartDTOs.CartItemDTO;
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
-import com.alex.eshop.service.CartAndOrderCreationService;
+import com.alex.eshop.service.CartItemService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,12 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/cart")
+@RequiredArgsConstructor
 public class CartController {
-    private final CartAndOrderCreationService cartService;
-
-    public CartController(CartAndOrderCreationService cartService) {
-        this.cartService = cartService;
-    }
+    private final CartItemService cartService;
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @PostMapping

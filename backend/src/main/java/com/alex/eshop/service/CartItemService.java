@@ -1,50 +1,30 @@
 package com.alex.eshop.service;
 
-import com.alex.eshop.constants.OrderStatus;
 import com.alex.eshop.dto.cartDTOs.CartItemDTO;
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
 import com.alex.eshop.entity.CartItem;
-import com.alex.eshop.entity.Order;
-import com.alex.eshop.entity.OrderItem;
 import com.alex.eshop.entity.compositeIds.CartItemId;
-import com.alex.eshop.entity.compositeIds.OrderItemId;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.mapper.CartMapper;
-import com.alex.eshop.mapper.OrderMapper;
 import com.alex.eshop.repository.CartItemRepository;
 import com.alex.eshop.repository.ItemRepository;
-import com.alex.eshop.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.alex.eshop.utils.OrderNumberGenerator.generateOrderNumber;
 
 @Service
 @Transactional
-public class CartAndOrderCreationService {
+@RequiredArgsConstructor
+public class CartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
-    private final OrderMapper orderMapper;
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
+
     private final ItemRepository itemRepository;
     private final CurrentUserService currentUserService;
-
-    public CartAndOrderCreationService(CartItemRepository cartItemRepository, CartMapper cartMapper,
-                                       OrderMapper orderMapper, OrderRepository orderRepository,
-                                       CurrentUserService currentUserService, ItemRepository itemRepository) {
-        this.cartItemRepository = cartItemRepository;
-        this.cartMapper = cartMapper;
-        this.orderMapper = orderMapper;
-        this.orderRepository = orderRepository;
-        this.currentUserService = currentUserService;
-        this.itemRepository = itemRepository;
-    }
 
     public List<CartItemDTO> getCartByCurrentUser() {
         String userId = currentUserService.getCurrentUserUuid();
@@ -79,9 +59,6 @@ public class CartAndOrderCreationService {
             throw new InvalidDataException("Count can't be less than 1, please check input data");
         }
         CartItem cartItem = cartItemRepository.findByCartItemId(new CartItemId(userId, itemId));
-
-        System.out.println(cartItem.getCartItemId().getUserId());
-
         cartItem.setCount(count);
 
         return cartMapper.toDto(cartItemRepository.save(cartItem));
@@ -96,47 +73,16 @@ public class CartAndOrderCreationService {
 
     public OrderDTO createOrderFromCart() {
         String userId = currentUserService.getCurrentUserUuid();
+
         if (!cartItemRepository.existsAllByUserId(userId)) {
             throw new DataNotFoundException("There is no cart for current logged user");
         }
 
-        Integer count = 0;
-        BigDecimal price = BigDecimal.ZERO;
-        Order order = new Order();
-        order.setNumber(generateOrderNumber());
-        order.setCreatedDate(ZonedDateTime.now());
-        order.setStatus(OrderStatus.NEW);
-        order.setUserId(userId);
-
-        List<CartItemDTO> cartItemDTOList = getCartByCurrentUser();
-
-        List<OrderItem> orderItemList = new ArrayList<>();
-        for (CartItemDTO cartItemDTO : cartItemDTOList) {
-            OrderItem orderItem = new OrderItem();
-
-            orderItem.setOrderItemId(new OrderItemId(order.getNumber(), cartItemDTO.itemId()));
-            orderItem.setOrder(order);
-            orderItem.setItem(itemRepository.getReferenceById(cartItemDTO.itemId()));
-            if (cartItemDTO.count() < 1) {
-                throw new InvalidDataException("Please check count of items in your cart");
-            }
-            orderItem.setCount(cartItemDTO.count());
-
-            orderItemList.add(orderItem);
-
-            price = price.add(cartItemDTO.itemPrice()).multiply(BigDecimal.valueOf(cartItemDTO.count()));
-            count += cartItemDTO.count();
-        }
-
-        order.setCount(count);
-        order.setPrice(price);
-        order.setOrderItemList(orderItemList);
-
-        orderRepository.save(order);
+        OrderDTO orderDTO = orderService.createOrder(getCartByCurrentUser(), userId);
 
         deleteCart();
 
-        return orderMapper.toDto(order);
+        return orderDTO;
     }
 
     public void deleteCart() {

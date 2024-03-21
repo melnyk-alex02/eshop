@@ -4,6 +4,7 @@ import com.alex.eshop.constants.Role;
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
 import com.alex.eshop.service.OrderService;
 import com.alex.eshop.wrapper.PageWrapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,12 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("order/{orderNumber}")

@@ -6,6 +6,7 @@ import com.alex.eshop.dto.categoryDTOs.CategoryDTO;
 import com.alex.eshop.dto.categoryDTOs.CategoryUpdateDTO;
 import com.alex.eshop.service.CategoryService;
 import com.alex.eshop.wrapper.PageWrapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,12 +17,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/categories")
