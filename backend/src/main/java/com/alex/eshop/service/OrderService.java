@@ -47,7 +47,6 @@ public class OrderService {
         order.setCreatedDate(ZonedDateTime.now());
         order.setStatus(OrderStatus.NEW);
         order.setUserId(userId);
-        orderRepository.save(order);
 
         List<OrderItem> orderItemList = new ArrayList<>();
         for (CartItemDTO cartItemDTO : cartItemDTOList) {
