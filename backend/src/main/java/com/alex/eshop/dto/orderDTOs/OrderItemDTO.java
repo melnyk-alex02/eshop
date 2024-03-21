@@ -12,27 +12,4 @@ public record OrderItemDTO(
         BigDecimal itemPrice,
         Integer count
 ) {
-    public OrderItemDTO withOrderItemId(OrderItemId orderItemId) {
-        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
-    }
-
-    public OrderItemDTO withOrderNumber(String orderNumber) {
-        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
-    }
-
-    public OrderItemDTO withItemId(Long itemId) {
-        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
-    }
-
-    public OrderItemDTO withItemName(String itemName) {
-        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
-    }
-
-    public OrderItemDTO withItemPrice(BigDecimal itemPrice) {
-        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
-    }
-
-    public OrderItemDTO withCount(Integer count) {
-        return new OrderItemDTO(orderItemId, orderNumber, itemId, itemName, itemPrice, count);
-    }
 }

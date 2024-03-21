@@ -12,27 +12,4 @@ public record CartItemDTO(
         BigDecimal itemPrice,
         Integer count
 ) {
-    public CartItemDTO withCartItemId(CartItemId cartItemId) {
-        return new CartItemDTO(cartItemId, userId, itemId, itemName, itemPrice, count);
-    }
-
-    public CartItemDTO withUserId(String userId) {
-        return new CartItemDTO(cartItemId, userId, itemId, itemName, itemPrice, count);
-    }
-
-    public CartItemDTO withItemId(Long itemId) {
-        return new CartItemDTO(cartItemId, userId, itemId, itemName, itemPrice, count);
-    }
-
-    public CartItemDTO withItemName(String itemName) {
-        return new CartItemDTO(cartItemId, userId, itemId, itemName, itemPrice, count);
-    }
-
-    public CartItemDTO withItemPrice(BigDecimal itemPrice) {
-        return new CartItemDTO(cartItemId, userId, itemId, itemName, itemPrice, count);
-    }
-
-    public CartItemDTO withCount(Integer count) {
-        return new CartItemDTO(cartItemId, userId, itemId, itemName, itemPrice, count);
-    }
 }

@@ -4,22 +4,18 @@ import com.alex.eshop.dto.userDTOs.UserDTO;
 import com.alex.eshop.dto.userDTOs.UserRegisterDTO;
 import com.alex.eshop.keycloak.KeycloakService;
 import com.alex.eshop.mapper.UserMapper;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
-
     private final KeycloakService keycloakService;
     private final UserMapper userMapper;
-
-    public UserService(KeycloakService keycloakService, UserMapper userMapper) {
-        this.keycloakService = keycloakService;
-        this.userMapper = userMapper;
-    }
 
     public String getAccessToken() {
         AccessTokenResponse accessTokenResponse = keycloakService.getToken();

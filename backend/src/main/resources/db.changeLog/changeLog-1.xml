@@ -30,12 +30,18 @@
     </changeSet>
     <changeSet author="bestuser" id="2">
         <sql>insert into category (name, description)
-             values ('Computers and Laptops', 'This category includes a wide range of desktop computers, laptops, and all-in-one PCs from popular brands such as Dell, HP, Lenovo, and Asus.'),
-                    ('Components and Peripherals', 'This category consists of computer components such as motherboards, CPUs, graphics cards, RAM, and storage drives. It also includes peripherals like keyboards, mice, webcams, and printers.'),
-                    ('Networking', 'This category includes routers, switches, modems, and other networking devices from leading brands such as Cisco, TP-Link, and Netgear.'),
-                    ('Software', 'This category includes a range of software products such as operating systems, office suites, antivirus programs, and other productivity software.'),
-                    ('Gaming', 'This category is dedicated to gaming equipment such as gaming laptops, desktops, monitors, keyboards, mice, and headsets from popular brands such as Razer, Alienware, and Logitech.'),
-                    ('Smart Home', 'This category includes smart home devices such as smart locks, thermostats, security cameras, and lighting solutions from brands such as Nest, Philips Hue, and Ring.');
+             values ('Computers and Laptops',
+                     'This category includes a wide range of desktop computers, laptops, and all-in-one PCs from popular brands such as Dell, HP, Lenovo, and Asus.'),
+                    ('Components and Peripherals',
+                     'This category consists of computer components such as motherboards, CPUs, graphics cards, RAM, and storage drives. It also includes peripherals like keyboards, mice, webcams, and printers.'),
+                    ('Networking',
+                     'This category includes routers, switches, modems, and other networking devices from leading brands such as Cisco, TP-Link, and Netgear.'),
+                    ('Software',
+                     'This category includes a range of software products such as operating systems, office suites, antivirus programs, and other productivity software.'),
+                    ('Gaming',
+                     'This category is dedicated to gaming equipment such as gaming laptops, desktops, monitors, keyboards, mice, and headsets from popular brands such as Razer, Alienware, and Logitech.'),
+                    ('Smart Home',
+                     'This category includes smart home devices such as smart locks, thermostats, security cameras, and lighting solutions from brands such as Nest, Philips Hue, and Ring.');
 
         </sql>
     </changeSet>
@@ -58,7 +64,7 @@
                     ('Logitech G Pro X Gaming Headset', 'This premium gaming headset features advanced audio drivers, customizable EQ, and comfortable memory foam ear pads.', (SELECT id FROM category where name ='Gaming'), 99.99, ''),
                     ('Nest Hello Video Doorbell', 'This smart doorbell features HD video, two-way audio, and facial recognition to keep your home secure.', (SELECT id FROM category where name ='Smart Home'), 229.99, ''),
                     ('Philips Hue Starter Kit', 'This smart lighting kit includes three color-changing bulbs and a hub, allowing you to control your lights with voice commands or a smartphone app.', (SELECT id FROM category where name ='Smart Home'), 129.99, ''),
-                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), 199.99, 'https://imgur.com/V3mJOUn');
+                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), 199.99, '');
         </sql>
     </changeSet>
 </databaseChangeLog>

@@ -18,8 +18,11 @@
     </changeSet>
     <changeSet id="6" author="bestuser">
         <createTable tableName="orders">
-            <column name="number" type="VARCHAR(100)">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
+            </column>
+            <column name="number" type="VARCHAR(100)">
+                <constraints unique="true"/>
             </column>
             <column name="count" type="INT">
                 <constraints checkConstraint="count >= 1"/>
@@ -35,7 +38,8 @@
         <sql>ALTER TABLE orders
             ADD COLUMN status ENUM('NEW', 'DONE', 'CANCELLED', 'EXPIRED') NOT NULL</sql>
     </changeSet>
-    <changeSet id="8" author="bestuser">
+
+    <changeSet id="9" author="bestuser">
         <createTable tableName="order_item">
             <column name="order_number" type="varchar(100)">
                 <constraints foreignKeyName="order_number" references="orders(number)"/>

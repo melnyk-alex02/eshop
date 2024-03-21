@@ -51,7 +51,7 @@ public class OrderServiceTests {
 
         when(currentUserService.getCurrentUserUuid()).thenReturn("userId");
         when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.number(), "userId")).thenReturn(true);
-        when(orderRepository.getReferenceById("number")).thenReturn(order);
+        when(orderRepository.getReferenceByNumber("number")).thenReturn(order);
         when(orderRepository.findOrderByUserIdAndNumber("userId", order.getNumber())).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(expectedOrderDTO);
 
@@ -59,7 +59,7 @@ public class OrderServiceTests {
 
         verify(currentUserService).getCurrentUserUuid();
         verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.number(), "userId");
-        verify(orderRepository).getReferenceById("number");
+        verify(orderRepository).getReferenceByNumber("number");
         verify(orderRepository).findOrderByUserIdAndNumber("userId", order.getNumber());
         verify(orderMapper).toDto(order);
 
@@ -125,8 +125,29 @@ public class OrderServiceTests {
 
         String userId = "userId";
 
-        OrderDTO expectedOrderDTO = createOrderDTOList().get(0);
-        expectedOrderDTO.withStatus(OrderStatus.CANCELLED);
+        OrderItemDTO orderItemDTO1 = new OrderItemDTO(new OrderItemId("number", 1L),
+                "number",
+                1L,
+                "Item 1",
+                BigDecimal.valueOf(100.99),
+                1);
+
+        OrderItemDTO orderItemDTO2 = new OrderItemDTO(new OrderItemId("number", 2L), "number",
+                2L,
+                "Item 2",
+                BigDecimal.valueOf(99.00),
+                1);
+
+        OrderDTO expectedOrderDTO = new OrderDTO(1L,
+                "number",
+                OrderStatus.CANCELLED,
+                ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
+                BigDecimal.valueOf(199),
+                2,
+                List.of(orderItemDTO1, orderItemDTO2),
+                "userId",
+                null
+        );
 
         when(currentUserService.getCurrentUserUuid()).thenReturn(userId);
         when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.number(), userId)).thenReturn(true);
@@ -148,8 +169,29 @@ public class OrderServiceTests {
         Order order = createOrderList().get(0);
         OrderDTO orderDTO = createOrderDTOList().get(0);
 
-        OrderDTO expectedOrderDTO = createOrderDTOList().get(0);
-        expectedOrderDTO.withStatus(OrderStatus.DONE);
+        OrderItemDTO orderItemDTO1 = new OrderItemDTO(new OrderItemId("number", 1L),
+                "number",
+                1L,
+                "Item 1",
+                BigDecimal.valueOf(100.99),
+                1);
+
+        OrderItemDTO orderItemDTO2 = new OrderItemDTO(new OrderItemId("number", 2L), "number",
+                2L,
+                "Item 2",
+                BigDecimal.valueOf(99.00),
+                1);
+
+        OrderDTO expectedOrderDTO = new OrderDTO(1L,
+                "number",
+                OrderStatus.DONE,
+                ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
+                BigDecimal.valueOf(199),
+                2,
+                List.of(orderItemDTO1, orderItemDTO2),
+                "userId",
+                null
+        );
 
         when(currentUserService.getCurrentUserUuid()).thenReturn("userId");
         when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.number(), "userId")).thenReturn(true);
@@ -331,7 +373,8 @@ public class OrderServiceTests {
                 BigDecimal.valueOf(99.00),
                 1);
 
-        OrderDTO orderDTO1 = new OrderDTO("number",
+        OrderDTO orderDTO1 = new OrderDTO(1L,
+                "number",
                 OrderStatus.NEW,
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
@@ -341,10 +384,29 @@ public class OrderServiceTests {
                 null
         );
 
-        OrderDTO orderDTO2 = orderDTO1
-                .withNumber("number1")
-                .withOrderItemDTOList(List.of(orderItemDTO1.withOrderItemId(new OrderItemId("number1", 1L)),
-                        orderItemDTO2.withOrderItemId(new OrderItemId("number1", 2L))));
+        OrderItemDTO orderItemDTO3 = new OrderItemDTO(new OrderItemId("number1", 1L),
+                "number1",
+                1L,
+                "Item 1",
+                BigDecimal.valueOf(100.99),
+                1);
+
+        OrderItemDTO orderItemDTO4 = new OrderItemDTO(new OrderItemId("number1", 2L), "number1",
+                2L,
+                "Item 2",
+                BigDecimal.valueOf(99.00),
+                1);
+
+        OrderDTO orderDTO2 = new OrderDTO(2L,
+                "number1",
+                OrderStatus.NEW,
+                ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
+                BigDecimal.valueOf(199),
+                2,
+                List.of(orderItemDTO3, orderItemDTO4),
+                "userId",
+                null
+        );
 
         return List.of(orderDTO1, orderDTO2);
     }

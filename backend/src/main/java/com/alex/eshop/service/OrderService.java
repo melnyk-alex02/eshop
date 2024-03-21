@@ -1,32 +1,78 @@
 package com.alex.eshop.service;
 
 import com.alex.eshop.constants.OrderStatus;
+import com.alex.eshop.dto.cartDTOs.CartItemDTO;
 import com.alex.eshop.dto.orderDTOs.OrderDTO;
 import com.alex.eshop.entity.Order;
+import com.alex.eshop.entity.OrderItem;
+import com.alex.eshop.entity.compositeIds.OrderItemId;
 import com.alex.eshop.exception.DataNotFoundException;
+import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.mapper.OrderMapper;
+import com.alex.eshop.repository.ItemRepository;
 import com.alex.eshop.repository.OrderRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.alex.eshop.utils.OrderNumberGenerator.generateOrderNumber;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final CurrentUserService currentUserService;
+    private final ItemRepository itemRepository;
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
-    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper,
-                        CurrentUserService currentUserService) {
-        this.orderRepository = orderRepository;
-        this.orderMapper = orderMapper;
-        this.currentUserService = currentUserService;
+
+    public OrderDTO createOrder(List<CartItemDTO> cartItemDTOList, String userId) {
+        Integer count = 0;
+        BigDecimal price = BigDecimal.ZERO;
+        Order order = new Order();
+        order.setNumber(generateOrderNumber());
+        order.setUserId(userId);
+        order.setCreatedDate(ZonedDateTime.now());
+        order.setStatus(OrderStatus.NEW);
+        order.setUserId(userId);
+
+        List<OrderItem> orderItemList = new ArrayList<>();
+        for (CartItemDTO cartItemDTO : cartItemDTOList) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrderItemId(new OrderItemId(order.getNumber(), cartItemDTO.itemId()));
+            orderItem.setOrder(order);
+            orderItem.setItem(itemRepository.getReferenceById(cartItemDTO.itemId()));
+
+            if (cartItemDTO.count() < 1) {
+                throw new InvalidDataException("Please check count of items in your cart");
+            }
+            orderItem.setCount(cartItemDTO.count());
+
+            orderItemList.add(orderItem);
+
+            price = price.add(cartItemDTO.itemPrice()).multiply(BigDecimal.valueOf(cartItemDTO.count()));
+            count += cartItemDTO.count();
+        }
+
+        order.setCount(count);
+        order.setPrice(price);
+        order.setOrderItemList(orderItemList);
+
+        orderRepository.save(order);
+
+        return orderMapper.toDto(order);
     }
 
     public OrderDTO getOrderByUserIdAndOrderNumber(String orderNumber) {
@@ -36,9 +82,12 @@ public class OrderService {
             throw new DataNotFoundException("There is no order with number " + orderNumber + " for current logged user");
         }
 
-        if (orderRepository.getReferenceById(orderNumber).getStatus().equals(OrderStatus.EXPIRED)) {
-            throw new DataNotFoundException("Order with number " + orderNumber + " is expired");
-        }
+//    user    if (orderRepository.getReferenceByNumber(orderNumber).getStatus().equals(OrderStatus.EXPIRED)) {
+//            throw new DataNotFoundException("Order with number " + orderNumber + " is expired");
+//        }
+
+        logger.info(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber).toString());
+
         return orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
     }
 
@@ -55,9 +104,11 @@ public class OrderService {
             throw new DataNotFoundException("There is no order with number " + orderNumber + " for current logged user");
         }
 
-        OrderDTO orderDTO = orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
+        Order order = orderRepository.findOrderByUserIdAndNumber(userId, orderNumber);
 
-        orderRepository.save(orderMapper.toEntity(orderDTO.withStatus(OrderStatus.CANCELLED)));
+        order.setStatus(OrderStatus.CANCELLED);
+
+        orderRepository.save(order);
     }
 
     public void confirmOrder(String orderNumber) {
@@ -67,11 +118,12 @@ public class OrderService {
             throw new DataNotFoundException("There is no order for current logged user with number " + orderNumber);
         }
 
-        OrderDTO orderDTO = orderMapper.toDto(orderRepository.findOrderByUserIdAndNumber(userId, orderNumber));
+        Order order = orderRepository.findOrderByUserIdAndNumber(userId, orderNumber);
 
-        orderRepository.save(orderMapper.toEntity(orderDTO
-                .withStatus(OrderStatus.DONE)
-                .withPurchasedDate(ZonedDateTime.now())));
+        order.setStatus(OrderStatus.DONE);
+        order.setPurchasedDate(ZonedDateTime.now());
+
+        orderRepository.save(order);
     }
 
     public Page<OrderDTO> getAllOrders(Pageable pageable) {

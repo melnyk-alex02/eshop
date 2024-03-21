@@ -1,20 +1,18 @@
 package com.alex.eshop.keycloak;
 
 import com.alex.eshop.webconfig.ApplicationProperties;
+import lombok.RequiredArgsConstructor;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class KeycloakClientFactory {
 
     private final ApplicationProperties applicationProperties;
     private Keycloak keycloakInstance;
-
-    public KeycloakClientFactory(ApplicationProperties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public synchronized Keycloak getInstance() {
         if (keycloakInstance == null || keycloakInstance.isClosed()) {

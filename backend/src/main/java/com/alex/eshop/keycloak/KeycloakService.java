@@ -5,6 +5,7 @@ import com.alex.eshop.dto.userDTOs.UserRegisterDTO;
 import com.alex.eshop.exception.ConflictException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.webconfig.ApplicationProperties;
+import lombok.RequiredArgsConstructor;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -28,15 +29,11 @@ import java.util.Objects;
 import static com.alex.eshop.keycloak.CredentialsUtils.createPasswordCredentials;
 
 @Component
+@RequiredArgsConstructor
 public class KeycloakService {
     private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
     private final ApplicationProperties applicationProperties;
     private final KeycloakClientFactory keycloakClientFactory;
-
-    public KeycloakService(ApplicationProperties applicationProperties, KeycloakClientFactory keycloakClientFactory) {
-        this.applicationProperties = applicationProperties;
-        this.keycloakClientFactory = keycloakClientFactory;
-    }
 
     public AccessTokenResponse getToken() {
         Configuration authzConf = new Configuration(this.applicationProperties.getKeycloak().getBaseUrl(),

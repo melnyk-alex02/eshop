@@ -12,14 +12,14 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
-
-public interface OrderRepository extends JpaRepository<Order, String> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
     Order findOrderByUserIdAndNumber(String userId, String number);
 
     boolean existsByNumberAndUserId(String number, String userId);
 
-    boolean existsAllByUserId(String userId);
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
+    Order getReferenceByNumber(String number);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"orderItemList", "orderItemList.item"})
     Page<Order> findAllByUserId(String userId, Pageable pageable);
