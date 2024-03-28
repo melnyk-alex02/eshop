@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet author="bestuser" id="202403281452-1">
+    <changeSet id="202309041933-1" author="bestuser">
         <createTable tableName="category">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -28,7 +28,8 @@
             <column name="image_src" type="varchar(500)"/>
         </createTable>
     </changeSet>
-    <changeSet author="bestuser" id="202403281453-2">
+
+    <changeSet id="202309041933-2" author="bestuser">
         <sql>insert into category (name, description)
              values ('Computers and Laptops',
                      'This category includes a wide range of desktop computers, laptops, and all-in-one PCs from popular brands such as Dell, HP, Lenovo, and Asus.'),
@@ -45,7 +46,8 @@
 
         </sql>
     </changeSet>
-    <changeSet author="bestuser" id="202403281453-3">
+
+    <changeSet id="202309041933-3" author="bestuser">
         <sql>insert into item (name, description, category_id, price, image_src)
              values ('Dell XPS 13 Laptop', 'This ultra-portable laptop features a 13.3-inch display, 11th Gen Intel Core processors, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), 799,  'https://i.imgur.com/7mrT6pB.jpg'),
                     ('HP Pavilion Desktop', 'This powerful desktop PC features a 10th Gen Intel Core i7 processor, NVIDIA GeForce GTX graphics, and a 512GB SSD.', (SELECT id FROM category WHERE name = 'Computers and Laptops'),399, 'https://i.imgur.com/cifV27h.png'),
@@ -67,4 +69,5 @@
                     ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), 199.99, 'https://i.imgur.com/iTZ3HI9.jpg');
         </sql>
     </changeSet>
+
 </databaseChangeLog>
