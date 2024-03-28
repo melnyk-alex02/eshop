@@ -5,7 +5,7 @@
     <div class="mat-toolbar-buttons">
       <button mat-button routerLink="all-items" routerLinkActive="active">All items</button>
       <button mat-button routerLink="my-orders" routerLinkActive="active">My orders</button>
-      <button mat-button [matBadge]="getCountOfItemsInCart()" matBadgePosition="after" matBadgeColor="accent"
+      <button mat-button [matBadge]="getCountOfItemsInCart()" [matBadgeHidden]="getCountOfItemsInCart() == 0" matBadgePosition="after" matBadgeColor="accent"
               routerLink="my-cart"
               routerLinkActive="active">My Cart
       </button>
@@ -22,7 +22,7 @@
           <div class="buttons">
             <button mat-button routerLink="all-items" routerLinkActive="active">All items</button>
             <button mat-button routerLink="my-orders" routerLinkActive="active">My orders</button>
-            <button mat-button [matBadge]="getCountOfItemsInCart()" matBadgePosition="after" matBadgeColor="accent"
+            <button mat-button [matBadge]="getCountOfItemsInCart()" [matBadgeHidden]="getCountOfItemsInCart() == 0" matBadgePosition="after" matBadgeColor="accent"
                     routerLink="my-cart"
                     routerLinkActive="active">My Cart
             </button>
