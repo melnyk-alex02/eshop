@@ -48,7 +48,7 @@
     </mat-table>
   </div>
 
-  <div *ngIf="JSON.stringify(this.dataSource.data) === JSON.stringify([])">
+  <div *ngIf="this.dataSource.data.length === 0">
     <br>
     <h1 style="color: black; text-align: center">Cart is empty :(</h1>
   </div>

@@ -77,6 +77,4 @@ export class MyOrdersComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  protected readonly JSON = JSON;
 }

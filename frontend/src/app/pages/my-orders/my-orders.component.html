@@ -82,8 +82,8 @@
   </div>
 
   <br>
-  <div *ngIf="JSON.stringify(this.dataSource.data) === JSON.stringify([])">
-    <h1 style="color: black; text-align: center">Orders was not found :(</h1>
+  <div *ngIf="this.dataSource.data.length === 0">
+    <h1 style="color: black; text-align: center">Orders not found :(</h1>
   </div>
 
 </ng-container>

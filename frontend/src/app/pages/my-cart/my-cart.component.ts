@@ -6,7 +6,6 @@ import { CartBackendService } from "../../services/cart-backend.service";
 import { SnackBarService } from "../../services/snack-bar.service";
 import { Order } from "../../models/order";
 import { Router } from "@angular/router";
-import { OrderBackendService } from "../../services/order-backend.service";
 
 @Component({
   selector: 'app-my-cart',
@@ -24,11 +23,9 @@ export class MyCartComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ["itemName", "itemPrice", "count", "actions"];
 
   @ViewChild(MatTable) table: any;
-  protected readonly JSON = JSON;
   private unsubscribe: Subject<void> = new Subject();
 
   constructor(private cartService: CartBackendService,
-              private orderService: OrderBackendService,
               private snackBarService: SnackBarService,
               private readonly router: Router) {
   }

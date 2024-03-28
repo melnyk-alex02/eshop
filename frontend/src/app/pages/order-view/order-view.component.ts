@@ -6,7 +6,6 @@ import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { OrderItem } from "../../models/orderItem";
 import { SnackBarService } from "../../services/snack-bar.service";
-import { KeycloakService } from "keycloak-angular";
 
 @Component({
   selector: 'app-my-order-page',
@@ -26,7 +25,6 @@ export class OrderViewComponent implements OnInit, OnDestroy {
 
   constructor(private orderService: OrderBackendService,
               private snackBarService: SnackBarService,
-              private keycloakService: KeycloakService,
               private route: ActivatedRoute,
               private router: Router) {
   }
