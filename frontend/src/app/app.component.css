@@ -18,6 +18,10 @@ mat-toolbar {
   display: none;
 }
 
+.buttons {
+  display: none;
+}
+
 .mat-toolbar-buttons {
   display: flex;
   flex-direction: row;
@@ -31,6 +35,16 @@ mat-toolbar {
 
   .mat-menu {
     display: block;
+  }
+
+  .matMenu {
+    width: 200px;
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  .container {
+    width: 200px;
   }
 
   .buttons {

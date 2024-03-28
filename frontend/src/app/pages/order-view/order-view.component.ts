@@ -6,13 +6,14 @@ import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { OrderItem } from "../../models/orderItem";
 import { SnackBarService } from "../../services/snack-bar.service";
+import { KeycloakService } from "keycloak-angular";
 
 @Component({
   selector: 'app-my-order-page',
-  templateUrl: './my-order-page.component.html',
-  styleUrls: ['./my-order-page.component.css']
+  templateUrl: './order-view.component.html',
+  styleUrls: ['./order-view.component.css']
 })
-export class MyOrderPageComponent implements OnInit, OnDestroy {
+export class OrderViewComponent implements OnInit, OnDestroy {
   order: Order;
 
   loading: boolean;
@@ -24,7 +25,8 @@ export class MyOrderPageComponent implements OnInit, OnDestroy {
   private unsubscribe: Subject<void> = new Subject();
 
   constructor(private orderService: OrderBackendService,
-              private snackBarServe: SnackBarService,
+              private snackBarService: SnackBarService,
+              private keycloakService: KeycloakService,
               private route: ActivatedRoute,
               private router: Router) {
   }
@@ -45,15 +47,15 @@ export class MyOrderPageComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe),
         switchMap((params: ParamMap) => {
           const id = params.get('orderNumber');
-          return this.orderService.getOrder(String(id));
+          return this.orderService.getOrderForCurrentUser(String(id));
         })
       ).subscribe({
       next: (data) => {
         this.dataSource.data = data.orderItemDTOList;
         this.order = data;
       },
-      error: () => {
-
+      error: (error) => {
+        this.snackBarService.error(`${error.message}`)
       },
       complete: () => {
         this.loading = false;
@@ -68,10 +70,10 @@ export class MyOrderPageComponent implements OnInit, OnDestroy {
     )
       .subscribe({
         error: (error) => {
-          this.snackBarServe.error(`${error.message}`)
+          this.snackBarService.error(`${error.message}`)
         },
         complete: () => {
-          this.snackBarServe.success("Your order was successfully confirmed!")
+          this.snackBarService.success("Your order was successfully confirmed!")
           this.router.navigate(["my-orders"])
         }
       });

@@ -3,7 +3,6 @@ import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { Order } from "../../models/order";
 import { Subject, takeUntil } from "rxjs";
 import { OrderBackendService } from "../../services/order-backend.service";
-import { ActivatedRoute } from "@angular/router";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
 import { SnackBarService } from "../../services/snack-bar.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -16,12 +15,11 @@ import { MatDialog } from "@angular/material/dialog";
 export class MyOrdersComponent implements OnInit, OnDestroy {
   loading: boolean;
   dataSource = new MatTableDataSource<Order>();
-  displayedColumns: string[] = ['number', 'status', 'createdAt', 'price', 'actions']
+  displayedColumns: string[] = ['number', 'status', 'createdAt', 'purchasedAt', 'price', 'actions']
   @ViewChild(MatTable) table: any;
   private unsubscribe: Subject<void> = new Subject();
 
   constructor(private orderService: OrderBackendService,
-              private route: ActivatedRoute,
               private snackBarService: SnackBarService,
               public dialog: MatDialog) {
   }
@@ -42,11 +40,6 @@ export class MyOrdersComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (data) => {
         this.dataSource.data = data.content;
-        console.log(data);
-      }, error: (error) => {
-        this.loading = false;
-        this.dataSource.data = [];
-        this.snackBarService.error("There is no order for current user :(");
       },
       complete: () => {
         this.loading = false;
@@ -84,4 +77,6 @@ export class MyOrdersComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  protected readonly JSON = JSON;
 }

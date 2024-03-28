@@ -4,7 +4,7 @@ import { State } from "../../models/state";
 export const initialAllItemsState: State<Item> = {
   pagination: {
     pageIndex: 0,
-    pageSize: 15,
+    pageSize: 12,
   },
 
   sorting: {
@@ -12,5 +12,5 @@ export const initialAllItemsState: State<Item> = {
     sortDirection: 'desc'
   },
 
-  filtering : {}
+  filtering: {}
 };

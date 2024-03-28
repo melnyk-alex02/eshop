@@ -21,7 +21,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
   totalElements: number;
 
-  displayedColumns: string[] = ["number", "status", "createdDate", "count", "price", "purchasedDate"];
+  displayedColumns: string[] = ["number", "status", "createdDate", "price", "items", "purchasedDate"];
 
   private unsubscribe: Subject<void> = new Subject();
 

@@ -1,0 +1,53 @@
+<ng-container *ngIf="!this.order">
+  <div class="spinner">
+    <mat-progress-spinner
+      class="example-margin"
+      color="primary"
+      mode="indeterminate"
+    >
+    </mat-progress-spinner>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="this.order">
+  <br>
+  <div class="header">
+    <h1 style="color: black">Order: {{ order.number }}</h1>
+  </div>
+  <div class="body">
+    <h3>Created date: {{ order.createdDate }}</h3>
+    <h3 *ngIf="order.purchasedDate!= null">Purchased date: {{ order.purchasedDate }}</h3>
+    <h3>Status: {{ order.status }}</h3>
+  </div>
+
+  <div>
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z3">
+      <ng-container matColumnDef="itemName">
+        <mat-header-cell *matHeaderCellDef> Item Name</mat-header-cell>
+        <mat-cell *matCellDef="let orderItem" data-label="item name"> {{ orderItem.itemName }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="itemPrice">
+        <mat-header-cell *matHeaderCellDef>Item Price</mat-header-cell>
+        <mat-cell *matCellDef="let orderItem" data-label="item price"> {{ orderItem.itemPrice }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="itemCount">
+        <mat-header-cell *matHeaderCellDef> Count</mat-header-cell>
+        <mat-cell *matCellDef="let orderItem" data-label="count">{{ orderItem.count }}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let columns; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+  <br>
+  <div class="after-table">
+    <h3>Total price: {{ order.price }}</h3>
+
+    <button class="button-1" *ngIf="order.status=='NEW'" (click)="this.confirmOrder()" [disabled]="!isOrderStatusNew()">
+      Buy
+    </button>
+  </div>
+  <br>
+</ng-container>

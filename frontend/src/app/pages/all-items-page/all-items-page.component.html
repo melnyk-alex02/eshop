@@ -1,33 +1,35 @@
 <div class="title">
-<h1>All items</h1>
+  <h1>All items</h1>
 </div>
 
-<div class="grid">
-  <mat-card appearance="outlined" *ngFor="let item of items">
-    <mat-card-header>
-      <mat-card-title><p class="mat-line-clamp">{{item.name}}</p></mat-card-title>
-    </mat-card-header>
-    <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item">
-    <mat-card-content>
-      <p class="mat-line-clamp">{{item.description}}</p>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button routerLink="{{item.id}}/view" routerLinkActive="active">View</button>
-      <button mat-button (click)="isItemInCart(item) ? updateCartItems(item, true) : addItemToCart(item)">
-        {{ isItemInCart(item) ? 'In Cart' : 'Add to Cart' }}
-      </button>    </mat-card-actions>
-  </mat-card>
-</div>
-
-
-<div class="paginator">
+<div class="container">
+  <div class="grid">
+    <mat-card appearance="outlined" *ngFor="let item of items">
+      <mat-card-header>
+        <mat-card-title><p class="mat-line-clamp">{{ item.name }}</p></mat-card-title>
+      </mat-card-header>
+      <img mat-card-image src="{{item.imageSrc}}" alt="Photo of an item">
+      <mat-card-content>
+        <p class="mat-line-clamp">{{ item.description }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button routerLink="{{item.id}}/view" routerLinkActive="active">View</button>
+        <button mat-button (click)="isItemInCart(item) ? updateCartItems(item, true) : addItemToCart(item)">
+          {{ isItemInCart(item) ? 'In Cart' : 'Add to Cart' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <br>
   <mat-paginator
     class="paginator"
     [length]="this.totalElements"
     [pageIndex]="currentPage"
     [pageSize]="currentSize"
-    [pageSizeOptions]="[15, 25, 100]"
+    [pageSizeOptions]="[12, 24, 48]"
     (page)="pageChanged($event)"
     aria-label="Select page">
   </mat-paginator>
 </div>
+
+<br><br>

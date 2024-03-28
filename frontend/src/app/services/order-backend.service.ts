@@ -13,7 +13,7 @@ export class OrderBackendService {
   constructor(private http: HttpClient) {
   }
 
-  public getOrder(orderNumber: string): Observable<Order> {
+  public getOrderForCurrentUser(orderNumber: string): Observable<Order> {
     return this.http.get<Order>(`${SERVER_API_URL}/order/` + orderNumber).pipe(
       catchError(this.handleError)
     )

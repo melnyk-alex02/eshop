@@ -14,9 +14,8 @@ import { Role } from "./models/role";
 import { AccessDeniedPageComponent } from "./pages/access-denied-page/access-denied-page.component";
 import { AllItemsPageComponent } from "./pages/all-items-page/all-items-page.component";
 import { MyCartComponent } from "./pages/my-cart/my-cart.component";
-import { MyOrderPageComponent } from "./pages/my-order-page/my-order-page.component";
+import { OrderViewComponent } from "./pages/order-view/order-view.component";
 import { MyOrdersComponent } from "./pages/my-orders/my-orders.component";
-import { FirstPageComponent } from "./pages/first-page/first-page.component";
 import { OrdersListComponent } from "./pages/orders-list/orders-list.component";
 import { NotFoundComponent } from "./pages/not-found/not-found.component";
 
@@ -46,19 +45,20 @@ const routes: Routes = [
   {path: 'admin/items/:id/edit', component: ItemEditComponent, data: {roles: [Role.Admin]}, canActivate: [AuthGuard]},
   {path: 'admin/items/:id/view', component: ItemViewComponent, data: {roles: [Role.Admin]}, canActivate: [AuthGuard]},
   {path: 'admin/orders', component: OrdersListComponent, data: {roles: [Role.Admin]}, canActivate: [AuthGuard]},
+  {
+    path: 'admin/orders/:orderNumber/view',
+    component: OrderViewComponent,
+    data: {roles: [Role.Admin]},
+    canActivate: [AuthGuard]
+  },
   {path: 'access-denied', component: AccessDeniedPageComponent},
-  {path: '', component: FirstPageComponent, data: {roles: [Role.User]}, canActivate: [AuthGuard]},
   {path: 'all-items', component: AllItemsPageComponent, data: {roles: [Role.User]}, canActivate: [AuthGuard]},
   {path: 'all-items/:id/view', component: ItemViewComponent, data: {roles: [Role.User]}, canActivate: [AuthGuard]},
   {path: 'my-cart', component: MyCartComponent, canActivate: [AuthGuard], data: {roles: [Role.User]}},
-  {
-    path: 'my-order/:orderNumber',
-    component: MyOrderPageComponent,
-    canActivate: [AuthGuard],
-    data: {roles: [Role.User]}
-  },
+  {path: 'my-order/:orderNumber', component: OrderViewComponent, canActivate: [AuthGuard], data: {roles: [Role.User]}},
   {path: 'my-orders', component: MyOrdersComponent, canActivate: [AuthGuard], data: {roles: [Role.User]}},
   {path: 'not-found', component: NotFoundComponent},
+  {path: '', redirectTo: "/all-items", pathMatch: 'full'},
   {path: '**', redirectTo: "/not-found"}
 ];
 

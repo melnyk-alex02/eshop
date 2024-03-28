@@ -15,73 +15,76 @@
     <h1 style="color: black">Your orders</h1>
   </div>
   <div>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" class="example-container mat-elevation-z8">
 
       <ng-container matColumnDef="number">
-        <th mat-header-cell *matHeaderCellDef> Number</th>
-        <td mat-cell *matCellDef="let order"> {{order.number}} </td>
+        <mat-header-cell *matHeaderCellDef>Number</mat-header-cell>
+        <mat-cell *matCellDef="let order" data-label="number"><p class="mat-line-clamp">{{ order.number }}</p>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let order"> {{order.status}} </td>
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let order" data-label="status"> {{ order.status }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef> Created at</th>
-        <td mat-cell *matCellDef="let order">{{order.createdDate}}</td>
+        <mat-header-cell *matHeaderCellDef> Created at</mat-header-cell>
+        <mat-cell *matCellDef="let order" data-label="created date">{{ order.createdDate }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="purchasedAt">
+        <mat-header-cell *matHeaderCellDef> Purchased at</mat-header-cell>
+        <mat-cell *matCellDef="let order"
+                  data-label="purchased date">{{ order.purchasedDate == null ? "-" : order.purchasedDate }}
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef> Price</th>
-        <td mat-cell *matCellDef="let order">{{order.price}}</td>
+        <mat-header-cell *matHeaderCellDef> Price</mat-header-cell>
+        <mat-cell *matCellDef="let order" data-label="price">{{ order.price  | currency:"USD" }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Actions</th>
-        <td mat-cell *matCellDef="let order">
-          <button mat-raised-button routerLink="/my-order/{{order.number}}" routerLinkActive="active">
-            View
-          </button>
-          <button *ngIf="order.status=='NEW'" mat-raised-button (click)="cancelOrder(order.number)">Cancel</button>
-          <button *ngIf="order.status!='NEW'" mat-raised-button disabled>
-            Cancel
-          </button>
-        </td>
+        <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+        >
+        <mat-cell *matCellDef="let order" data-label="actions">
+          <div class="buttons">
+            <button mat-raised-button routerLink="/my-order/{{order.number}}" routerLinkActive="active">
+              View
+            </button>
+            <button *ngIf="order.status=='NEW'" mat-raised-button (click)="cancelOrder(order.number)">Cancel</button>
+            <button *ngIf="order.status!='NEW'" mat-raised-button disabled>
+              Cancel
+            </button>
+          </div>
+          <div class="buttons-dropdown">
+            <button mat-raised-button [matMenuTriggerFor]="menu">Actions</button>
+            <mat-menu #menu="matMenu">
+              <button mat-button routerLink="/my-order/{{order.number}}" routerLinkActive="active" color="primary">
+                View
+              </button>
+              <button *ngIf="order.status=='NEW'" mat-button (click)="cancelOrder(order.number)" color="primary">
+                Cancel
+              </button>
+              <button *ngIf="order.status!='NEW'" mat-button disabled color="primary">
+                Cancel
+              </button>
+            </mat-menu>
+          </div>
+
+        </mat-cell>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let columns; columns: displayedColumns;"></tr>
-    </table>
-    <mat-accordion *ngFor="let order of dataSource.data">
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <a routerLink="/my-order/{{order.number}}" routerLinkActive="active">{{order.number}}</a>
-          </mat-panel-title>
-          <mat-panel-description>
-            {{order.price | currency : 'USD'}}
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>Created Date: {{order.createdDate}}</p>
-        <br *ngIf="order.purchasedDate">
-        <p *ngIf="order.purchasedDate"> Purchased Date: {{order.purchasedDate}}</p>
-        <br>
-        <p>Count: {{order.count}}</p>
-        <br>
-        <p>Status: {{order.status}}</p>
-        <br>
-        <mat-action-row>
-          <button mat-button color="primary" routerLink="/my-order/{{order.number}}" routerLinkActive="active">
-            View
-          </button>
-          <button *ngIf="order.status=='NEW'" mat-button color="primary" (click)="cancelOrder(order.number)">Cancel
-          </button>
-          <button *ngIf="order.status!='NEW'" mat-button disabled>
-            Cancel
-          </button>
-        </mat-action-row>
-      </mat-expansion-panel>
-    </mat-accordion>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let columns; columns: displayedColumns;"></mat-row>
+    </mat-table>
   </div>
+
+  <br>
+  <div *ngIf="JSON.stringify(this.dataSource.data) === JSON.stringify([])">
+    <h1 style="color: black; text-align: center">Orders was not found :(</h1>
+  </div>
+
 </ng-container>
+
