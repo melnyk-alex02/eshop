@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="bestuser" id="4">
+    <changeSet author="bestuser" id="202403281454-4">
         <createTable tableName="cart_item">
             <column name="user_id" type="varchar(255)">
                 <constraints primaryKey="true"/>
@@ -17,16 +17,13 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="6" author="bestuser">
+    <changeSet id="202403281454-5" author="bestuser">
         <createTable tableName="orders">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="number" type="VARCHAR(100)">
                 <constraints unique="true"/>
-            </column>
-            <column name="count" type="INT">
-                <constraints checkConstraint="count >= 1"/>
             </column>
             <column name="created_date" type="TIMESTAMP"/>
             <column name="price" type="DECIMAL(12, 2)"/>
@@ -35,12 +32,12 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="7" author="bestuser">
+    <changeSet id="202403281454-6" author="bestuser">
         <sql>ALTER TABLE orders
             ADD COLUMN status ENUM('NEW', 'DONE', 'CANCELLED', 'EXPIRED') NOT NULL</sql>
     </changeSet>
 
-    <changeSet id="9" author="bestuser">
+    <changeSet id="202403281454-7" author="bestuser">
         <createTable tableName="order_item">
             <column name="order_id" type="bigint">
                 <constraints primaryKey="true" foreignKeyName="fk_order_items_order" references="orders(id)"/>

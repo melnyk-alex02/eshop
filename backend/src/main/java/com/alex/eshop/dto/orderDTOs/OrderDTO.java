@@ -12,7 +12,6 @@ public record OrderDTO(
         OrderStatus status,
         ZonedDateTime createdDate,
         BigDecimal price,
-        Integer count,
         List<OrderItemDTO> orderItemDTOList,
         String userId,
         ZonedDateTime purchasedDate

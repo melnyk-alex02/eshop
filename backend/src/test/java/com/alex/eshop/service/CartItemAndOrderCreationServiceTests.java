@@ -158,7 +158,6 @@ public class CartItemAndOrderCreationServiceTests {
                 OrderStatus.NEW,
                 ZonedDateTime.now(),
                 BigDecimal.valueOf(301.98),
-                2,
                 List.of(
                         new OrderItemDTO(
                                 1L,
@@ -166,7 +165,7 @@ public class CartItemAndOrderCreationServiceTests {
                                 1L,
                                 "Item 1",
                                 BigDecimal.valueOf(100.99),
-                                1
+                                2
                         ),
                         new OrderItemDTO(
                                 1L,
@@ -174,7 +173,7 @@ public class CartItemAndOrderCreationServiceTests {
                                 2L,
                                 "Item 2",
                                 BigDecimal.valueOf(200.99),
-                                1
+                                2
                         )
                 ),
                 userId,

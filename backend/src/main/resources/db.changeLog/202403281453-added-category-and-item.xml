@@ -1,0 +1,70 @@
+e <?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="bestuser" id="202403281452-1">
+        <createTable tableName="category">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="description" type="varchar(1000)"/>
+        </createTable>
+        <createTable tableName="item">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="category_id" type="bigint">
+                <constraints foreignKeyName="category_id" references="category(id)"/>
+            </column>
+            <column name="description" type="text"/>
+            <column name="price" type="DECIMAL(12, 2)"/>
+            <column name="image_src" type="varchar(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="bestuser" id="202403281453-2">
+        <sql>insert into category (name, description)
+             values ('Computers and Laptops',
+                     'This category includes a wide range of desktop computers, laptops, and all-in-one PCs from popular brands such as Dell, HP, Lenovo, and Asus.'),
+                    ('Components and Peripherals',
+                     'This category consists of computer components such as motherboards, CPUs, graphics cards, RAM, and storage drives. It also includes peripherals like keyboards, mice, webcams, and printers.'),
+                    ('Networking',
+                     'This category includes routers, switches, modems, and other networking devices from leading brands such as Cisco, TP-Link, and Netgear.'),
+                    ('Software',
+                     'This category includes a range of software products such as operating systems, office suites, antivirus programs, and other productivity software.'),
+                    ('Gaming',
+                     'This category is dedicated to gaming equipment such as gaming laptops, desktops, monitors, keyboards, mice, and headsets from popular brands such as Razer, Alienware, and Logitech.'),
+                    ('Smart Home',
+                     'This category includes smart home devices such as smart locks, thermostats, security cameras, and lighting solutions from brands such as Nest, Philips Hue, and Ring.');
+
+        </sql>
+    </changeSet>
+    <changeSet author="bestuser" id="202403281453-3">
+        <sql>insert into item (name, description, category_id, price, image_src)
+             values ('Dell XPS 13 Laptop', 'This ultra-portable laptop features a 13.3-inch display, 11th Gen Intel Core processors, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), 799,  'https://i.imgur.com/7mrT6pB.jpg'),
+                    ('HP Pavilion Desktop', 'This powerful desktop PC features a 10th Gen Intel Core i7 processor, NVIDIA GeForce GTX graphics, and a 512GB SSD.', (SELECT id FROM category WHERE name = 'Computers and Laptops'),399, 'https://i.imgur.com/cifV27h.png'),
+                    ('Asus Chromebook Flip', 'This 2-in-1 Chromebook features a 14-inch touchscreen, Intel Core i3 processor, and up to 8GB of RAM.', (SELECT id FROM category WHERE name = 'Computers and Laptops'), 249, 'https://imgur.com/sZT8ABj.jpg'),
+                    ('Corsair Vengeance RGB Pro RAM', 'This high-performance DDR4 RAM module features stunning RGB lighting and speeds of up to 3200MHz.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), 79.99, 'https://i.imgur.com/TOeGYzH.jpg'),
+                    ('Logitech MX Master 3 Mouse', 'This advanced wireless mouse features a precision sensor, customizable buttons, and a comfortable ergonomic design.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), 99.99,'https://i.imgur.com/v1kkdGQ.jpg'),
+                    ('Samsung 970 EVO Plus SSD', 'This NVMe SSD delivers lightning-fast read and write speeds, making it ideal for gaming and heavy workloads.', (SELECT id FROM category WHERE name = 'Components and Peripherals'), 79.99, 'https://imgur.com/abylWMv.jpg'),
+                    ('Cisco Catalyst 2960-X Switch', 'This enterprise-class switch features 24 Gigabit Ethernet ports and advanced security features such as MACsec encryption.', (SELECT id FROM category WHERE name = 'Networking'), 1999, 'https://i.imgur.com/OzXn1pu.jpg'),
+                    ('TP-Link Archer AX6000 Router', 'This high-speed Wi-Fi 6 router delivers blazing-fast wireless speeds of up to 6000Mbps, making it perfect for large homes or offices.', (SELECT id FROM category WHERE name = 'Networking'), 299.99, 'https://imgur.com/SXcGk4U.jpg'),
+                    ('Netgear Orbi Pro Mesh System', 'This mesh Wi-Fi system provides fast and reliable wireless coverage for large areas, with easy setup and management via the Orbi app.', (SELECT id FROM category WHERE name = 'Networking'), 399.99, 'https://i.imgur.com/cMusVwg.jpg'),
+                    ('Microsoft Office 365', 'This popular productivity suite includes essential applications such as Word, Excel, PowerPoint, and Outlook, as well as cloud storage and other features.', (SELECT id FROM category WHERE name = 'Software'), 69.99, 'https://imgur.com/ajXr6Kj.jpg'),
+                    ('Norton 360 Deluxe', 'This all-in-one security suite includes antivirus protection, firewall, password manager, and other security features to keep your devices safe.', (SELECT id FROM category WHERE name = 'Software'), 99.99, 'https://i.imgur.com/l3RE2Jt.jpg'),
+                    ('Adobe Creative Cloud', 'This suite of creative software includes industry-standard applications such as Photoshop, Illustrator, InDesign, and Premiere Pro, as well as cloud storage and collaboration tools.', (SELECT id FROM category WHERE name = 'Software'), 9.99, 'https://imgur.com/USulLOH.jpg'),
+                    ('Razer Blade 15 Gaming Laptop', 'This powerful gaming laptop features a 15.6-inch 144Hz display, NVIDIA GeForce RTX graphics, and up to 16GB of RAM.', (SELECT id FROM category WHERE name = 'Gaming'), 1799, 'https://i.imgur.com/5NnScLM.jpg'),
+                    ('Alienware Aurora R12 Desktop', 'This high-performance gaming desktop features a 11th Gen Intel Core i9 processor, NVIDIA GeForce RTX graphics, and customizable RGB lighting.', (SELECT id FROM category WHERE name = 'Gaming'), 1499, 'https://i.imgur.com/lUowyjD.jpg'),
+                    ('Logitech G Pro X Gaming Headset', 'This premium gaming headset features advanced audio drivers, customizable EQ, and comfortable memory foam ear pads.', (SELECT id FROM category where name ='Gaming'), 99.99, 'https://imgur.com/MLOAcvR.jpg'),
+                    ('Nest Hello Video Doorbell', 'This smart doorbell features HD video, two-way audio, and facial recognition to keep your home secure.', (SELECT id FROM category where name ='Smart Home'), 229.99, 'https://imgur.com/XS5DKOE.jpg'),
+                    ('Philips Hue Starter Kit', 'This smart lighting kit includes three color-changing bulbs and a hub, allowing you to control your lights with voice commands or a smartphone app.', (SELECT id FROM category where name ='Smart Home'), 129.99, 'https://i.imgur.com/hhhF7fU.jpg'),
+                    ('Ring Alarm Security System', 'This smart home security system includes a base station, keypad, contact sensors, and motion detectors, all controlled through the Ring app.', (SELECT id FROM category where name ='Smart Home'), 199.99, 'https://i.imgur.com/iTZ3HI9.jpg');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

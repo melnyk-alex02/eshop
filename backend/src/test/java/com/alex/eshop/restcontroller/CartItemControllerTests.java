@@ -79,7 +79,6 @@ public class CartItemControllerTests extends BaseWebTest {
                 .andExpect(jsonPath("$.status").value("NEW"))
                 .andExpect(jsonPath("$.createdDate").exists())
                 .andExpect(jsonPath("$.price").exists())
-                .andExpect(jsonPath("$.count").exists())
                 .andExpect(jsonPath("$.userId").value("userId"))
                 .andExpect(jsonPath("$.orderItemDTOList").isArray())
                 .andExpect(jsonPath("$.purchasedDate").doesNotExist());

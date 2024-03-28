@@ -39,8 +39,7 @@ public class OrderService {
 
 
     public OrderDTO createOrder(List<CartItemDTO> cartItemDTOList, String userId) {
-        int count = 0;
-        BigDecimal price = BigDecimal.ZERO;
+        BigDecimal totalPrice = BigDecimal.ZERO;
         Order order = new Order();
         order.setNumber(generateOrderNumber());
         order.setUserId(userId);
@@ -62,12 +61,12 @@ public class OrderService {
 
             orderItemList.add(orderItem);
 
-            price = price.add(cartItemDTO.itemPrice()).multiply(BigDecimal.valueOf(cartItemDTO.count()));
-            count += cartItemDTO.count();
-        }
+            BigDecimal priceOfItem = cartItemDTO.itemPrice().multiply(BigDecimal.valueOf(cartItemDTO.count()));
 
-        order.setCount(count);
-        order.setPrice(price);
+            totalPrice = totalPrice.add(priceOfItem);
+        }
+        
+        order.setPrice(totalPrice);
         order.setOrderItemList(orderItemList);
         orderRepository.save(order);
 
@@ -80,10 +79,6 @@ public class OrderService {
         if (!orderRepository.existsByNumberAndUserId(orderNumber, userId)) {
             throw new DataNotFoundException("There is no order with number " + orderNumber + " for current logged user");
         }
-
-//    user    if (orderRepository.findByNumber(orderNumber).getStatus().equals(OrderStatus.EXPIRED)) {
-//            throw new DataNotFoundException("Order with number " + orderNumber + " is expired");
-//        }
 
         Order order = orderRepository.findOrderByUserIdAndNumber(userId, orderNumber);
 

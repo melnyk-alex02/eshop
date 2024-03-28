@@ -25,7 +25,6 @@ public class Order {
     private OrderStatus status;
     private ZonedDateTime createdDate;
     private BigDecimal price;
-    private Integer count;
     private String userId;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItemList;

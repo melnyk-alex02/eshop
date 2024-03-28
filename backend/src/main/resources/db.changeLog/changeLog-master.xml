@@ -5,6 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db.changeLog/changeLog-1.xml" relativeToChangelogFile="false"/>
-    <include file="db.changeLog/changeLog-2.xml" relativeToChangelogFile="false"/>
+    <include file="/db.changeLog/202403281453-added-category-and-item.xml" relativeToChangelogFile="false"/>
+    <include file="/db.changeLog/202403221145-added-order-and-cart.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

@@ -33,7 +33,6 @@ public class OrderControllerTests extends BaseWebTest {
                 .andExpect(jsonPath("$.content[0].number").value("orderNumber"))
                 .andExpect(jsonPath("$.content[0].status").value(OrderStatus.NEW.name()))
                 .andExpect(jsonPath("$.content[0].price").value(100))
-                .andExpect(jsonPath("$.content[0].count").value(1))
                 .andExpect(jsonPath("$.content[0].orderItemDTOList").isArray());
     }
 
@@ -46,7 +45,6 @@ public class OrderControllerTests extends BaseWebTest {
                 .andExpect(jsonPath("$.number").value("orderNumber"))
                 .andExpect(jsonPath("$.status").value(OrderStatus.NEW.name()))
                 .andExpect(jsonPath("$.price").value(100))
-                .andExpect(jsonPath("$.count").value(1))
                 .andExpect(jsonPath("$.orderItemDTOList").isArray());
     }
 
@@ -76,8 +74,7 @@ public class OrderControllerTests extends BaseWebTest {
                 .andExpect(jsonPath("$.content[0].userId").value("userId"))
                 .andExpect(jsonPath("$.content[0].number").value("orderNumber"))
                 .andExpect(jsonPath("$.content[0].status").value(OrderStatus.NEW.name()))
-                .andExpect(jsonPath("$.content[0].price").value(100))
-                .andExpect(jsonPath("$.content[0].count").value(1));
+                .andExpect(jsonPath("$.content[0].price").value(100));
     }
 
     @Test

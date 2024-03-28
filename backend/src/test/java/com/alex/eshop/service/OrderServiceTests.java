@@ -49,7 +49,6 @@ public class OrderServiceTests {
 
         when(currentUserService.getCurrentUserUuid()).thenReturn("userId");
         when(orderRepository.existsByNumberAndUserId(expectedOrderDTO.number(), "userId")).thenReturn(true);
-//        when(orderRepository.findByNumber("number")).thenReturn(order);
         when(orderRepository.findOrderByUserIdAndNumber("userId", order.getNumber())).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(expectedOrderDTO);
 
@@ -57,7 +56,6 @@ public class OrderServiceTests {
 
         verify(currentUserService).getCurrentUserUuid();
         verify(orderRepository).existsByNumberAndUserId(expectedOrderDTO.number(), "userId");
-//        verify(orderRepository).findByNumber("number");
         verify(orderRepository).findOrderByUserIdAndNumber("userId", order.getNumber());
         verify(orderMapper).toDto(order);
 
@@ -65,7 +63,6 @@ public class OrderServiceTests {
         assertEquals(expectedOrderDTO.status(), result.status());
         assertEquals(expectedOrderDTO.createdDate(), result.createdDate());
         assertEquals(expectedOrderDTO.price(), result.price());
-        assertEquals(expectedOrderDTO.count(), result.count());
         assertEquals(expectedOrderDTO.userId(), result.userId());
         assertEquals(expectedOrderDTO.orderItemDTOList().size(), result.orderItemDTOList().size());
     }
@@ -103,7 +100,6 @@ public class OrderServiceTests {
         assertEquals(expectedOrderDTOList.get(0).status(), result.getContent().get(0).status());
         assertEquals(expectedOrderDTOList.get(0).createdDate(), result.getContent().get(0).createdDate());
         assertEquals(expectedOrderDTOList.get(0).price(), result.getContent().get(0).price());
-        assertEquals(expectedOrderDTOList.get(0).count(), result.getContent().get(0).count());
         assertEquals(expectedOrderDTOList.get(0).userId(), result.getContent().get(0).userId());
         assertEquals(expectedOrderDTOList.get(0).orderItemDTOList().size(), result.getContent().get(0).orderItemDTOList().size());
 
@@ -111,8 +107,6 @@ public class OrderServiceTests {
         assertEquals(expectedOrderDTOList.get(1).status(), result.getContent().get(1).status());
         assertEquals(expectedOrderDTOList.get(1).createdDate(), result.getContent().get(1).createdDate());
         assertEquals(expectedOrderDTOList.get(1).price(), result.getContent().get(1).price());
-        assertEquals(expectedOrderDTOList.get(1).count(), result.getContent().get(1).count());
-        assertEquals(expectedOrderDTOList.get(1).userId(), result.getContent().get(1).userId());
         assertEquals(expectedOrderDTOList.get(1).orderItemDTOList().size(), result.getContent().get(1).orderItemDTOList().size());
     }
 
@@ -145,7 +139,6 @@ public class OrderServiceTests {
                 OrderStatus.CANCELLED,
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
-                2,
                 List.of(orderItemDTO1, orderItemDTO2),
                 "userId",
                 null
@@ -193,7 +186,6 @@ public class OrderServiceTests {
                 OrderStatus.DONE,
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
-                2,
                 List.of(orderItemDTO1, orderItemDTO2),
                 "userId",
                 null
@@ -237,7 +229,6 @@ public class OrderServiceTests {
         assertEquals(expectedOrderDTOList.get(0).status(), result.getContent().get(0).status());
         assertEquals(expectedOrderDTOList.get(0).createdDate(), result.getContent().get(0).createdDate());
         assertEquals(expectedOrderDTOList.get(0).price(), result.getContent().get(0).price());
-        assertEquals(expectedOrderDTOList.get(0).count(), result.getContent().get(0).count());
         assertEquals(expectedOrderDTOList.get(0).userId(), result.getContent().get(0).userId());
         assertEquals(expectedOrderDTOList.get(0).orderItemDTOList().size(), result.getContent().get(0).orderItemDTOList().size());
 
@@ -245,7 +236,6 @@ public class OrderServiceTests {
         assertEquals(expectedOrderDTOList.get(1).status(), result.getContent().get(1).status());
         assertEquals(expectedOrderDTOList.get(1).createdDate(), result.getContent().get(1).createdDate());
         assertEquals(expectedOrderDTOList.get(1).price(), result.getContent().get(1).price());
-        assertEquals(expectedOrderDTOList.get(1).count(), result.getContent().get(1).count());
         assertEquals(expectedOrderDTOList.get(1).userId(), result.getContent().get(1).userId());
         assertEquals(expectedOrderDTOList.get(1).orderItemDTOList().size(), result.getContent().get(1).orderItemDTOList().size());
     }
@@ -326,7 +316,6 @@ public class OrderServiceTests {
         order1.setCreatedDate(ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0),
                 ZoneId.of("UTC")));
         order1.setPrice(BigDecimal.valueOf(199, 99));
-        order1.setCount(2);
         order1.setUserId("userId");
 
         OrderItem orderItem1 = new OrderItem();
@@ -347,7 +336,6 @@ public class OrderServiceTests {
         order2.setCreatedDate(ZonedDateTime.of(LocalDateTime.of(2023, 11, 23, 1, 0),
                 ZoneId.of("UTC")));
         order2.setPrice(BigDecimal.valueOf(199, 99));
-        order2.setCount(2);
         order2.setUserId("userId");
 
         OrderItem orderItem3 = new OrderItem();
@@ -387,7 +375,6 @@ public class OrderServiceTests {
                 OrderStatus.NEW,
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
-                2,
                 List.of(orderItemDTO1, orderItemDTO2),
                 "userId",
                 null
@@ -415,7 +402,6 @@ public class OrderServiceTests {
                 OrderStatus.NEW,
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
-                2,
                 List.of(orderItemDTO3, orderItemDTO4),
                 "userId",
                 null
