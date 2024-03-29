@@ -12,7 +12,7 @@
 <ng-container *ngIf="item">
   <br>
   <div class="title">
-    <h1>Editing {{item.name}}</h1>
+    <h1>Editing {{ item.name }}</h1>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -25,9 +25,6 @@
       <mat-error>Name is required</mat-error>
       <mat-error *ngIf="form.controls['name'].errors?.['minlength']">
         Please enter more than 5 character
-      </mat-error>
-      <mat-error *ngIf="form.controls['name'].errors?.['maxLength']">
-        Entered name is too long
       </mat-error>
     </mat-form-field>
     <br>
@@ -48,17 +45,24 @@
       <mat-label>Select Category ID</mat-label>
       <mat-select value="selected" [formControlName]="'categoryId'">
         <mat-option [value]="category.id" *ngFor="let category of categories">
-          {{category.id}}. {{category.name}}
+          {{ category.id }}. {{ category.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <br>
     <mat-form-field>
       <mat-label>Price</mat-label>
-      <input matInput maxlength="255"
+      <input matInput
              placeholder="Type new price"
              formControlName="price"
              #priceInput>
+
+      <mat-error *ngIf="form.controls['price'].errors?.['min']">
+        Price should be grater than 0
+      </mat-error>
+      <mat-error *ngIf="form.controls['price'].errors?.['pattern']">
+        Price should be a number
+      </mat-error>
       <mat-error>Price is required</mat-error>
     </mat-form-field>
     <br>

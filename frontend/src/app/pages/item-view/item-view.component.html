@@ -12,16 +12,19 @@
 <ng-container *ngIf="item">
   <br>
   <div class="header">
-    <h1>{{item.name}}</h1>
+    <h1>{{ item.name }}</h1>
   </div>
 
-  <div class="body">
-    <h4>ID: {{item.id}}</h4>
-    <h4>Description: {{item.description}}</h4>
-    <h4>Category: {{item.categoryId}}. {{item.categoryName}}</h4>
+  <div class="item-container">
+    <div class="body">
+      <h4>ID: {{ item.id }}</h4>
+      <h4>Description: {{ item.description }}</h4>
+      <h4>Category: {{ item.categoryId }}. {{ item.categoryName }}</h4>
+      <h4>Price: {{ item.price | currency:"USD" }}</h4>
+    </div>
+    <br>
+    <div class="image">
+      <img src="{{item.imageSrc}}" alt="Photo of item">
+    </div>
   </div>
-  <div class="image">
-    <img alt="" src="{{item.imageSrc}}" style="width: 400px; height: 400px;">
-  </div>
-
 </ng-container>

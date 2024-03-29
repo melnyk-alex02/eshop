@@ -10,6 +10,7 @@ import com.alex.eshop.mapper.CategoryMapper;
 import com.alex.eshop.repository.CategoryRepository;
 import com.alex.eshop.utils.CsvHeaderChecker;
 import com.alex.eshop.utils.FormatChecker;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -29,15 +30,11 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     private final CategoryMapper categoryMapper;
-
-    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
-        this.categoryMapper = categoryMapper;
-        this.categoryRepository = categoryRepository;
-    }
 
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
@@ -99,7 +96,7 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        Long numOfItemsInCategory = categoryRepository.countItemsByCategory(id);
+        long numOfItemsInCategory = categoryRepository.countItemsByCategory(id);
         if (!categoryRepository.existsById(id)) {
             throw new DataNotFoundException("There is no category with id " + id);
         }

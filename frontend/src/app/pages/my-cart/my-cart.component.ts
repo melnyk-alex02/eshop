@@ -6,8 +6,6 @@ import { CartBackendService } from "../../services/cart-backend.service";
 import { SnackBarService } from "../../services/snack-bar.service";
 import { Order } from "../../models/order";
 import { Router } from "@angular/router";
-import { OrderBackendService } from "../../services/order-backend.service";
-import { Item } from 'src/app/models/item';
 
 @Component({
   selector: 'app-my-cart',
@@ -28,7 +26,6 @@ export class MyCartComponent implements OnInit, OnDestroy {
   private unsubscribe: Subject<void> = new Subject();
 
   constructor(private cartService: CartBackendService,
-              private orderService: OrderBackendService,
               private snackBarService: SnackBarService,
               private readonly router: Router) {
   }
@@ -51,18 +48,10 @@ export class MyCartComponent implements OnInit, OnDestroy {
         {
           next: (data) => {
             this.cart = data;
-            console.log(data);
             this.dataSource.data = data;
-          },
-          error: (error) => {
-            this.snackBarService.error("There are no items in cart :(");
-
-            this.dataSource.data = []
-            this.loading = false
           },
           complete: () => {
             this.loading = false;
-            console.log(this.countItemsInCart())
           }
         }
       )

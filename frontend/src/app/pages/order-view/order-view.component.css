@@ -4,19 +4,6 @@
   place-items: center;
 }
 
-.filter-section {
-  display: flex;
-  flex-direction: row;
-}
-
-.buttons-dropdown {
-  display: none;
-}
-
-.buttons button {
-  margin: 10px;
-}
-
 .button-1 {
   display: flex;
   flex-direction: column;
@@ -39,60 +26,15 @@
   outline: 0;
 }
 
-.mat-line-clamp {
-  max-width: 50%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  white-space: normal;
-  direction: ltr;
-}
-
-.sort-menu {
-  display: none;
-}
-
 .row {
-  display: none;
+  max-width: 100%;
 }
 
-.clear-button {
-  margin: 10px 10px;
-  background-color: #f0f0f0;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+button[disabled] {
+  background: #fff;
+  color: #ccc;
+  cursor: no-drop;
 }
-
-.clear-button:hover {
-  background-color: #ddd;
-  color: #000;
-}
-
-@media screen and (max-width: 509px) {
-  .filter-section {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .clear-button {
-    margin: 0;
-  }
-}
-
-@media screen and (min-width: 1020px) and (max-width: 1420px) {
-  .buttons {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
 
 @media screen and (max-width: 960px) {
   mat-table {
@@ -145,33 +87,5 @@
 
   mat-table mat-cell:first-child {
     margin-top: 4%;
-  }
-
-  .buttons-dropdown {
-    display: block;
-  }
-
-  .buttons-dropdown button {
-    margin: 10px;
-  }
-
-  .row {
-    display: block;
-  }
-
-  .buttons {
-    display: none
-  }
-
-  .matMenu {
-    width: 300px;
-    max-height: 300px;
-    overflow: auto;
-  }
-
-  .sort-menu {
-    display: flex;
-    flex-direction: row-reverse;
-    direction: ltr;
   }
 }

@@ -4,13 +4,33 @@
   place-items: center;
 }
 
-button {
+.buttons-dropdown {
+  display: none;
+}
+
+.sort-menu {
+  display: none;
+}
+
+.buttons-dropdown .matMenu {
+  display: none;
+}
+
+.buttons button {
   margin: 10px;
+}
+
+mat-menu button {
+  display: none;
 }
 
 .filter-section {
   display: flex;
   flex-direction: row;
+}
+
+.row {
+  display: none;
 }
 
 .button-1 {
@@ -36,17 +56,15 @@ button {
 }
 
 .mat-line-clamp {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
+  max-width: 50%;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
   -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  direction: ltr;
 }
-
-mat-accordion {
-  display: none;
-}
-
 
 .clear-button {
   margin: 10px 10px;
@@ -70,16 +88,6 @@ mat-accordion {
   color: #000;
 }
 
-@media screen and (max-width: 767px) {
-  table, th, td {
-    display: none;
-  }
-
-  .mat-accordion {
-    display: block;
-  }
-}
-
 @media screen and (max-width: 932px) {
   .filter-section {
     display: flex;
@@ -88,5 +96,91 @@ mat-accordion {
 
   .clear-button {
     margin: 0;
+  }
+
+  .buttons {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1555px) and (max-width: 2380px) {
+  .buttons {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  mat-table {
+    border: 0;
+    vertical-align: middle
+  }
+
+  mat-table caption {
+    font-size: 1em;
+  }
+
+  /*!*  Enable this to hide header*/
+  mat-table mat-header-cell {
+    border: 10px solid;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  mat-table mat-row {
+    border-bottom: 5px solid #ddd;
+    display: block;
+  }
+
+  mat-table mat-cell {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: 1em;
+    text-align: right;
+    direction: rtl;
+    font-weight: bold;
+    height: 30px;
+    margin-bottom: 4%;
+  }
+
+  mat-table mat-cell:before {
+    content: attr(data-label);
+    float: left;
+    text-transform: uppercase;
+    font-weight: normal;
+
+    font-size: .85em;
+  }
+
+  mat-table mat-cell:last-child {
+    border-bottom: 0;
+  }
+
+  mat-table mat-cell:first-child {
+    margin-top: 4%;
+  }
+
+  .buttons-dropdown {
+    display: block;
+  }
+
+  .row {
+    display: block;
+  }
+
+  .matMenu {
+    width: 300px;
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  .sort-menu {
+    display: flex;
+    flex-direction: row-reverse;
+    direction: ltr;
   }
 }

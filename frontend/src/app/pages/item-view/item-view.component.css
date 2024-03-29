@@ -4,18 +4,29 @@
   place-items: center;
 }
 
+.item-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 5%;
+}
+
 .image {
-  margin-left: 15%;
-  height: 200px;
+  display: flex;
+  justify-content: center;
+}
+
+.image img {
+  max-width: 500px;
+  max-height: 500px;
+  object-fit: contain;
 }
 
 .body {
+  margin-left: 5%;
   margin-top: 5%;
-  width: 29%;
-  height: 200px;
-  float: left;
+  max-width: 50%;
 }
-
 
 h1 {
   text-align: center;
@@ -25,18 +36,22 @@ h4 {
   width: 50%;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1000px) {
   .body {
     width: 100%;
   }
 
-  .image {
-    margin-left: 0%;
-    width: 100%;
+  .image img {
+    max-width: 350px;
+    max-height: 350px;
+    object-fit: contain;
+  }
+
+  .item-container {
+    flex-direction: column;
   }
 
   h4 {
     width: 100%;
   }
 }
-

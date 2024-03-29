@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Item } from "../../models/item";
 import { Subject, takeUntil } from "rxjs";
 import { ItemBackendService } from "../../services/item-backend.service";
@@ -39,7 +39,6 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
   constructor(private itemService: ItemBackendService,
               private cartService: CartBackendService,
               private snackBarService: SnackBarService,
-              private changeDetectorRef: ChangeDetectorRef,
               public store: Store<GlobalState>) {
     this.pagination$ = this.store.select(selectAllItemsPagination);
   }
@@ -92,14 +91,13 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.itemsInCart = data;
-          console.log(data.length);
           this.countOfItemsInCart = data.length
           localStorage.setItem("countOfItemsInCart", this.countOfItemsInCart.toString());
         },
         error: (error) => {
           this.snackBarService.error(error.message)
           this.loading = false;
-          },
+        },
         complete: () => {
           this.loading = false;
         }

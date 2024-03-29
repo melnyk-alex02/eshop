@@ -251,7 +251,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
             this.totalElements = data.totalElements;
           },
           complete: () => {
-            if (this.dataSource.data.length == 0) {
+            if (this.dataSource.data.length === 0) {
               this.snackBarService.error("There are no categories by your search preferences");
             }
 

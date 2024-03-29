@@ -8,6 +8,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,16 +26,13 @@ public class CartItemControllerTests extends BaseWebTest {
     public void testGetAllCarts() throws Exception {
         mockMvc.perform(get("/api/cart"))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$").isArray())
 
-                .andExpect(jsonPath("$[0].cartItemId.userId").exists())
-                .andExpect(jsonPath("$[0].cartItemId.itemId").exists())
                 .andExpect(jsonPath("$[0].userId").value("userId"))
                 .andExpect(jsonPath("$[0].itemId").value(1L))
                 .andExpect(jsonPath("$[0].count").value(1))
 
-                .andExpect(jsonPath("$[1].cartItemId.userId").exists())
-                .andExpect(jsonPath("$[1].cartItemId.itemId").exists())
                 .andExpect(jsonPath("$[1].userId").value("userId"))
                 .andExpect(jsonPath("$[1].itemId").value(2L))
                 .andExpect(jsonPath("$[1].count").value(1));
@@ -46,8 +44,8 @@ public class CartItemControllerTests extends BaseWebTest {
         mockMvc.perform(post("/api/cart")
                         .param("itemId", "3"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cartItemId.userId").value("userId"))
-                .andExpect(jsonPath("$.cartItemId.itemId").value(3L))
+                .andDo(print())
+                .andExpect(jsonPath("$.itemId").value(3L))
                 .andExpect(jsonPath("$.count").value(1));
     }
 
@@ -58,8 +56,7 @@ public class CartItemControllerTests extends BaseWebTest {
                         .param("itemId", "1")
                         .param("count", "5"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cartItemId.userId").exists())
-                .andExpect(jsonPath("$.cartItemId.itemId").exists())
+                .andDo(print())
                 .andExpect(jsonPath("$.userId").value("userId"))
                 .andExpect(jsonPath("$.itemId").value(1L))
                 .andExpect(jsonPath("$.count").value(5));
@@ -82,7 +79,6 @@ public class CartItemControllerTests extends BaseWebTest {
                 .andExpect(jsonPath("$.status").value("NEW"))
                 .andExpect(jsonPath("$.createdDate").exists())
                 .andExpect(jsonPath("$.price").exists())
-                .andExpect(jsonPath("$.count").exists())
                 .andExpect(jsonPath("$.userId").value("userId"))
                 .andExpect(jsonPath("$.orderItemDTOList").isArray())
                 .andExpect(jsonPath("$.purchasedDate").doesNotExist());

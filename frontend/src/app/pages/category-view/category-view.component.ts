@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { KeycloakService } from "keycloak-angular";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import { ItemBackendService } from "../../services/item-backend.service";
 import { Role } from "../../models/role";
 import { Subject, switchMap, takeUntil } from "rxjs";
 import { Category } from "../../models/category";
@@ -21,7 +20,6 @@ export class CategoryViewComponent implements OnInit {
   private unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(private categoryService: CategoryBackendService,
-              private itemService: ItemBackendService,
               private route: ActivatedRoute,
               private keycloak: KeycloakService) {
   }

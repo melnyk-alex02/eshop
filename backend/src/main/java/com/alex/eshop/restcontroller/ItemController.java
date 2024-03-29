@@ -6,6 +6,7 @@ import com.alex.eshop.dto.itemDTOs.ItemDTO;
 import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
 import com.alex.eshop.service.ItemService;
 import com.alex.eshop.wrapper.PageWrapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,12 +17,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items/last")

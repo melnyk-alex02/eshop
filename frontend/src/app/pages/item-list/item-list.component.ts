@@ -47,7 +47,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   filterName: string;
   filterHasImage: boolean | string = '';
   filterCategoryId: number | string = '';
-  filterPage: number;
+  filterPage: number = 0;
 
   @ViewChild(MatTable) table: any;
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
@@ -101,7 +101,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this.filterPage = filtering.filterPage
       });
 
-    if (this.filterName && this.filterName.length >= 3) {
+    if (this.filterCategoryId != '' || this.filterHasImage.valueOf != null) {
+      this.filterName = this.filterName.length < 3 ? '' : this.filterName;
       this.searchItems(this.filterPage);
     } else {
       this.filterName = '';
@@ -167,7 +168,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       pageSize: this.currentSize
     }));
 
-    if (this.filterName.length >= 3) {
+    if ((this.filterName && this.filterName.length >= 3) || this.filterHasImage != '' || this.filterCategoryId != '') {
       this.filterPage = event.pageIndex;
 
       this.searchItems(this.filterPage);
@@ -187,10 +188,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
       sortDirection: this.currentDirection
     }));
 
-    if (this.filterName && this.filterName.length >= 3) {
+    if (this.filterCategoryId != '' || this.filterHasImage != '') {
       this.searchItems(this.filterPage);
     } else {
       this.filterName = '';
+      this.filterHasImage = '';
+      this.filterCategoryId = '';
       this.filterPage = 0;
       this.getAllItems()
     }
@@ -241,52 +244,43 @@ export class ItemListComponent implements OnInit, OnDestroy {
   }
 
   searchItems(filterPage: number) {
-    if (this.filterName && this.filterName.length >= 3) {
-      if (this.matPaginator) {
-        this.matPaginator.pageIndex = 0;
-      }
-      this.loading = true;
-
-      this.itemService.searchItems(
-        filterPage,
-        this.currentSize,
-        this.currentSortField,
-        this.currentDirection,
-        this.filterName,
-        this.filterHasImage,
-        this.filterCategoryId
-      ).pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        takeUntil(this.unsubscribe)
-      )
-        .subscribe({
-          next: (data) => {
-            this.dataSource.data = data.content;
-
-            this.totalElements = data.totalElements;
-
-            this.matPaginator.length = data.totalElements;
-          },
-          error: (error) => {
-            this.snackBarService.error(error.message);
-
-            this.dataSource.data = [];
-            this.loading = false;
-          },
-          complete: () => {
-            this.loading = false;
-          }
-        });
-    } else if (this.filterName == '') {
-      if (this.matPaginator) {
-        this.matPaginator.pageIndex = this.currentPage;
-      }
-      this.filterName = ''
-      this.filterPage = 0;
-
-      this.getAllItems();
+    if (this.matPaginator) {
+      this.matPaginator.pageIndex = 0;
     }
+    this.loading = true;
+
+    this.itemService.searchItems(
+      filterPage,
+      this.currentSize,
+      this.currentSortField,
+      this.currentDirection,
+      this.filterName.length < 3 ? '' : this.filterName,
+      this.filterHasImage,
+      this.filterCategoryId
+    ).pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.unsubscribe)
+    )
+      .subscribe({
+        next: (data) => {
+          this.dataSource.data = data.content;
+          this.totalElements = data.totalElements;
+
+          this.matPaginator.length = data.totalElements;
+        },
+        error: (error) => {
+          this.snackBarService.error(error.message);
+
+          this.dataSource.data = [];
+          this.loading = false;
+        },
+        complete: () => {
+          this.filterPage = 0;
+          this.loading = false;
+        }
+      });
+
 
     this.store.dispatch(changingItemFiltering({
       name: this.filterName,

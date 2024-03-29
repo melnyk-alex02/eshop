@@ -38,7 +38,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatCardModule } from "@angular/material/card";
 import { AllItemsPageComponent } from './pages/all-items-page/all-items-page.component';
 import { MyCartComponent } from './pages/my-cart/my-cart.component';
-import { MyOrderPageComponent } from './pages/my-order-page/my-order-page.component';
+import { OrderViewComponent } from './pages/order-view/order-view.component';
 import { MyOrdersComponent } from './pages/my-orders/my-orders.component';
 import { MatGridListModule } from "@angular/material/grid-list";
 import { RouterModule } from "@angular/router";
@@ -47,6 +47,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatListModule } from "@angular/material/list";
 import { MatMenuModule } from "@angular/material/menu";
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { MatBadgeModule } from "@angular/material/badge";
 
 @NgModule({
   declarations: [
@@ -64,7 +65,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
     AccessDeniedPageComponent,
     AllItemsPageComponent,
     MyCartComponent,
-    MyOrderPageComponent,
+    OrderViewComponent,
     MyOrdersComponent,
     AppComponent,
     OrdersListComponent,
@@ -100,6 +101,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
     MatExpansionModule,
     MatListModule,
     MatMenuModule,
+    MatBadgeModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,
