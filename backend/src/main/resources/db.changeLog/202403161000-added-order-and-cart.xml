@@ -47,6 +47,9 @@
             <column name="item_id" type="bigint">
                 <constraints primaryKey="true" foreignKeyName="fk_order_items_item" references="item(id)"/>
             </column>
+            <column name="item_price" type="DECIMAL(12, 2)">
+                <constraints checkConstraint="item_price>=0"/>
+            </column>
             <column name="count" type="int">
                 <constraints checkConstraint="count>=1"/>
             </column>

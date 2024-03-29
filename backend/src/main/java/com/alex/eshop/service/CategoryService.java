@@ -96,7 +96,7 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        Long numOfItemsInCategory = categoryRepository.countItemsByCategory(id);
+        long numOfItemsInCategory = categoryRepository.countItemsByCategory(id);
         if (!categoryRepository.existsById(id)) {
             throw new DataNotFoundException("There is no category with id " + id);
         }

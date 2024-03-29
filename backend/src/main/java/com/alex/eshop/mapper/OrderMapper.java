@@ -28,7 +28,6 @@ public interface OrderMapper {
     @Mapping(target = "orderNumber", source = "order.number")
     @Mapping(source = "item.id", target = "itemId")
     @Mapping(source = "item.name", target = "itemName")
-    @Mapping(source = "item.price", target = "itemPrice")
     OrderItemDTO toOrderItemDTO(OrderItem orderItem);
 
     List<OrderItem> toOrderItemList(List<OrderItemDTO> orderItemList);

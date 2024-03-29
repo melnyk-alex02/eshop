@@ -5,6 +5,7 @@ import com.alex.eshop.dto.itemDTOs.ItemDTO;
 import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
 import com.alex.eshop.entity.Item;
 import com.alex.eshop.exception.DataNotFoundException;
+import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.filterSpecifications.ItemSpecification;
 import com.alex.eshop.mapper.ItemMapper;
 import com.alex.eshop.repository.ItemRepository;
@@ -67,6 +68,10 @@ public class ItemService {
         if (!itemRepository.existsByCategoryId(itemCreateDTO.categoryId())) {
             throw new DataNotFoundException("There is no category with id " + itemCreateDTO.categoryId());
         }
+        if(itemCreateDTO.price().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidDataException("Price should be greater than 0");
+        }
+
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemCreateDTO)));
     }
 
@@ -114,6 +119,9 @@ public class ItemService {
         }
         if (!itemRepository.existsByCategoryId(itemUpdateDTO.categoryId())) {
             throw new DataNotFoundException("There is no category with id " + itemUpdateDTO.categoryId());
+        }
+        if(itemUpdateDTO.price().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidDataException("Price should be greater than 0");
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));
     }

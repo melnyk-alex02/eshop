@@ -59,6 +59,8 @@ public class OrderService {
             }
             orderItem.setCount(cartItemDTO.count());
 
+            orderItem.setItemPrice(cartItemDTO.itemPrice());
+
             orderItemList.add(orderItem);
 
             BigDecimal priceOfItem = cartItemDTO.itemPrice().multiply(BigDecimal.valueOf(cartItemDTO.count()));
