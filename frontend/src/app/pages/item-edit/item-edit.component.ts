@@ -47,7 +47,7 @@ export class ItemEditComponent implements OnInit {
           this.form = this.formBuilder.group({
             id: [this.item.id],
             name: [this.item.name, [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
-            price: [this.item.price],
+            price: [this.item.price, [Validators.required, Validators.min(1), Validators.pattern('^\\d*\\.?\\d*$')]],
             description: [this.item.description, [Validators.required, Validators.minLength(10)]],
             categoryId: [this.item.categoryId, this.getCategories()],
             imageSrc: [this.item.imageSrc]

@@ -29,7 +29,7 @@
 
       <ng-container matColumnDef="itemPrice">
         <mat-header-cell *matHeaderCellDef>Item Price</mat-header-cell>
-        <mat-cell *matCellDef="let orderItem" data-label="item price"> {{ orderItem.itemPrice }}</mat-cell>
+        <mat-cell *matCellDef="let orderItem" data-label="item price"> {{ orderItem.itemPrice | currency :"USD" }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="itemCount">

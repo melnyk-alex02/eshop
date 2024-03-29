@@ -10,7 +10,7 @@
            placeholder="Type new name"
            formControlName="name"
            #nameInput>
-    <mat-hint>Min character 5: {{ nameInput.value.length }}/5</mat-hint>
+    <mat-hint>Min characters is 5: {{ nameInput.value.length }}/5</mat-hint>
     <mat-error>Name is required</mat-error>
     <mat-error *ngIf="form.controls['name'].errors?.['minlength']">
       Please enter more than 5 character
@@ -33,7 +33,8 @@
   </mat-form-field>
   <br>
   <mat-form-field appereance="outline">
-    <mat-label>Select Category ID</mat-label>
+    <mat-label>Select Category</mat-label>
+    <mat-error>Category is required</mat-error>
     <mat-select value="selected" [formControlName]="'categoryId'">
       <mat-option [value]="category.id" *ngFor="let category of categories">
         {{category.id}}. {{category.name}}
@@ -43,10 +44,16 @@
   <br>
   <mat-form-field>
     <mat-label>Price</mat-label>
-    <input matInput maxlength="255"
+    <input matInput type="number"
            placeholder="Type new price"
            formControlName="price"
            #priceInput>
+    <mat-error *ngIf="form.controls['price'].errors?.['min']">
+      Price should be grater than 0
+    </mat-error>
+    <mat-error *ngIf="form.controls['price'].errors?.['pattern']">
+      Price should be a number
+    </mat-error>
     <mat-error>Price is required</mat-error>
   </mat-form-field>
   <br>

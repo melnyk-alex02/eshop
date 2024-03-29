@@ -40,6 +40,7 @@ export class ItemCreateComponent implements OnInit {
       name: [null, [Validators.required, Validators.minLength(5)]],
       description: [null, [Validators.required, Validators.minLength(10)]],
       categoryId: [null, this.getCategories()],
+      price:[null, [Validators.required, Validators.min(1), Validators.pattern('^\\d*\\.?\\d*$')]],
       imageSrc: [''],
     })
   }
