@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
+        <version>3.2.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.alex.eshop</groupId>
@@ -23,6 +23,10 @@
         <configuration.processor.version>3.1.5</configuration.processor.version>
         <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
         <lombok.version>1.18.30</lombok.version>
+        <commons-csv.version>1.9.0</commons-csv.version>
+        <jakarta-mail.version>1.6.7</jakarta-mail.version>
+        <javax-mail.version>1.6.2</javax-mail.version>
+        <java-otp.version>0.4.0</java-otp.version>
     </properties>
     <dependencies>
         <dependency>
@@ -49,6 +53,7 @@
             <artifactId>nimbus-jose-jwt</artifactId>
             <version>${nimbusds.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -85,11 +90,27 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+            <version>3.2.4</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+            <version>3.2.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+            <version>6.2.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.security.oauth.boot/spring-security-oauth2-autoconfigure -->
+        <dependency>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+            <version>2.6.8</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-resource-server</artifactId>
@@ -108,11 +129,11 @@
             <artifactId>keycloak-admin-client</artifactId>
             <version>${keycloak.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-authz-client</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.keycloak</groupId>-->
+<!--            <artifactId>keycloak-authz-client</artifactId>-->
+<!--            <version>${keycloak.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
@@ -123,7 +144,47 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>${jakarta-mail.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax-mail.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.eatthepath</groupId>
+            <artifactId>java-otp</artifactId>
+            <version>${java-otp.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>jwks-rsa</artifactId>
+            <version>0.21.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
