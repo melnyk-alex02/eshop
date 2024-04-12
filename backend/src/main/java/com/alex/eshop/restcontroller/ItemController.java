@@ -27,7 +27,6 @@ public class ItemController {
         return itemService.getLastFiveItems();
     }
 
-    @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items")
     public PageWrapper<ItemDTO> getAllItems(Pageable pageable) {
         Page<ItemDTO> itemPage = itemService.getAllItems(pageable);

@@ -7,4 +7,5 @@
 
     <include file="/db.changeLog/202309041933-added-category-and-item.xml" relativeToChangelogFile="false"/>
     <include file="/db.changeLog/202403161000-added-order-and-cart.xml" relativeToChangelogFile="false"/>
+    <include file="/db.changeLog/20240404-added-one-time-password.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

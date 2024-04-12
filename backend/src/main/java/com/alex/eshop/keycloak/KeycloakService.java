@@ -1,30 +1,39 @@
 package com.alex.eshop.keycloak;
 
+import com.alex.eshop.constants.OneTimePasswordType;
 import com.alex.eshop.constants.Role;
+import com.alex.eshop.dto.emailDTOs.EmailDTO;
 import com.alex.eshop.dto.userDTOs.UserRegisterDTO;
+import com.alex.eshop.entity.OneTimePassword;
 import com.alex.eshop.exception.ConflictException;
+import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.exception.InvalidDataException;
+import com.alex.eshop.service.CurrentUserService;
+import com.alex.eshop.service.EmailService;
+import com.alex.eshop.service.OneTimePasswordService;
 import com.alex.eshop.webconfig.ApplicationProperties;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.authorization.client.AuthzClient;
-import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.AccessTokenResponse;
+import org.keycloak.representations.idm.MappingsRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.alex.eshop.keycloak.CredentialsUtils.createPasswordCredentials;
 
@@ -34,36 +43,109 @@ public class KeycloakService {
     private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
     private final ApplicationProperties applicationProperties;
     private final KeycloakClientFactory keycloakClientFactory;
+    private final CurrentUserService currentUserService;
+    private final EmailService emailService;
+    private final OneTimePasswordService oneTimePasswordService;
 
-    public AccessTokenResponse getToken() {
-        Configuration authzConf = new Configuration(this.applicationProperties.getKeycloak().getBaseUrl(),
-                this.applicationProperties.getKeycloak().getRealm(), this.applicationProperties.getKeycloak().getClientId(),
-                Collections.singletonMap("secret", this.applicationProperties.getKeycloak().getClientSecret()),
-                HttpClientBuilder.create().build());
-        AuthzClient authzClient = AuthzClient.create(authzConf);
-        return authzClient.obtainAccessToken();
+    public AccessTokenResponse getToken(String email, String password) {
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("grant_type", "password");
+        requestBody.add("client_id", this.applicationProperties.getKeycloak().getClientId());
+        requestBody.add("client_secret", this.applicationProperties.getKeycloak().getClientSecret());
+        requestBody.add("username", email);
+        requestBody.add("password", password);
+        requestBody.add("expires_in", String.valueOf(Instant.now().plusSeconds(60 * 60 * 24 * 30))); // Add this line to specify the expiration time
+
+
+        logger.info(requestBody.toString());
+
+        logger.info(this.applicationProperties.getKeycloak().getRealm());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/x-www-form-urlencoded");
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        String tokenUrl = "http://"
+                + this.applicationProperties.getKeycloak().getBaseUrl() + "/realms/"
+                + this.applicationProperties.getKeycloak().getRealm()
+                + "/protocol/openid-connect/token";
+        ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(
+                tokenUrl,
+                HttpMethod.POST,
+                entity,
+                AccessTokenResponse.class
+        );
+
+        return response.getBody();
     }
+
+    public AccessTokenResponse refreshToken(String refreshToken) {
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("grant_type", "refresh_token");
+        requestBody.add("client_id", this.applicationProperties.getKeycloak().getClientId());
+        requestBody.add("client_secret", this.applicationProperties.getKeycloak().getClientSecret());
+        requestBody.add("refresh_token", refreshToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/x-www-form-urlencoded");
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        String refreshTokenUrl = "http://"
+                + this.applicationProperties.getKeycloak().getBaseUrl() + "/realms/"
+                + this.applicationProperties.getKeycloak().getRealm()
+                + "/protocol/openid-connect/token";
+        ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(
+                refreshTokenUrl,
+                HttpMethod.POST,
+                entity,
+                AccessTokenResponse.class);
+
+        return response.getBody();
+    }
+
+    public void logout() {
+        String userId = currentUserService.getCurrentUserUuid();
+        logger.info("User {} logged out", userId);
+
+        usersResource().get(userId).logout();
+    }
+
+    public UserRepresentation getCurrentUser() {
+        String userId = currentUserService.getCurrentUserUuid();
+
+        UserRepresentation userRepresentation = usersResource().get(userId).toRepresentation();
+        userRepresentation.setRealmRoles(getUserRoles(userId));
+
+        return userRepresentation;
+    }
+
 
     private RealmResource realmResource() {
         return keycloakClientFactory.getInstance()
-                .realm(applicationProperties.getKeycloak().getRealm());
+                .realm(this.applicationProperties.getKeycloak().getRealm());
     }
 
     private UsersResource usersResource() {
         return keycloakClientFactory.getInstance()
-                .realm(applicationProperties.getKeycloak().getRealm())
+                .realm(this.applicationProperties.getKeycloak().getRealm())
                 .users();
     }
 
     public List<String> getUserRoles(String userUuid) {
-        return usersResource()
-                .get(userUuid)
-                .roles()
-                .realmLevel()
-                .listAll()
-                .stream()
-                .map(RoleRepresentation::getName)
-                .toList();
+        try {
+            MappingsRepresentation roleRepresentations = usersResource().get(userUuid).roles().getAll();
+            return roleRepresentations.getRealmMappings().stream()
+                    .map(RoleRepresentation::getName)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error retrieving user roles for user ID: {}", userUuid, e);
+            return Collections.emptyList();
+        }
     }
 
     private void addRolesToUser(List<RoleRepresentation> realmRoles, String userUuid) {
@@ -80,6 +162,90 @@ public class KeycloakService {
         return userRepresentation;
     }
 
+    public void sendEmailVerification() {
+        String userId = currentUserService.getCurrentUserUuid();
+
+        UserRepresentation userRepresentation = getUserByUserUuid(userId);
+
+        OneTimePassword oneTimePassword = oneTimePasswordService.createOneTimePassword(
+                userRepresentation.getEmail(),
+                OneTimePasswordType.EMAIL_VERIFICATION
+        );
+
+        emailService.sendEmail(new EmailDTO(userRepresentation.getEmail(),
+                "Email Verification",
+                "Please verify your email. Your code is: " + oneTimePassword.getValue()
+        ));
+
+    }
+
+    public void verifyEmail(String otp) {
+        String userId = currentUserService.getCurrentUserUuid();
+
+        UserRepresentation userRepresentation = getUserByUserUuid(userId);
+
+        if (userRepresentation.isEmailVerified()) {
+            throw new InvalidDataException("Email already verified");
+        }
+
+        try {
+            oneTimePasswordService.validateOneTimePassword(
+                    userRepresentation.getEmail(),
+                    otp,
+                    OneTimePasswordType.EMAIL_VERIFICATION);
+        } catch (Exception e) {
+            throw new InvalidDataException("check your otp4");
+        }
+        userRepresentation.setEmailVerified(true);
+        usersResource().get(userId).update(userRepresentation);
+    }
+
+    public void sendEmailForPasswordReset(String email) {
+
+        UserRepresentation userRepresentation = usersResource().search(email, true).get(0);
+
+        OneTimePassword oneTimePassword = oneTimePasswordService.createOneTimePassword(
+                userRepresentation.getEmail(),
+                OneTimePasswordType.PASSWORD_RESET
+        );
+
+        emailService.sendEmail(new EmailDTO(userRepresentation.getEmail(),
+                "Password Reset",
+                "Please reset your password. Your code is: " + oneTimePassword.getValue()
+        ));
+    }
+
+    public void verifyPasswordReset(String email, String otp, String password, String confirmPassword) {
+        if (usersResource().search(email, true).isEmpty()) {
+            throw new DataNotFoundException("There is no user with email" + email);
+        }
+
+        if (!Objects.equals(password, confirmPassword)) {
+            throw new InvalidDataException("Password and Confirm Password does not match");
+        }
+
+        UserRepresentation userRepresentation = usersResource().search(email, true).get(0);
+
+        try {
+            oneTimePasswordService.validateOneTimePassword(
+                    userRepresentation.getEmail(),
+                    otp,
+                    OneTimePasswordType.PASSWORD_RESET);
+        } catch (Exception e) {
+            throw new InvalidDataException("check your otp");
+        }
+
+        updatePassword(email, password);
+    }
+
+    public void updatePassword(String email, String password) {
+        UserRepresentation user = usersResource().search(email, true).get(0);
+        user.setRequiredActions(List.of());
+        user.setCredentials(List.of(createPasswordCredentials(password)));
+        usersResource().get(user.getId()).update(user);
+    }
+
+
     public UserRepresentation createUser(UserRegisterDTO userRegisterDTO) {
         if (!Objects.equals(userRegisterDTO.password(), userRegisterDTO.confirmPassword())) {
             throw new InvalidDataException("Password and Confirm Password does not match");
@@ -87,16 +253,11 @@ public class KeycloakService {
 
         UserRepresentation userRepresentation = new UserRepresentation();
 
-        userRepresentation.setUsername(userRegisterDTO.username());
         userRepresentation.setEmail(userRegisterDTO.email());
         userRepresentation.setFirstName(userRegisterDTO.firstName());
         userRepresentation.setLastName(userRegisterDTO.lastName());
         userRepresentation.setCredentials(List.of(createPasswordCredentials(userRegisterDTO.password())));
         userRepresentation.setEnabled(true);
-
-        if (!ObjectUtils.isEmpty(userRegisterDTO.email())) {
-            userRepresentation.setEmailVerified(true);
-        }
 
         Response response = usersResource().create(userRepresentation);
         HttpStatus httpStatus = HttpStatus.valueOf(response.getStatus());
@@ -109,10 +270,7 @@ public class KeycloakService {
                     throw new ResponseStatusException(httpStatus, "Problems occurred while creating user " + userRegisterDTO);
         }
 
-//        String path = response.getLocation().getPath();
-//        String userUuid = path.substring(path.lastIndexOf('/') + 1);
-
-        UserRepresentation users = usersResource().search(userRegisterDTO.username(), true).get(0);
+        UserRepresentation users = usersResource().search(userRegisterDTO.email(), true).get(0);
         userRepresentation.setId(users.getId());
         userRepresentation.setCreatedTimestamp(users.getCreatedTimestamp());
         addRolesToUser(List.of(getRole(Role.USER)), users.getId());
