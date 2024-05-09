@@ -14,9 +14,11 @@ export class OrderBackendService {
   }
 
   public getOrderForCurrentUser(orderNumber: string): Observable<Order> {
-    return this.http.get<Order>(`${SERVER_API_URL}/order/` + orderNumber).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get<Order>(`${SERVER_API_URL}/order/` + orderNumber);
+  }
+
+  public getOrderByEmailAndOrderForUnauthenticatedUsers(email: string, orderNumber: string) {
+    return this.http.get<Order>(`${SERVER_API_URL}/order/${email}/${orderNumber}`);
   }
 
   public getOrders(pageNumber: number, pageSize: number): Observable<Page<Order>> {
@@ -24,9 +26,8 @@ export class OrderBackendService {
       .set("page", pageNumber)
       .set("size", pageSize)
       .set("sort", "status,desc")
-    return this.http.get<Page<Order>>(`${SERVER_API_URL}/orders/all`, {params}).pipe(
-      catchError(this.handleError)
-    )
+    return this.http.get<Page<Order>>(`${SERVER_API_URL}/orders/all`, {params});
+
   }
 
   public getAllOrdersByUserId(): Observable<Page<Order>> {
@@ -34,29 +35,14 @@ export class OrderBackendService {
       .set("page", 0)
       .set("size", 0)
       .set("sort", "status,desc")
-    return this.http.get<Page<Order>>(`${SERVER_API_URL}/orders`, {params}).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<Page<Order>>(`${SERVER_API_URL}/orders`, {params});
   }
 
   public cancelOrder(orderNumber: string): Observable<void> {
-    return this.http.delete<void>(`${SERVER_API_URL}/order/` + orderNumber).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete<void>(`${SERVER_API_URL}/order/` + orderNumber);
   }
 
   public confirmOrder(orderNumber: string): Observable<void> {
-    return this.http.put<void>(`${SERVER_API_URL}/order/confirm/` + orderNumber, {}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.status == 0) {
-      console.error('An error occurred: ', error.error);
-    } else {
-      console.error(`Backend returned code ${error.status}, body was `, error.error)
-    }
-    return throwError(() => new Error(error.error.message));
+    return this.http.put<void>(`${SERVER_API_URL}/order/confirm/` + orderNumber, {});
   }
 }

@@ -176,6 +176,7 @@ public class CartItemAndOrderCreationServiceTests {
                                 2
                         )
                 ),
+                null,
                 userId,
                 null
         );
@@ -183,14 +184,14 @@ public class CartItemAndOrderCreationServiceTests {
         when(currentUserService.getCurrentUserUuid()).thenReturn(userId);
         when(cartItemRepository.existsAllByUserId(userId)).thenReturn(true);
         when(cartItemService.getCartByCurrentUser()).thenReturn(cartItemDTOList);
-        when(orderService.createOrder(cartItemDTOList, userId)).thenReturn(expectedOrderDTO);
+        when(orderService.createOrder(cartItemDTOList, userId, null)).thenReturn(expectedOrderDTO);
 
         OrderDTO result = cartItemService.createOrderFromCart();
 
         verify(currentUserService, times(4)).getCurrentUserUuid();
         verify(cartItemRepository).existsAllByUserId(userId);
         verify(cartItemRepository, times(2)).findAllByUserId(userId);
-        verify(orderService).createOrder(cartItemDTOList, userId);
+        verify(orderService).createOrder(cartItemDTOList, userId, null);
         verify(cartItemRepository).deleteAllByUserId(userId);
 
         assertEquals(expectedOrderDTO, result);

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
-import { catchError, Observable, throwError } from "rxjs";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from "rxjs";
 import { SERVER_API_URL } from "../constants/app.constants";
 import { Item } from "../models/item";
 import { Page } from "../models/page";
@@ -18,9 +18,7 @@ export class ItemBackendService {
   }
 
   public updateItem(data: Item): Observable<Item> {
-    return this.http.put<Item>(`${SERVER_API_URL}/items`, data).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.put<Item>(`${SERVER_API_URL}/items`, data)
   }
 
   public uploadItems(file: File): Observable<Item[]> {
@@ -28,21 +26,15 @@ export class ItemBackendService {
     const formData: FormData = new FormData();
 
     formData.append("file", file);
-    return this.http.post<Item[]>(`${SERVER_API_URL}/upload-items`, formData).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post<Item[]>(`${SERVER_API_URL}/upload-items`, formData);
   }
 
   public createItem(data: Item): Observable<Item> {
-    return this.http.post<Item>(`${SERVER_API_URL}/items`, data).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post<Item>(`${SERVER_API_URL}/items`, data);
   }
 
-  public deleteItem(id: number) : Observable<Item> {
-    return this.http.delete<Item>(`${SERVER_API_URL}/items/` + id.valueOf()).pipe(
-      catchError(this.handleError)
-    );
+  public deleteItem(id: number): Observable<Item> {
+    return this.http.delete<Item>(`${SERVER_API_URL}/items/` + id.valueOf());
   }
 
   public getLastFiveAddedItems(): Observable<Item[]> {
@@ -77,17 +69,6 @@ export class ItemBackendService {
       .set('hasImage', hasImage)
       .set('categoryId', categoryId);
 
-    return this.http.get<Page<Item>>(`${SERVER_API_URL}/items/search`, {params}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.status == 0) {
-      console.error('An error occurred: ', error.error);
-    } else {
-      console.error(`Backend returned code ${error.status}, body was `, error.error)
-    }
-    return throwError(() => new Error(error.error.message));
+    return this.http.get<Page<Item>>(`${SERVER_API_URL}/items/search`, {params});
   }
 }

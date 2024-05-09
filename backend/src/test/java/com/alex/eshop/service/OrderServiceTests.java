@@ -140,6 +140,7 @@ public class OrderServiceTests {
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
                 List.of(orderItemDTO1, orderItemDTO2),
+                null,
                 "userId",
                 null
         );
@@ -187,6 +188,7 @@ public class OrderServiceTests {
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
                 List.of(orderItemDTO1, orderItemDTO2),
+                null,
                 "userId",
                 null
         );
@@ -376,6 +378,7 @@ public class OrderServiceTests {
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
                 List.of(orderItemDTO1, orderItemDTO2),
+                null,
                 "userId",
                 null
         );
@@ -403,6 +406,7 @@ public class OrderServiceTests {
                 ZonedDateTime.of(LocalDateTime.of(2023, 1, 1, 0, 0), ZoneId.of("UTC")),
                 BigDecimal.valueOf(199),
                 List.of(orderItemDTO3, orderItemDTO4),
+                null,
                 "userId",
                 null
         );

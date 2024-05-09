@@ -10,6 +10,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,8 +24,6 @@ import java.net.URL;
 import java.security.InvalidParameterException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -32,7 +31,11 @@ import java.util.Optional;
 public class JwtValidator {
     private static final Logger logger = LoggerFactory.getLogger(JwtValidator.class);
     private final JwtDecoder jwtDecoder;
-    private static final List<String> allowedIssuers = Collections.singletonList("http://localhost:8080/realms/eshop");
+
+    @Value("${jwt.allowed-issuer}")
+    String allowedIssuer;
+
+
     private final Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter;
 
 
@@ -51,7 +54,7 @@ public class JwtValidator {
         try {
             final DecodedJWT jwt = JWT.decode(token);
 
-            if (!allowedIssuers.contains(jwt.getIssuer())) {
+            if (!allowedIssuer.equals(jwt.getIssuer())) {
                 throw new InvalidParameterException(String.format("Unknown Issuer %s", jwt.getIssuer()));
             }
 
@@ -66,7 +69,7 @@ public class JwtValidator {
             DecodedJWT decodedJWT = verifier.verify(token);
 
             Collection<GrantedAuthority> authorities = jwtGrantedAuthoritiesConverter.convert(parderJwt);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), null, authorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(decodedJWT, null, authorities);
             return Optional.of(authentication);
         } catch (Exception e) {
             logger.error("Failed to validate JWT", e);

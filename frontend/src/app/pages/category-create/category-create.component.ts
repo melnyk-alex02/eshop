@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { CategoryBackendService } from "../../services/category-backend.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { Subject, takeUntil } from "rxjs";
 import { Category } from "../../models/category";
 import { SnackBarService } from "../../services/snack-bar.service";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-category-create',
@@ -21,13 +21,11 @@ export class CategoryCreateComponent implements OnInit {
 
   fileName = '';
 
-  private unsubscribe: Subject<void> = new Subject();
-
   constructor(private categoryService: CategoryBackendService,
               private snackBarService: SnackBarService,
-              private route: ActivatedRoute,
               private router: Router,
               private formBuilder: FormBuilder,
+              private destroyRef: DestroyRef,
               private dialog: MatDialog
   ) {
   }
@@ -39,11 +37,6 @@ export class CategoryCreateComponent implements OnInit {
     })
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
-  }
-
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
 
@@ -51,7 +44,7 @@ export class CategoryCreateComponent implements OnInit {
       this.fileName = file.name;
 
       this.categoryService.uploadCategories(file).pipe(
-        takeUntil(this.unsubscribe)
+        takeUntilDestroyed(this.destroyRef)
       )
         .subscribe({
           next: () => {
@@ -72,7 +65,7 @@ export class CategoryCreateComponent implements OnInit {
       switch (res.event) {
         case "confirm-option":
           this.categoryService.createCategory(this.form.getRawValue()).pipe(
-            takeUntil(this.unsubscribe)
+            takeUntilDestroyed(this.destroyRef)
           )
             .subscribe({
               next: () => {

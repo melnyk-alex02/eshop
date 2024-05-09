@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { ItemBackendService } from "../../services/item-backend.service";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { switchMap } from "rxjs";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
@@ -9,6 +9,7 @@ import { CategoryBackendService } from "../../services/category-backend.service"
 import { Item } from "../../models/item";
 import { Category } from "../../models/category";
 import { SnackBarService } from "../../services/snack-bar.service";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-item-edit',
@@ -20,7 +21,6 @@ export class ItemEditComponent implements OnInit {
   item: Item;
   categories: Category[];
   form: FormGroup = new FormGroup<any>({});
-  private unsubscribe: Subject<void> = new Subject();
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
@@ -28,13 +28,14 @@ export class ItemEditComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private formBuilder: FormBuilder,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private destroyRef: DestroyRef) {
   }
 
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
-        takeUntil(this.unsubscribe),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((params: ParamMap) => {
           const id = params.get('id');
           return this.itemService.getItemById(Number(id));
@@ -56,11 +57,6 @@ export class ItemEditComponent implements OnInit {
       });
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
-  }
-
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
     dialogRef.afterClosed().subscribe({
@@ -69,7 +65,7 @@ export class ItemEditComponent implements OnInit {
           case "confirm-option":
             this.itemService.updateItem(this.form.getRawValue())
               .pipe(
-                takeUntil(this.unsubscribe)
+                takeUntilDestroyed(this.destroyRef)
               )
               .subscribe({
                 next: () => {
@@ -92,7 +88,7 @@ export class ItemEditComponent implements OnInit {
   getCategories() {
     return this.categoryService.getAllCategories(0, 0, '', '')
       .pipe(
-        takeUntil(this.unsubscribe)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: (res) => {

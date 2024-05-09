@@ -10,8 +10,14 @@
               routerLinkActive="active">My Cart
       </button>
 
-      <div *ngIf="isAdmin">
+      <div *ngIf="isAdmin()">
         <button mat-button routerLink="admin" routerLinkActive="active">Admin</button>
+      </div>
+      <div *ngIf="isUserLoggedIn()">
+        <button mat-button routerLink="profile" routerLinkActive="active">Profile</button>
+      </div>
+      <div *ngIf="!isUserLoggedIn()">
+        <button mat-button routerLink="login" routerLinkActive="active">Login</button>
       </div>
     </div>
 
@@ -26,8 +32,14 @@
                     routerLink="my-cart"
                     routerLinkActive="active">My Cart
             </button>
-            <div *ngIf="isAdmin" class="buttons">
+            <div *ngIf="isAdmin()" class="buttons">
               <button mat-button routerLink="admin" routerLinkActive="active">Admin</button>
+            </div>
+            <div *ngIf="isUserLoggedIn()" class="buttons">
+              <button mat-button routerLink="profile" routerLinkActive="active">Profile</button>
+            </div>
+            <div *ngIf="!isUserLoggedIn()" class="buttons">
+              <button mat-button routerLink="login" routerLinkActive="active">Login</button>
             </div>
           </div>
         </div>

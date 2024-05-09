@@ -14,21 +14,21 @@ public class CookieExtractorAndCreator {
                 .orElse(null);
     }
 
-    public static Cookie createAccessTokenCookie(String cookieValue) {
+    public static Cookie createAccessTokenCookie(String cookieValue, int maxAge) {
         Cookie cookie = new Cookie("access_token", cookieValue);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
-        cookie.setMaxAge(60*5);
+        cookie.setMaxAge(maxAge);
         return cookie;
     }
 
-    public static Cookie createRefreshTokenCookie(String cookieValue) {
+    public static Cookie createRefreshTokenCookie(String cookieValue, int maxAge) {
         Cookie cookie = new Cookie("refresh_token", cookieValue);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24 * 7);
+        cookie.setMaxAge(maxAge);
         return cookie;
     }
 }

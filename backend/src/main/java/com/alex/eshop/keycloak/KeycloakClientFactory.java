@@ -19,14 +19,14 @@ public class KeycloakClientFactory {
     private final Logger logger = LoggerFactory.getLogger(KeycloakClientFactory.class.getName());
 
     public synchronized Keycloak getInstance() {
-        logger.info("Retrieving Keycloak instance for realm: {}", applicationProperties.getKeycloak().getRealm());
         if (keycloakInstance == null || keycloakInstance.isClosed()) {
             this.keycloakInstance = KeycloakBuilder.builder()
                     .serverUrl("http://" + applicationProperties.getKeycloak().getBaseUrl())
                     .realm(applicationProperties.getKeycloak().getRealm())
                     .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                     .clientId(applicationProperties.getKeycloak().getClientId())
-                    .clientSecret(applicationProperties.getKeycloak().getClientSecret()).build();
+                    .clientSecret(applicationProperties.getKeycloak().getClientSecret())
+                    .scope(applicationProperties.getKeycloak().getScope()).build();
         }
         return keycloakInstance;
     }

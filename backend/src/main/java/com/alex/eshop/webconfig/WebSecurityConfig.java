@@ -30,10 +30,15 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/users/register",
                                 "/api/users/token",
+                                "/api/users/refresh-token",
+                                "/api/users/verify-email",
+                                "/api/users/send-reset-password-email",
+                                "/api/users/reset-password",
                                 "/error",
-                                "api/items",
-                                "api/cart").permitAll()
-                        .anyRequest().authenticated())
+                                "/api/items/{id}",
+                                "/api/items",
+                                "/api/cart/create-order/{email}",
+                                "/api/order/{email}/{orderNumber}").permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .oauth2ResourceServer(resourceServerConfigurer -> resourceServerConfigurer
                         .jwt(jwtConfigurer -> jwtConfigurer

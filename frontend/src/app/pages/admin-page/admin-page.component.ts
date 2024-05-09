@@ -1,19 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild } from '@angular/core';
 import { ItemBackendService } from "../../services/item-backend.service";
 import { StatsBackendService } from "../../services/stats-backend.service";
 import { Item } from "../../models/item";
 import { Stats } from "../../models/stats";
-import { Subject, takeUntil } from "rxjs";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { SnackBarService } from "../../services/snack-bar.service";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.css']
 })
-export class AdminPageComponent implements OnInit, OnDestroy {
+export class AdminPageComponent implements OnInit {
 
   lastFiveItemsList: Item[];
 
@@ -28,10 +28,9 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   @ViewChild(MatTable) table: any;
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
 
-  private unsubscribe: Subject<void> = new Subject();
-
   constructor(private itemService: ItemBackendService,
               private statsService: StatsBackendService,
+              private destroyRef: DestroyRef,
               private snackBarService: SnackBarService) {
   }
 
@@ -41,7 +40,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.getAllStats();
 
     this.itemService.getLastFiveAddedItems().pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (data) => {
@@ -51,11 +50,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
           this.snackBarService.error(error.message);
         }
       })
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   pageChanged(event: PageEvent) {
@@ -70,7 +64,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       this.currentPage,
       this.currentSize
     ).pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (data) => {

@@ -9,10 +9,12 @@ import java.util.List;
 public record OrderDTO(
         Long id,
         String number,
+
         OrderStatus status,
         ZonedDateTime createdDate,
         BigDecimal price,
         List<OrderItemDTO> orderItemDTOList,
+        String email,
         String userId,
         ZonedDateTime purchasedDate
 ) {

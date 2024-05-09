@@ -16,13 +16,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     Order findOrderByUserIdAndNumber(String userId, String number);
 
+    @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
+    Order findByEmailAndNumber(String email, String number);
+
     boolean existsByNumberAndUserId(String number, String userId);
+
+    boolean existsByNumberAndEmail(String number, String email);
 
     @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     Order findByNumber(String number);
 
     @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     Page<Order> findAllByUserId(String userId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
+    Page<Order> findAllByEmail(String email, Pageable pageable);
 
     @EntityGraph(attributePaths = {"orderItemList", "orderItemList.item"})
     Page<Order> findAll(Pageable pageable);

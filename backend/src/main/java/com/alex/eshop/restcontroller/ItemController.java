@@ -7,6 +7,8 @@ import com.alex.eshop.dto.itemDTOs.ItemUpdateDTO;
 import com.alex.eshop.service.ItemService;
 import com.alex.eshop.wrapper.PageWrapper;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +23,8 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
+    private final Logger logger = LoggerFactory.getLogger(ItemController.class);
+
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("/items/last")
     public List<ItemDTO> lastFiveItems() {
@@ -30,7 +34,6 @@ public class ItemController {
     @GetMapping("/items")
     public PageWrapper<ItemDTO> getAllItems(Pageable pageable) {
         Page<ItemDTO> itemPage = itemService.getAllItems(pageable);
-
         return new PageWrapper<>(itemPage.getContent(), itemPage.getTotalElements());
     }
 
@@ -45,8 +48,7 @@ public class ItemController {
         return new PageWrapper<>(itemPage.getContent(), itemPage.getTotalElements());
     }
 
-    @PreAuthorize("hasRole('" + Role.USER + "')")
-    @GetMapping("items/{id}")
+    @GetMapping("/items/{id}")
     public ItemDTO getItemById(@PathVariable Long id) {
         return itemService.getItemById(id);
     }

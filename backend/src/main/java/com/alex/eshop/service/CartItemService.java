@@ -10,6 +10,8 @@ import com.alex.eshop.mapper.CartMapper;
 import com.alex.eshop.repository.CartItemRepository;
 import com.alex.eshop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class CartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
     private final OrderService orderService;
+    private final Logger logger = LoggerFactory.getLogger(CartItemService.class.getName());
 
     private final ItemRepository itemRepository;
     private final CurrentUserService currentUserService;
@@ -73,16 +76,23 @@ public class CartItemService {
 
     public OrderDTO createOrderFromCart() {
         String userId = currentUserService.getCurrentUserUuid();
+        String email = currentUserService.getCurrentUserEmail();
+        logger.info(email);
+
 
         if (!cartItemRepository.existsAllByUserId(userId)) {
             throw new DataNotFoundException("There is no cart for current logged user");
         }
 
-        OrderDTO orderDTO = orderService.createOrder(getCartByCurrentUser(), userId);
+        OrderDTO orderDTO = orderService.createOrder(getCartByCurrentUser(), userId, email);
 
         deleteCart();
 
         return orderDTO;
+    }
+
+    public OrderDTO createOrderFromCart(String email, List<CartItemDTO> cartItemCreateDTOS) {
+        return orderService.createOrder(cartItemCreateDTOS, null, email);
     }
 
     public void deleteCart() {

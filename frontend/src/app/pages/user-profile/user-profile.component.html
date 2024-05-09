@@ -1,0 +1,27 @@
+<ng-container *ngIf="this.loading" xmlns="http://www.w3.org/1999/html">
+  <div class="spinner">
+    <mat-progress-spinner
+      class="example-margin"
+      color="primary"
+      mode="indeterminate"
+    >
+    </mat-progress-spinner>
+  </div>
+</ng-container>
+
+<br>
+<div class="header" *ngIf="!loading">
+  <h1 style="text-align: center">Welcome to your profile</h1>
+</div>
+<div class="profile" *ngIf="!loading">
+  <h3>Email: {{user.email}}</h3>
+  <h3>First name: {{user.firstName}}</h3>
+  <h3>Last name: {{user.lastName}}</h3>
+  <h3 *ngIf="!user.emailVerified">You haven't verified your email. Click <a (click)="sendEmailVerification()" routerLink="/profile" routerLinkActive="active">here</a> to verify it!</h3>
+  <h3 *ngIf="user.emailVerified">Your email is verified</h3>
+  <div class="logout">
+    <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+  </div>
+
+</div>
+

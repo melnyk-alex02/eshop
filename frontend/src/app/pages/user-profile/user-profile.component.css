@@ -1,0 +1,5 @@
+.spinner {
+  margin-top: 250px;
+  display: grid;
+  place-items: center;
+}

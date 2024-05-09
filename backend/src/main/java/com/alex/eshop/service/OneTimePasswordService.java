@@ -29,7 +29,7 @@ public class OneTimePasswordService {
 
     public void validateOneTimePassword(String email, String value, OneTimePasswordType type) {
         OneTimePassword oneTimePassword = oneTimePasswordRepository.findByUserEmailAndValueAndType(email, value, type)
-                .orElseThrow(() -> new DataNotFoundException("OTP was not found"));
+                .orElseThrow(() -> new DataNotFoundException("OTP was not found :("));
 
         if (oneTimePassword.getExpireAt().isBefore(ZonedDateTime.now())) {
             throw new InvalidDataException("OTP is expired");
@@ -40,6 +40,6 @@ public class OneTimePasswordService {
 
     @Scheduled(cron = "0 * * * * *")
     protected void checkExpiredOneTimePasswords() {
-
+        oneTimePasswordRepository.deleteAllByExpireAtBefore(ZonedDateTime.now());
     }
 }

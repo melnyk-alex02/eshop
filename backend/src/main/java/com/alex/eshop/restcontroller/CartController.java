@@ -38,4 +38,10 @@ public class CartController {
     public OrderDTO createOrderFromCart() {
         return cartService.createOrderFromCart();
     }
+
+    @PostMapping("/create-order/{email}")
+    public OrderDTO createOrderFromCartForUserLoggedInAfterAddedItemToCart(@PathVariable String email, @RequestBody List<CartItemDTO>
+            cartItemDTOList) {
+        return cartService.createOrderFromCart(email, cartItemDTOList);
+    }
 }

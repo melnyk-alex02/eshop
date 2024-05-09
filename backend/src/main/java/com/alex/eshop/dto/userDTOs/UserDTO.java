@@ -6,9 +6,9 @@ import java.util.List;
 public record UserDTO(
         String userId,
         String email,
-        String username,
         String firstName,
         String lastName,
+        boolean emailVerified,
         LocalDateTime registerDate,
         List<String> roles
 ) {

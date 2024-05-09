@@ -1,0 +1,50 @@
+<br>
+<br>
+<div class="header">
+  <h2>Register</h2>
+</div>
+<div class="container">
+  <div class="register-form">
+    <form [formGroup]="form" (ngSubmit)="register()">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Enter your email" required>
+        <mat-error *ngIf="form.controls['email'].invalid"></mat-error>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" placeholder="Enter your password" required>
+        <mat-error *ngIf="form.controls['password'].invalid"></mat-error>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="outline">
+        <mat-label>Confirm password</mat-label>
+        <input matInput formControlName="confirmPassword" type="password" placeholder="Enter your password" required>
+        <mat-error *ngIf="form.controls['confirmPassword'].invalid"></mat-error>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="outline">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" placeholder="Enter your password" required>
+      <mat-error *ngIf="form.controls['firstName'].invalid"></mat-error>
+    </mat-form-field>
+      <br>
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" placeholder="Enter your password" required>
+        <mat-error *ngIf="form.controls['lastName'].invalid"></mat-error>
+      </mat-form-field>
+      <br>
+      <mat-checkbox formControlName="rememberMe">Remember me</mat-checkbox>
+      <br>
+      <br>
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
+          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+          <span *ngIf="!loading">Register</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

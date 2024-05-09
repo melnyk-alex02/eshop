@@ -1,17 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { Order } from "../../models/order";
 import { OrderBackendService } from "../../services/order-backend.service";
 import { MatTableDataSource } from "@angular/material/table";
-import { Subject, takeUntil } from "rxjs";
 import { SnackBarService } from "../../services/snack-bar.service";
 import { PageEvent } from "@angular/material/paginator";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-orders-list',
   templateUrl: './orders-list.component.html',
   styleUrls: ['./orders-list.component.css']
 })
-export class OrdersListComponent implements OnInit, OnDestroy {
+export class OrdersListComponent implements OnInit {
   dataSource = new MatTableDataSource<Order>();
 
   loading: boolean;
@@ -23,25 +23,20 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ["number", "status", "createdDate", "price", "items", "purchasedDate"];
 
-  private unsubscribe: Subject<void> = new Subject();
-
   constructor(private orderService: OrderBackendService,
-              private snackBarService: SnackBarService) {
+              private snackBarService: SnackBarService,
+              private destroyRef: DestroyRef) {
   }
 
   ngOnInit() {
     this.getOrders(0, 5);
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.complete();
-    this.unsubscribe.next();
-  }
 
   getOrders(pageNumber: number, pageSize: number) {
     this.loading = true;
     this.orderService.getOrders(pageNumber, pageSize).pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (data) => {
         this.dataSource.data = data.content;
@@ -63,5 +58,4 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
     this.getOrders(this.currentPage, this.currentSize);
   }
-
 }

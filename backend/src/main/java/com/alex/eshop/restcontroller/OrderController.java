@@ -18,14 +18,19 @@ public class OrderController {
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("order/{orderNumber}")
-    public OrderDTO getOrderByUserId(@PathVariable String orderNumber) {
-        return orderService.getOrderByUserIdAndOrderNumber(orderNumber);
+    public OrderDTO getOrderByEmailAndOrderNumber(@PathVariable String orderNumber) {
+        return orderService.getOrderByEmailAndOrderNumber(orderNumber);
+    }
+
+    @GetMapping("order/{email}/{orderNumber}")
+    public OrderDTO getOrderByEmailAndOrderNumberForUnauthenticatedUsers(@PathVariable String email, @PathVariable String orderNumber) {
+        return orderService.getOrderByEmailAndOrderForUnauthenticatedUsers(orderNumber, email);
     }
 
     @PreAuthorize("hasRole('" + Role.USER + "')")
     @GetMapping("orders")
     public PageWrapper<OrderDTO> getAllOrdersByUserId(Pageable pageable) {
-        Page<OrderDTO> orderPage = orderService.getAllOrdersByUserId(pageable);
+        Page<OrderDTO> orderPage = orderService.getAllOrdersByEmail(pageable);
 
         return new PageWrapper<>(orderPage.getContent(), orderPage.getTotalElements());
     }
