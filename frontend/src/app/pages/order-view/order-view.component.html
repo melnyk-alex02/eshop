@@ -16,7 +16,7 @@
   </div>
   <div class="body">
     <h3>Created date: {{ order.createdDate | date: 'dd MMM yyyy, HH:mm' }}</h3>
-    <h3 *ngIf="order.purchasedDate!= null">Purchased date: {{ order.purchasedDate }}</h3>
+    <h3 *ngIf="order.purchasedDate!= null">Purchased date: {{ order.purchasedDate | date: 'dd MMM yyyy, HH:mm' }}</h3>
     <h3>Status: {{ order.status }}</h3>
   </div>
 
@@ -29,7 +29,7 @@
 
       <ng-container matColumnDef="itemPrice">
         <mat-header-cell *matHeaderCellDef>Item Price</mat-header-cell>
-        <mat-cell *matCellDef="let orderItem" data-label="item price"> {{ orderItem.itemPrice | currency :"USD" }}</mat-cell>
+        <mat-cell *matCellDef="let orderItem" data-label="item price"> {{ orderItem.itemPrice | currency :'USD' }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="itemCount">
@@ -43,7 +43,7 @@
   </div>
   <br>
   <div class="after-table">
-    <h3>Total price: {{ order.price }}</h3>
+    <h3>Total price: {{ order.price | currency :'USD' }}</h3>
 
     <button class="button-1" *ngIf="order.status=='NEW'" (click)="this.confirmOrder()" [disabled]="!isOrderStatusNew()">
       Buy

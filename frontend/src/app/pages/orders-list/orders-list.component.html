@@ -29,7 +29,7 @@
 
       <ng-container matColumnDef="createdDate">
         <mat-header-cell *matHeaderCellDef> Created Date</mat-header-cell>
-        <mat-cell *matCellDef="let order" data-label="created date">{{ order.createdDate }}</mat-cell>
+        <mat-cell *matCellDef="let order" data-label="created date">{{ order.createdDate | date: 'dd MMM yyyy, HH:mm' }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="price">
@@ -41,7 +41,7 @@
       <ng-container matColumnDef="purchasedDate">
         <mat-header-cell *matHeaderCellDef> Purchased Date</mat-header-cell>
         <mat-cell *matCellDef="let order"
-                  data-label="purchased date">{{ order.purchasedDate != null ? order.purchasedDate : '-' }}
+                  data-label="purchased date">{{ order.purchasedDate == null ? '-' : order.purchasedDate | date: 'dd MMM yyyy, HH:mm' }}
         </mat-cell>
       </ng-container>
 

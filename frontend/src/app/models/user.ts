@@ -4,6 +4,6 @@ export interface User {
   emailVerified: boolean;
   firstName: string;
   lastName: string;
-  registeredDate: Date;
+  registerDate: Date;
   roles: string[];
 }

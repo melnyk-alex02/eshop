@@ -15,10 +15,17 @@
 </div>
 <div class="profile" *ngIf="!loading">
   <h3>Email: {{user.email}}</h3>
-  <h3>First name: {{user.firstName}}</h3>
-  <h3>Last name: {{user.lastName}}</h3>
   <h3 *ngIf="!user.emailVerified">You haven't verified your email. Click <a (click)="sendEmailVerification()" routerLink="/profile" routerLinkActive="active">here</a> to send verification link to your email.</h3>
   <h3 *ngIf="user.emailVerified">Your email is verified</h3>
+  <h3>First name: {{user.firstName}}</h3>
+  <h3>Last name: {{user.lastName}}</h3>
+  <h3>Register date: {{user.registerDate | date: 'dd MMM yyyy, HH:mm'}}</h3>
+  <h3>Roles:</h3>
+  <ul>
+    <li *ngFor="let role of user.roles">
+      {{role}}
+    </li>
+  </ul>
   <div class="logout">
     <button mat-raised-button color="primary" (click)="logout()">Logout</button>
   </div>
