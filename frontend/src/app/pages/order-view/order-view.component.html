@@ -15,7 +15,7 @@
     <h1 style="color: black">Order: {{ order.number }}</h1>
   </div>
   <div class="body">
-    <h3>Created date: {{ order.createdDate }}</h3>
+    <h3>Created date: {{ order.createdDate | date: 'dd MMM yyyy, HH:mm' }}</h3>
     <h3 *ngIf="order.purchasedDate!= null">Purchased date: {{ order.purchasedDate }}</h3>
     <h3>Status: {{ order.status }}</h3>
   </div>
