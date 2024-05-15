@@ -1,47 +1,30 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { inject } from "@angular/core";
+import { UserBackendService } from "../../services/user-backend.service";
+import { User } from "../../models/user";
+import { catchError, map, Observable, of } from "rxjs";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard extends KeycloakAuthGuard {
+export const authGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): Observable<boolean | UrlTree> => {
+  const userService = inject(UserBackendService);
+  const router = inject(Router);
 
 
-  constructor(
-    protected override readonly router: Router,
-    protected readonly keycloak: KeycloakService,
-    private snackBar: MatSnackBar
-  ) {
-    super(router, keycloak);
-  }
-
-  async isAccessAllowed(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-
-    if (!this.authenticated) {
-      await this.keycloak.login({
-        redirectUri: window.location.origin + state.url,
-      });
-    }
-
-    let roles = route.data['roles'];
-
-    if (!roles || roles.length === 0) {
-      return this.authenticated
-    }
-
-    for (let role of roles) {
-      if (this.keycloak.isUserInRole(role)) {
-        return this.authenticated;
+  return userService.getCurrentUser().pipe(
+    map((user: User) => {
+      const requiredRoles = route.data?.['roles'];
+      if (user && user.roles && user.roles.some((r: string) => requiredRoles.includes(r))) {
+        return true;
+      } else if (user && user.roles && user.roles.includes('ROLE_USER') && !user.roles.includes('ROLE_ADMIN')) {
+        return router.createUrlTree(['/not-found']);
+      } else {
+        return router.createUrlTree(['/login'], {queryParams: {returnUrl: state.url}});
       }
-    }
-    this.router.navigate(["/access-denied"])
-    // this.snackBar.open("Access denied", '', {
-    //   duration: 5000,
-    // })
-    return false;
-  }
-}
+    }),
+    catchError((err) => {
+      return of(router.createUrlTree(['/login'], {queryParams: {returnUrl: state.url}}));
+    })
+  );
+};

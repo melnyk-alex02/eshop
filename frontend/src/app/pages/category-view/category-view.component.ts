@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { CategoryBackendService } from "../../services/category-backend.service";
-import { KeycloakService } from "keycloak-angular";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import { Role } from "../../models/role";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { switchMap } from "rxjs";
 import { Category } from "../../models/category";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-category-view',
@@ -15,20 +14,15 @@ export class CategoryViewComponent implements OnInit {
 
   category: Category;
 
-  role: boolean;
-
-  private unsubscribe: Subject<void> = new Subject<void>();
-
   constructor(private categoryService: CategoryBackendService,
               private route: ActivatedRoute,
-              private keycloak: KeycloakService) {
+              private destroyRef: DestroyRef) {
   }
 
   ngOnInit() {
-    this.role = this.keycloak.isUserInRole(Role.Admin);
 
     this.route.paramMap.pipe(
-      takeUntil(this.unsubscribe),
+      takeUntilDestroyed(this.destroyRef),
       switchMap((params: ParamMap) => {
         const id = params.get('id');
 
@@ -40,10 +34,5 @@ export class CategoryViewComponent implements OnInit {
           this.category = data;
         }
       });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.complete();
-    this.unsubscribe.next();
   }
 }

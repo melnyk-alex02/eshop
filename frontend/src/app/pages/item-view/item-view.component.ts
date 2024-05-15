@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { ItemBackendService } from "../../services/item-backend.service";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { switchMap } from "rxjs";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Item } from "../../models/item";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-item-view',
@@ -13,15 +14,14 @@ export class ItemViewComponent implements OnInit {
 
   item: Item;
 
-  private unsubscribe: Subject<void> = new Subject();
-
   constructor(private itemService: ItemBackendService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private destroyRef: DestroyRef) {
   }
 
   ngOnInit() {
     this.route.paramMap.pipe(
-      takeUntil(this.unsubscribe),
+      takeUntilDestroyed(this.destroyRef),
       switchMap((params: ParamMap) => {
         const id = params.get('id');
         return this.itemService.getItemById(Number(id));
@@ -32,10 +32,5 @@ export class ItemViewComponent implements OnInit {
           this.item = data;
         }
       });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.complete();
-    this.unsubscribe.next();
   }
 }

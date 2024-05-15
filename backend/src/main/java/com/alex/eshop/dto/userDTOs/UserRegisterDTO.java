@@ -1,7 +1,6 @@
 package com.alex.eshop.dto.userDTOs;
 
 public record UserRegisterDTO(
-        String username,
         String email,
         String password,
         String confirmPassword,
@@ -11,8 +10,7 @@ public record UserRegisterDTO(
     @Override
     public String toString() {
         return "{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
+                "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 '}';

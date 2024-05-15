@@ -52,11 +52,25 @@
     <br>
     <h1 style="color: black; text-align: center">Cart is empty :(</h1>
   </div>
-
   <br>
-  <div class="create-order">
-    <button class="button-1" (click)="createOrderFromCart()">Confirm order</button>
+  <br>
+  <div class="email-form" *ngIf="!localStorage.getItem('user')">
+    <form [formGroup]="form" (ngSubmit)="createOrder()">
+      <mat-form-field appearance="outline">
+      <input matInput formControlName="email" placeholder="Enter your email" required>
+      <mat-error *ngIf="form.controls['email'].invalid"></mat-error>
+      </mat-form-field>
+    </form>
+
+  </div>
+  <div class="create-order" *ngIf="localStorage.getItem('user')">
+    <button class="button-1" (click)="createOrderFromCart()" [disabled]="countItemsInCart() ==0">Create order</button>
+    <br>
   </div>
 
+
+  <div class="create-order" *ngIf="!localStorage.getItem('user')">
+    <button class="button-1" (click)="createOrder()" [disabled]="form.invalid || countItemsInCart() ==0">Create order</button>
+  </div>
   <br>
 </ng-container>

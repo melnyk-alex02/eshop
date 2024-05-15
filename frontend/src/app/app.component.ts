@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { KeycloakService } from "keycloak-angular";
-import { Role } from "./models/role";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
+import { UserBackendService } from "./services/user-backend.service";
 
 @Component({
   selector: 'app-root',
@@ -13,14 +12,19 @@ export class AppComponent {
 
   countOfItemsInCart: number;
 
-  isAdmin = this.keycloakService.isUserInRole(Role.Admin);
-
-  private unsubscribe: Subject<void> = new Subject();
-
-  constructor(private keycloakService: KeycloakService) {
+  constructor(private userService: UserBackendService) {
+    console.log(this.isUserLoggedIn())
   }
 
   getCountOfItemsInCart() {
     return this.countOfItemsInCart = Number(localStorage.getItem("countOfItemsInCart"));
+  }
+
+  isAdmin() : boolean {
+    return this.userService.isAdmin();
+  }
+
+  isUserLoggedIn() : boolean {
+    return this.userService.isLoggedIn();
   }
 }

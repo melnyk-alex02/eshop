@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild } from '@angular/core';
 import { ItemBackendService } from "../../services/item-backend.service";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Item } from "../../models/item";
 import { MatSort, Sort } from "@angular/material/sort";
@@ -15,6 +15,7 @@ import { SnackBarService } from "../../services/snack-bar.service";
 import { selectItemFiltering, selectItemPagination, selectItemSorting } from "../../store/selectors/item.selectors";
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { Category } from "../../models/category";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-item-list',
@@ -22,7 +23,7 @@ import { Category } from "../../models/category";
   styleUrls: ['./item-list.component.css']
 })
 
-export class ItemListComponent implements OnInit, OnDestroy {
+export class ItemListComponent implements OnInit {
   categories: Category[];
 
   totalElements: number;
@@ -52,14 +53,14 @@ export class ItemListComponent implements OnInit, OnDestroy {
   @ViewChild(MatTable) table: any;
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
-  private unsubscribe: Subject<void> = new Subject();
 
   constructor(private itemService: ItemBackendService,
               private categoryService: CategoryBackendService,
               private snackBarService: SnackBarService,
               public readonly router: Router,
               public dialog: MatDialog,
-              public store: Store<GlobalState>) {
+              public store: Store<GlobalState>,
+              private destroyRef: DestroyRef) {
     this.pagination$ = this.store.select(selectItemPagination);
 
     this.sorting$ = this.store.select(selectItemSorting);
@@ -72,7 +73,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.matSort;
 
     this.pagination$.pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (pagination) => {
@@ -82,7 +83,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       });
 
     this.sorting$.pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (sorting) => {
@@ -92,7 +93,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       });
 
     this.filtering$.pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe((filtering: any) => {
         this.filterName = filtering.name;
@@ -114,18 +115,13 @@ export class ItemListComponent implements OnInit, OnDestroy {
     }
 
     this.categoryService.getAllCategories(0, 0, '', '').pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (data) => {
           this.categories = data.content;
         }
       });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   deleteItem(id: number) {
@@ -137,7 +133,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
           case "confirm-option": {
             this.itemService.deleteItem(id)
               .pipe(
-                takeUntil(this.unsubscribe)
+                takeUntilDestroyed(this.destroyRef)
               )
               .subscribe({
                 next: () => {
@@ -227,7 +223,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       this.currentSortField,
       this.currentDirection
     ).pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (data) => {
@@ -260,7 +256,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     ).pipe(
       debounceTime(500),
       distinctUntilChanged(),
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (data) => {

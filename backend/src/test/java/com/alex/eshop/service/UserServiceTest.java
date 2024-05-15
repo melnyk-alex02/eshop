@@ -35,15 +35,16 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
+    //FIXME
     public void testGetAccessToken() {
         AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
         accessTokenResponse.setToken("some token");
 
-        when(keycloakService.getToken()).thenReturn(accessTokenResponse);
+        when(keycloakService.getToken("user@example.com", "user")).thenReturn(accessTokenResponse);
 
-        String result = userService.getAccessToken();
+        AccessTokenResponse result = userService.getAccessToken(any(String.class), any(String.class));
 
-        assertEquals(accessTokenResponse.getToken(), result);
+        assertEquals(accessTokenResponse.getToken(), result.getToken());
     }
 
     @Test
@@ -57,7 +58,7 @@ public class UserServiceTest {
                 null,
                 null,
                 null,
-                null,
+                false,
                 null,
                 null);
 
@@ -74,7 +75,7 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUser() {
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO("Test",
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(
                 "email",
                 "superpass",
                 "superpass",
@@ -91,9 +92,9 @@ public class UserServiceTest {
 
         UserDTO expectedUserDTO = new UserDTO("userUuid",
                 "email",
-                "Test",
                 "First Name",
                 "Last Name",
+                false,
                 LocalDateTime.now(),
                 List.of(Role.USER));
 
@@ -106,17 +107,17 @@ public class UserServiceTest {
         verify(userMapper).toDto(any(UserRepresentation.class));
 
         assertEquals(expectedUserDTO.userId(), result.userId());
-        assertEquals(expectedUserDTO.username(), result.username());
         assertEquals(expectedUserDTO.email(), result.email());
         assertEquals(expectedUserDTO.firstName(), result.firstName());
         assertEquals(expectedUserDTO.lastName(), result.lastName());
         assertEquals(expectedUserDTO.registerDate(), result.registerDate());
+        assertEquals(expectedUserDTO.emailVerified(), result.emailVerified());
         assertEquals(expectedUserDTO.roles(), result.roles());
     }
 
     @Test
     public void testCreateUser_WhenPasswordsDoesNotMatch_ShouldThrowException() {
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO("Test",
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(
                 "email",
                 "superpass",
                 "notsuperpass",

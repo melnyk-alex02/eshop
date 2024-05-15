@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild } from '@angular/core';
 import { Item } from "../../models/item";
-import { Subject, takeUntil } from "rxjs";
 import { ItemBackendService } from "../../services/item-backend.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { CartBackendService } from "../../services/cart-backend.service";
@@ -10,16 +9,20 @@ import { GlobalState } from "../../store/states/global.state";
 import { Store } from "@ngrx/store";
 import { selectAllItemsPagination } from "../../store/selectors/all.items.selectors";
 import { changingAllItemsPagination } from "../../store/actions/all.items.actions";
+import { CartItem } from "../../models/cartItem";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-all-items-page',
   templateUrl: './all-items-page.component.html',
   styleUrls: ['./all-items-page.component.css']
 })
-export class AllItemsPageComponent implements OnInit, OnDestroy {
+
+export class AllItemsPageComponent implements OnInit {
   items: Item[];
 
-  itemsInCart: any[];
+  cartItemList: CartItem[] = [];
+
 
   countOfItemsInCart: number = 0;
 
@@ -34,11 +37,11 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
 
-  private unsubscribe: Subject<void> = new Subject<void>()
 
   constructor(private itemService: ItemBackendService,
               private cartService: CartBackendService,
               private snackBarService: SnackBarService,
+              private destroyRef: DestroyRef,
               public store: Store<GlobalState>) {
     this.pagination$ = this.store.select(selectAllItemsPagination);
   }
@@ -46,7 +49,7 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.dataSource.paginator = this.matPaginator;
     this.pagination$.pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (pagination) => {
         this.currentSize = pagination.pageSize;
@@ -55,18 +58,14 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
     });
 
     this.getAllCart();
-    this.getAllItems(this.currentPage, this.currentSize);
-  }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
+    this.getAllItems(this.currentPage, this.currentSize);
   }
 
   getAllItems(pageNumber: number, pageSize: number) {
     this.loading = true;
     this.itemService.getAllItems(pageNumber, pageSize, "id", "desc").pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (data) => {
@@ -85,58 +84,85 @@ export class AllItemsPageComponent implements OnInit, OnDestroy {
 
   getAllCart() {
     this.loading = true;
-    this.cartService.getAllCartOfUser().pipe(
-      takeUntil(this.unsubscribe)
-    )
-      .subscribe({
-        next: (data) => {
-          this.itemsInCart = data;
-          this.countOfItemsInCart = data.length
-          localStorage.setItem("countOfItemsInCart", this.countOfItemsInCart.toString());
-        },
-        error: (error) => {
-          this.snackBarService.error(error.message)
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        }
-      });
+    if (localStorage.getItem("user")) {
+      this.cartService.getAllCartOfUser().pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+        .subscribe({
+          next: (data) => {
+            this.cartItemList = data;
+            this.countOfItemsInCart = data.length;
+            localStorage.setItem("cartItemList", JSON.stringify(data));
+
+          },
+          error: (error) => {
+            if (error.error.status != 401) {
+              this.snackBarService.error(error.error.message)
+            }
+            this.loading = false;
+          },
+          complete: () => {
+            localStorage.setItem("countOfItemsInCart", this.countOfItemsInCart.toString());
+            this.loading = false;
+          }
+        });
+    } else {
+      this.cartItemList = JSON.parse(localStorage.getItem("cartItemList")!);
+      if (this.cartItemList) {
+        this.countOfItemsInCart = this.cartItemList.length;
+        localStorage.setItem("countOfItemsInCart", this.countOfItemsInCart.toString());
+      } else {
+        localStorage.setItem("countOfItemsInCart", "0");
+      }
+    }
   }
 
   addItemToCart(item: Item) {
-    this.cartService.addItemToCart(item.id).pipe(
-      takeUntil(this.unsubscribe)
-    )
-      .subscribe({
-        error: (error) => {
-          this.snackBarService.error(error.message)
-        },
-        complete: () => {
-          item.inCart = true;
-          this.updateCartItems(item, true);
-          this.snackBarService.success("Item was successfully added to cart");
-          localStorage.setItem("countOfItemsInCart", (this.itemsInCart.length).toString());
-        },
-      });
-  }
-
-  isItemInCart(item: Item): boolean {
-    return this.itemsInCart.some(cartItem => cartItem.itemId == item.id);
-  }
-
-
-  updateCartItems(item: Item, isAdded: boolean) {
-    const cartItem = this.itemsInCart.find(ci => ci.itemId === item.id);
-    if (isAdded) {
-      if (!cartItem) {
-        this.itemsInCart.push({itemId: item.id, quantity: 1});
+    if (!localStorage.getItem("user")) {
+      item.inCart = true;
+      if (!this.cartItemList) {
+        this.cartItemList = [];
       }
+      if (this.cartItemList.some(cartItem => cartItem.itemId == item.id)) {
+        this.snackBarService.error("Item is already in cart");
+        return;
+      }
+      this.cartItemList.push({itemId: item.id, itemName: item.name, itemPrice: item.price, count: 1})
+      localStorage.setItem("countOfItemsInCart", (this.cartItemList.length).toString());
+      localStorage.setItem("cartItemList", JSON.stringify(this.cartItemList));
     } else {
-      if (cartItem) {
-        this.itemsInCart = this.itemsInCart.filter(ci => ci.itemId !== item.id);
-      }
+      this.cartService.addItemToCart(item.id).pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+        .subscribe({
+          next: () => {
+            if (!this.cartItemList) {
+              this.cartItemList = [];
+            }
+
+            this.cartItemList.push({itemId: item.id, itemName: item.name, itemPrice: item.price, count: 1})
+            localStorage.setItem("cartItemList", JSON.stringify(this.cartItemList));
+
+          },
+          error: (error) => {
+            this.snackBarService.error(error.message)
+          },
+          complete: () => {
+            item.inCart = true;
+            this.snackBarService.success("Item was successfully added to cart");
+            localStorage.setItem("countOfItemsInCart", (this.cartItemList.length).toString());
+          },
+        });
     }
+  }
+
+  isItemInCart(item: Item): any {
+    this.cartItemList = JSON.parse(localStorage.getItem("cartItemList")!);
+    if (!this.cartItemList) {
+      return false;
+    }
+
+    return this.cartItemList.some(cartItem => cartItem.itemId == item.id);
   }
 
   pageChanged(event: PageEvent) {

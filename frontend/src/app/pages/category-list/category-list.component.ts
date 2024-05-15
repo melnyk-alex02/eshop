@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
-import { KeycloakService } from "keycloak-angular";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
@@ -22,6 +21,7 @@ import {
   selectCategoryPagination,
   selectCategorySorting
 } from "../../store/selectors/category.selectors";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-category-list',
@@ -29,7 +29,7 @@ import {
   styleUrls: ['./category-list.component.css']
 })
 
-export class CategoryListComponent implements OnInit, OnDestroy {
+export class CategoryListComponent implements OnInit {
   totalElements: number;
 
   loading: boolean;
@@ -55,13 +55,12 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   @ViewChild(MatTable) table: any;
   @ViewChild(MatPaginator) matPaginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) matSort: MatSort;
-  private unsubscribe: Subject<void> = new Subject()
 
   constructor(private categoryService: CategoryBackendService,
               private snackBarService: SnackBarService,
-              private keycloak: KeycloakService,
               public readonly router: Router,
               public dialog: MatDialog,
+              private destroyRef: DestroyRef,
               private store: Store<GlobalState>) {
     this.pagination$ = this.store.select(selectCategoryPagination);
 
@@ -75,7 +74,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.matSort;
 
     this.pagination$.pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (pagination) => {
@@ -85,7 +84,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       });
 
     this.sorting$.pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (sorting) => {
@@ -95,7 +94,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       });
 
     this.filtering$.pipe(
-      takeUntil(this.unsubscribe)
+      takeUntilDestroyed(this.destroyRef)
     )
       .subscribe({
         next: (filtering: any) => {
@@ -114,11 +113,6 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
-  }
-
   deleteCategory(id: number) {
     const dialogRef = this.dialog.open(DialogWindowComponent);
 
@@ -127,7 +121,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         case "confirm-option":
           this.categoryService.deleteCategory(id)
             .pipe(
-              takeUntil(this.unsubscribe)
+              takeUntilDestroyed(this.destroyRef)
             )
             .subscribe({
               next: () => {
@@ -207,7 +201,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       this.currentDirection
     )
       .pipe(
-        takeUntil(this.unsubscribe)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: (data) => {
@@ -242,7 +236,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         .pipe(
           debounceTime(500),
           distinctUntilChanged(),
-          takeUntil(this.unsubscribe)
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe({
           next: (data) => {

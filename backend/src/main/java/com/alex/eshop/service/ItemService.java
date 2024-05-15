@@ -12,6 +12,7 @@ import com.alex.eshop.repository.ItemRepository;
 import com.alex.eshop.utils.CsvHeaderChecker;
 import com.alex.eshop.utils.FormatChecker;
 import lombok.RequiredArgsConstructor;
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -68,7 +69,8 @@ public class ItemService {
         if (!itemRepository.existsByCategoryId(itemCreateDTO.categoryId())) {
             throw new DataNotFoundException("There is no category with id " + itemCreateDTO.categoryId());
         }
-        if(itemCreateDTO.price().compareTo(BigDecimal.ZERO) < 0) {
+
+        if(is(itemCreateDTO.price()).lessThanOrEqualTo(BigDecimal.ZERO)){
             throw new InvalidDataException("Price should be greater than 0");
         }
 
@@ -120,7 +122,7 @@ public class ItemService {
         if (!itemRepository.existsByCategoryId(itemUpdateDTO.categoryId())) {
             throw new DataNotFoundException("There is no category with id " + itemUpdateDTO.categoryId());
         }
-        if(itemUpdateDTO.price().compareTo(BigDecimal.ZERO) < 0) {
+        if(is(itemUpdateDTO.price()).lessThanOrEqualTo(BigDecimal.ZERO)) {
             throw new InvalidDataException("Price should be greater than 0");
         }
         return itemMapper.toDto(itemRepository.save(itemMapper.toEntity(itemUpdateDTO)));

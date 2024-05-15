@@ -4,15 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableModule } from "@angular/material/table";
 import { MatSelectModule } from "@angular/material/select";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatButtonModule } from "@angular/material/button";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
-import { initializeKeycloak } from "./utils/init/keycloak-init.factory";
 import { CategoryEditComponent } from './pages/category-edit/category-edit.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
@@ -48,6 +46,18 @@ import { MatListModule } from "@angular/material/list";
 import { MatMenuModule } from "@angular/material/menu";
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { MatBadgeModule } from "@angular/material/badge";
+import { Interceptor } from "./inteceptor/interceptor";
+import { UserBackendService } from "./services/user-backend.service";
+import { first } from "rxjs";
+import { UserLoginComponent } from "./pages/user-login/user-login.component";
+import { UserRegisterComponent } from "./pages/user-register/user-register.component";
+import { UserResetPasswordComponent } from "./pages/user-reset-password/user-reset-password.component";
+import { UserVerifyEmailComponent } from "./pages/user-verify-email/user-verify-email.component";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { UserSendEmailPasswordResetComponent } from './pages/user-send-email-password-reset/user-send-email-password-reset.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { NgOptimizedImage } from "@angular/common";
+
 
 @NgModule({
   declarations: [
@@ -69,7 +79,13 @@ import { MatBadgeModule } from "@angular/material/badge";
     MyOrdersComponent,
     AppComponent,
     OrdersListComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    UserLoginComponent,
+    UserRegisterComponent,
+    UserResetPasswordComponent,
+    UserVerifyEmailComponent,
+    UserSendEmailPasswordResetComponent,
+    UserProfileComponent,
   ],
   imports: [
     RouterModule,
@@ -86,7 +102,6 @@ import { MatBadgeModule } from "@angular/material/badge";
     MatSortModule,
     HttpClientModule,
     NgbModule,
-    KeycloakAngularModule,
     AppRoutingModule,
     ReactiveFormsModule,
     MatToolbarModule,
@@ -102,13 +117,24 @@ import { MatBadgeModule } from "@angular/material/badge";
     MatListModule,
     MatMenuModule,
     MatBadgeModule,
+    MatCheckboxModule,
+    NgOptimizedImage,
   ],
-  providers: [{
-    provide: APP_INITIALIZER,
-    useFactory: initializeKeycloak,
-    multi: true,
-    deps: [KeycloakService],
-  }],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: Interceptor,
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (userService: UserBackendService) => () => {
+        userService.checkAuthenticationAndGetUser().pipe(first()).subscribe();
+      },
+      deps: [UserBackendService],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

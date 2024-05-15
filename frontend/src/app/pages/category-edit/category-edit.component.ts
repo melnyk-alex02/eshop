@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { CategoryBackendService } from "../../services/category-backend.service";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogWindowComponent } from "../../component/dialog-window/dialog-window.component";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { switchMap } from "rxjs";
 import { Category } from "../../models/category";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-category-edit',
@@ -15,20 +16,19 @@ import { Category } from "../../models/category";
 export class CategoryEditComponent implements OnInit {
   category: Category;
 
-  private unsubscribe: Subject<void> = new Subject();
-
   form: FormGroup;
 
   constructor(private categoryService: CategoryBackendService,
               private route: ActivatedRoute,
               private router: Router,
               private formBuilder: FormBuilder,
+              private destroyRef: DestroyRef,
               private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
-      takeUntil(this.unsubscribe),
+      takeUntilDestroyed(this.destroyRef),
       switchMap((params: ParamMap) => {
         const id = params.get('id');
         return this.categoryService.getCategoryById(Number(id));
@@ -47,11 +47,6 @@ export class CategoryEditComponent implements OnInit {
       });
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.complete();
-    this.unsubscribe.next();
-  }
-
   onSubmit() {
     const dialogRef = this.dialog.open(DialogWindowComponent);
     dialogRef.afterClosed().subscribe({
@@ -60,7 +55,7 @@ export class CategoryEditComponent implements OnInit {
           case "confirm-option":
             this.categoryService.updateCategory(this.form.getRawValue())
               .pipe(
-                takeUntil(this.unsubscribe)
+                takeUntilDestroyed(this.destroyRef)
               )
               .subscribe({
                 next: () => {

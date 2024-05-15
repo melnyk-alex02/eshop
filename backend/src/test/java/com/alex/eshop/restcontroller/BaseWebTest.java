@@ -14,7 +14,6 @@ public abstract class BaseWebTest {
 
     @Autowired
     private WebApplicationContext wac;
-
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -23,5 +22,4 @@ public abstract class BaseWebTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
     }
-
 }

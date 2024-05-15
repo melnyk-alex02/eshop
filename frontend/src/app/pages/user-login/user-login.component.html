@@ -1,0 +1,33 @@
+<br>
+<br>
+<div class="header">
+  <h2>Login</h2>
+</div>
+<form [formGroup]="form" (ngSubmit)="login()">
+  <div class="fields">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Enter your email" required>
+      <mat-error *ngIf="form.controls['email'].invalid"></mat-error>
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" type="password" placeholder="Enter your password" required>
+      <mat-error *ngIf="form.controls['password'].invalid"></mat-error>
+    </mat-form-field>
+  </div>
+  <div class="container">
+    <a routerLink="/reset-password" routerLinkActive="active">Reset password</a>
+    <p>Don't have an account? <a routerLink="/register" routerLinkActive="active">Register</a></p>
+  </div>
+  <mat-checkbox formControlName="rememberMe">Remember me</mat-checkbox>
+  <br>
+  <div>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
+      <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+      <span *ngIf="!loading">Login</span>
+    </button>
+  </div>
+</form>
+
