@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/users/register")
     public void createUser(@RequestBody UserRegisterDTO userRegisterDTO, boolean rememberMe, HttpServletResponse httpServletResponse) {
-        AccessTokenResponse accessTokenResponse = userService.createUser(userRegisterDTO);
+        AccessTokenResponse accessTokenResponse = userService.createUserAndAuthenticate(userRegisterDTO);
         if (rememberMe) {
             httpServletResponse.addCookie(CookieExtractorAndCreator.createRefreshTokenCookie(accessTokenResponse.getRefreshToken(), REFRESH_TOKEN_EXPIRATION_TIME));
         }

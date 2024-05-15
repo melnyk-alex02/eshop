@@ -38,7 +38,8 @@ public class WebSecurityConfig {
                                 "/api/items/{id}",
                                 "/api/items",
                                 "/api/cart/create-order/{email}",
-                                "/api/order/{email}/{orderNumber}").permitAll().anyRequest().authenticated())
+                                "/api/order/{email}/{orderNumber}").permitAll()
+                        .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .oauth2ResourceServer(resourceServerConfigurer -> resourceServerConfigurer
                         .jwt(jwtConfigurer -> jwtConfigurer

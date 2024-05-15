@@ -166,41 +166,38 @@ public class KeycloakService {
         return usersResource().search(email, true).get(0);
     }
 
-
-    public AccessTokenResponse createUser(UserRegisterDTO userRegisterDTO) {
+    public UserRepresentation createUser(UserRegisterDTO userRegisterDTO) {
         if (!Objects.equals(userRegisterDTO.password(), userRegisterDTO.confirmPassword())) {
             throw new InvalidDataException("Password and Confirm Password does not match");
         }
 
         UserRepresentation userRepresentation = new UserRepresentation();
 
+        userRepresentation.setUsername(userRegisterDTO.email());
         userRepresentation.setEmail(userRegisterDTO.email());
         userRepresentation.setFirstName(userRegisterDTO.firstName());
         userRepresentation.setLastName(userRegisterDTO.lastName());
         userRepresentation.setCredentials(List.of(createPasswordCredentials(userRegisterDTO.password())));
         userRepresentation.setEnabled(true);
 
-        Response response = usersResource().create(userRepresentation);
-        HttpStatus httpStatus = HttpStatus.valueOf(response.getStatus());
+        try (Response response = usersResource().create(userRepresentation)) {
 
-        AccessTokenResponse accessTokenResponse;
-        switch (httpStatus) {
-            case CREATED -> {
-                accessTokenResponse = getToken(userRegisterDTO.email(), userRegisterDTO.password());
-                logger.info("User {} successfully created", userRegisterDTO);
+            HttpStatus httpStatus = HttpStatus.valueOf(response.getStatus());
+
+            switch (httpStatus) {
+                case CREATED -> logger.info("User {} successfully created", userRegisterDTO);
+                case CONFLICT -> throw new ConflictException("User " + userRegisterDTO + " already exists");
+                case BAD_REQUEST -> throw new InvalidDataException("Cannot create user " + userRegisterDTO);
+                default ->
+                        throw new ResponseStatusException(httpStatus, "Problems occurred while creating user " + userRegisterDTO);
             }
-            case CONFLICT -> throw new ConflictException("User " + userRegisterDTO + " already exists");
-            case BAD_REQUEST -> throw new InvalidDataException("Cannot create user " + userRegisterDTO);
-            default ->
-                    throw new ResponseStatusException(httpStatus, "Problems occurred while creating user " + userRegisterDTO);
+
+            UserRepresentation users = usersResource().search(userRegisterDTO.email(), true).get(0);
+            userRepresentation.setId(users.getId());
+            userRepresentation.setCreatedTimestamp(users.getCreatedTimestamp());
+            addRolesToUser(List.of(getRole(Role.USER)), users.getId());
+            userRepresentation.setRealmRoles(getUserRoles(users.getId()));
         }
-
-        UserRepresentation users = usersResource().search(userRegisterDTO.email(), true).get(0);
-        userRepresentation.setId(users.getId());
-        userRepresentation.setCreatedTimestamp(users.getCreatedTimestamp());
-        addRolesToUser(List.of(getRole(Role.USER)), users.getId());
-        userRepresentation.setRealmRoles(getUserRoles(users.getId()));
-
-        return accessTokenResponse;
+        return userRepresentation;
     }
 }

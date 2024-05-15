@@ -52,8 +52,13 @@ public class UserService {
         return userMapper.toDto(userRepresentation);
     }
 
-    public AccessTokenResponse createUser(UserRegisterDTO userRegisterDTO) {
-        return keycloakService.createUser(userRegisterDTO);
+    public UserDTO createUser(UserRegisterDTO userRegisterDTO) {
+        return userMapper.toDto(keycloakService.createUser(userRegisterDTO));
+    }
+
+    public AccessTokenResponse createUserAndAuthenticate(UserRegisterDTO userRegisterDTO) {
+        keycloakService.createUser(userRegisterDTO);
+        return getAccessToken(userRegisterDTO.email(), userRegisterDTO.password());
     }
 
     public void sendEmailVerification() {
