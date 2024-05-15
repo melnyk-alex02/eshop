@@ -6,6 +6,9 @@ import com.alex.eshop.exception.ConflictException;
 import com.alex.eshop.exception.DataNotFoundException;
 import com.alex.eshop.exception.InvalidDataException;
 import com.alex.eshop.webconfig.ApplicationProperties;
+import com.nimbusds.jose.shaded.json.JSONObject;
+import com.nimbusds.jose.shaded.json.parser.JSONParser;
+import com.nimbusds.jose.shaded.json.parser.ParseException;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -180,24 +183,32 @@ public class KeycloakService {
         userRepresentation.setCredentials(List.of(createPasswordCredentials(userRegisterDTO.password())));
         userRepresentation.setEnabled(true);
 
-        try (Response response = usersResource().create(userRepresentation)) {
-
-            HttpStatus httpStatus = HttpStatus.valueOf(response.getStatus());
-
-            switch (httpStatus) {
-                case CREATED -> logger.info("User {} successfully created", userRegisterDTO);
-                case CONFLICT -> throw new ConflictException("User " + userRegisterDTO + " already exists");
-                case BAD_REQUEST -> throw new InvalidDataException("Cannot create user " + userRegisterDTO);
-                default ->
-                        throw new ResponseStatusException(httpStatus, "Problems occurred while creating user " + userRegisterDTO);
-            }
-
-            UserRepresentation users = usersResource().search(userRegisterDTO.email(), true).get(0);
-            userRepresentation.setId(users.getId());
-            userRepresentation.setCreatedTimestamp(users.getCreatedTimestamp());
-            addRolesToUser(List.of(getRole(Role.USER)), users.getId());
-            userRepresentation.setRealmRoles(getUserRoles(users.getId()));
+        Response response = usersResource().create(userRepresentation);
+        HttpStatus httpStatus = HttpStatus.valueOf(response.getStatus());
+        switch (httpStatus) {
+            case CREATED -> logger.info("User {} successfully created", userRegisterDTO);
+            case CONFLICT -> throw new ConflictException("User " + userRegisterDTO + " already exists");
+            case BAD_REQUEST -> throw new InvalidDataException("Cannot create user " + userRegisterDTO + ". Reason: " + parseErrorMessage(response));
+            default -> throw new ResponseStatusException(httpStatus, "Problems occurred while creating user " + userRegisterDTO);
         }
+        UserRepresentation users = usersResource().search(userRegisterDTO.email(), true).get(0);
+        userRepresentation.setId(users.getId());
+        userRepresentation.setCreatedTimestamp(users.getCreatedTimestamp());
+        addRolesToUser(List.of(getRole(Role.USER)), users.getId());
+        userRepresentation.setRealmRoles(getUserRoles(users.getId()));
+
         return userRepresentation;
     }
+
+    private String parseErrorMessage(Response response) {
+        try {
+            String responseBody = response.readEntity(String.class);
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(responseBody);
+            return json.getAsString("errorMessage");
+        } catch (ParseException e) {
+            return "Unknown";
+        }
+    }
+
 }
